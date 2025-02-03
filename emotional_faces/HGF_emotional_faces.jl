@@ -27,10 +27,13 @@ function sigmoid(x)
     return 1.0 / (1.0 + exp(-x))
 end
 
+
+
+
 #####################################################
  #  try learning the parameters k and w
  #  Model for offline learning (smoothing)
- @model function hgf_smoothing(f,y, z_variance)
+ @model function hgf_smoothing(f,obs, resp, z_variance)
     # Initial states
     z_prev ~ Normal(mean = 0.0, variance = 5.0)  # Higher layer hidden state
     x_prev ~ Normal(mean = 0.0, variance = 5.0)  # Lower layer hidden state
@@ -38,8 +41,9 @@ end
     # Priors on κ and ω
     κ ~ Normal(mean = 1.5, variance = 1.0)
     ω ~ Normal(mean = 0.0, variance = 0.05)
+    β ~ Gamma(shape = 2.0, rate = 2.0)  # Inverse temperature parameter for response model
 
-    for i in eachindex(y)
+    for i in eachindex(obs)
         # Higher layer update (Gaussian random walk)
         z[i] ~ Normal(mean = z_prev, variance = z_variance)
 
@@ -47,10 +51,17 @@ end
         x[i] ~ GCV(x_prev, z[i], κ, ω)
 
         # Apply sigmoid function to convert to probability
-        p[i] := sigmoid(x[i])  # Sigmoid transformation
+        p[i] := sigmoid(x[i]) # Sigmoid transformation
 
         # Noisy binary observations (Bernoulli likelihood)
-        y[i] ~ Bernoulli(p[i])
+        obs[i] ~ Bernoulli(p[i])
+
+        # Response model: assume a softmax function governs responses
+        resp_p[i] := sigmoid(β * x[i])
+
+        # Noisy binary response (Bernoulli likelihood)
+        resp[i] ~ Bernoulli(resp_p[i])
+
 
         # Update previous states
         z_prev = z[i]
@@ -61,7 +72,7 @@ end
 
 @constraints function hgfconstraints_smoothing() 
     #Structured mean-field factorization constraints
-    q(x_prev,x, z,κ,ω) = q(x_prev,x)q(z)q(κ)q(ω)
+    q(x_prev,x, z,κ,ω,β) = q(x_prev,x)q(z)q(κ)q(ω)q(β)
 end
 
 @meta function hgfmeta_smoothing()
@@ -119,25 +130,26 @@ end
 
 
 
-function run_inference_smoothing(data, z_variance)
+function run_inference_smoothing(obs, resp, z_variance)
     @initialization function hgf_init_smoothing()
         q(x) = NormalMeanVariance(0.0,5.0)
+        μ(x) = vague(NormalMeanVariance)
         q(z) = NormalMeanVariance(0.0,5.0)
         q(κ) = NormalMeanVariance(1.5,1.0)
         q(ω) = NormalMeanVariance(0.0,0.05)
-        μ(x) = vague(NormalMeanVariance)
+        q(β) = GammaShapeRate(2.0,2.0)
     end
 
     #Let's do inference with 20 iterations 
     return infer(
         model = hgf_smoothing(f=sigmoid, z_variance = z_variance,),
-        data = (y = data,),
+        data = (obs = obs,resp=resp,),
         meta = hgfmeta_smoothing(),
         constraints = hgfconstraints_smoothing(),
         initialization = hgf_init_smoothing(),
         iterations = 20,
         options = (limit_stack_depth = 100,), 
-        returnvars = (x = KeepLast(), z = KeepLast(),ω=KeepLast(),κ=KeepLast(),),
+        returnvars = (x = KeepLast(), z = KeepLast(),ω=KeepLast(),κ=KeepLast(),β=KeepLast(),),
         free_energy = true,
         callbacks      = (
             before_model_creation = before_model_creation,
@@ -157,20 +169,27 @@ end
 data = CSV.read("task_data_5a5ec79cacc75b00017aa095.csv", DataFrame)
 
 # Extract the 'observed' column as a vector
-y = data.observed
+obs = data.observed
+# Convert to Float64 
+obs = Float64.(obs)
 
-# Convert to Float64 if needed (since your HGF model expects floating point values)
-y = Float64.(y)
+# Extract the 'response' column as a vector
+resp = data.response
+# Convert to Float64
+resp = Float64.(resp)
+
+
+
 
 # You can verify the data was loaded correctly
-# println("First 10 observations: ", y[1:10])
-# println("Length of data: ", length(y))
+# println("First 10 observations: ", obs[1:10])
+# println("Length of data: ", length(obs))
 z_variance = abs2(0.2)
-# y_variance = abs2(.4)
-result_smoothing = run_inference_smoothing(y, z_variance);
+
+result_smoothing = run_inference_smoothing(obs, resp, z_variance);
 mz_smoothing = result_smoothing.posteriors[:z];
 mx_smoothing = result_smoothing.posteriors[:x];
-n = length(y)  
+n = length(obs)  
 let 
     pz = plot(title = "Hidden States Z")
     px = plot(title = "Hidden States X")
@@ -194,11 +213,9 @@ end
 # plot the posteriors of κ and ω
 q_κ = result_smoothing.posteriors[:κ]
 q_ω = result_smoothing.posteriors[:ω]
-# q_y_variance = result_smoothing.posteriors[:y_variance] 
 
 println("Approximate value of κ: ", mean(q_κ))
 println("Approximate value of ω: ", mean(q_ω))
-# println("Approximate value of y_variance: ", mean(q_y_variance))
 
 # visualize the marginal posteriors of κ and ω
 range_w = range(-1,0.5,length = 200)
