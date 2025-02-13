@@ -227,7 +227,7 @@ z_posterior = infer_result.posteriors[:z]
 κ_posterior = infer_result.posteriors[:κ] 
 ω_posterior = infer_result.posteriors[:ω]
 β_posterior = infer_result.posteriors[:β]
-
+temp_posterior = infer_result.posteriors[:temp]
 # Print mean and standard deviation of parameters
 println("Parameter Estimates:")
 println("κ: mean = $(mean(κ_posterior)), std = $(std(κ_posterior))")
@@ -255,9 +255,22 @@ p2 = plot(
 
 plot(p1, p2, layout=(2,1), size=(800,600))
 
+
+
+
+## Investigate Accuracy of the Model
+
 # Extract free energy values
 free_energy_vals = infer_result.free_energy
 println("Free Energy values: ", free_energy_vals)
 
 # Plot Free Energy to check convergence
 plot(free_energy_vals, title="Free Energy over Iterations", xlabel="Iteration", ylabel="Free Energy", label="")
+
+
+# Get probability assigned to response
+# probit_prob = [cdf(Normal(0,1), t.xi / t.w) for t in temp_posterior]
+probit_prob = [cdf(Normal(0,1), t.xi ) for t in temp_posterior]
+
+action_probability_values = [resp == 1 ? p : 1 - p for (resp, p) in zip(resp_data, probit_prob)]
+mean(action_probability_values)

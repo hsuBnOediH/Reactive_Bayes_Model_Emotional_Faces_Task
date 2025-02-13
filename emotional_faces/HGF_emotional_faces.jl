@@ -11,10 +11,19 @@
 # Pkg.add("Plots")
 # Pkg.add("BenchmarkTools")
 # Pkg.add("StableRNGs")
+# Pkg.add("ExponentialFamilyProjection")
+# Pkg.add("ExponentialFamily")
+# Pkg.add("StatsPlots")
+# Pkg.add("ReactiveMP")
 # Activate local environment, see `Project.toml`
 import Pkg; Pkg.activate("."); Pkg.instantiate();
 
-using RxInfer, BenchmarkTools, Random, Plots, StableRNGs, CSV, DataFrames
+using RxInfer
+using ExponentialFamilyProjection, ExponentialFamily
+using Distributions
+using Plots, StatsPlots
+using StableRNGs
+using CSV, DataFrames
 
 
 # Seed for reproducibility
@@ -22,74 +31,64 @@ seed = 23
 rng = StableRNG(seed)
 
 
-# define nonlinear node
-# function sigmoid(x)
-#     return 1.0 / (1.0 + exp(-x))
-# end
+# Create a pattern where the correct response changes a few times
+# This simulates a learning environment where rules change
+# Read the CSV file
+data = CSV.read("task_data_5a5ec79cacc75b00017aa095.csv", DataFrame)
 
-# dot([2,3],[4,5])
-# dot([5,2],6)
+# Extract the 'observed' column as a vector
+obs_data = data.observed
+# Convert to Float64 
+obs_data = Float64.(obs_data)
 
-#####################################################
- #  try learning the parameters k and w
- #  Model for offline learning (smoothing)
- @model function hgf_smoothing(obs, resp, z_variance)
-    # Initial states
-    z_prev ~ Normal(mean = 0.0, variance = 1.0)  # Higher layer hidden state
-    x_prev ~ Normal(mean = 0.0, variance = 1.0)  # Lower layer hidden state
+# Extract the 'response' column as a vector
+resp_data = data.response
+# Convert to Float64
+resp_data = Float64.(resp_data)
 
-    # Priors on κ and ω
-    κ ~ Normal(mean = 1.0, variance = 1.0)
-    ω ~ Normal(mean = 0.0, variance = 1.0)
-    β ~ Gamma(shape = 2.0, rate = 2.0)  # Inverse temperature parameter for response model
+@model function hgf_smoothing(obs, resp, z_variance)
+    # Initial states - adjust means to be closer to data range
+    z_prev ~ Normal(mean = 0.0, variance = 1.0)  # Reduced variance
+    x_prev ~ Normal(mean = 0.0, variance = 1.0)  # Reduced variance
+ 
+    # Priors on κ and ω - maybe adjust these
+    κ ~ Normal(mean = 1.0, variance = 0.1)  # Reduced variance and mean
+    ω ~ Normal(mean = 0.0, variance = 0.01)  # Reduced variance
+    β ~ Gamma(shape = 1.0, rate = 1.0)  # Less constrained
 
     for i in eachindex(obs)
         # Higher layer update (Gaussian random walk)
         z[i] ~ Normal(mean = z_prev, variance = z_variance)
-
+ 
         # Lower layer update
         x[i] ~ GCV(x_prev, z[i], κ, ω)
 
-        # Apply sigmoid function to convert to probability
-        # p[i] := sigmoid(x[i]) # Sigmoid transformation
-
         # Noisy binary observations (Bernoulli likelihood)
-        # obs[i] ~ Bernoulli(p[i])
-
-        # use probit function to convert continuous value x to binary outcome obs
         obs[i] ~ Probit(x[i])
-
-        # Response model: assume a softmax function governs responses
-        # resp_p[i] := sigmoid(β * x[i])
-
-        # use softdot function to govern temperature
-        # temp = obs[i]
-        resp_p[i] ~ SoftDot(x[i], β, 1e2)
-
-
+ 
         # Noisy binary response (Bernoulli likelihood)
-        resp[i] ~ Probit(resp_p[i])
-
+    
+        temp[i] ~ softdot(β, x[i], 1.0)
+        resp[i] ~ Probit(temp[i])
+ 
         # Update previous states
         z_prev = z[i]
         x_prev = x[i]
     end 
-end
-
-
+ end
+ 
+ 
 @constraints function hgfconstraints_smoothing() 
     #Structured mean-field factorization constraints
-    # q(x_prev,x, z,κ,ω,β) = q(x_prev,x)q(z)q(κ)q(ω)q(β)
-    q(x_prev,x, z,κ,ω,β) = q(x_prev,x,β)q(z)q(κ)q(ω)
-    # q(β) :: PointMassFormConstraint()
-    # q(β) :: SampleListFormConstraint(1000)
-
+    q(x_prev, x, temp, z, κ, ω, β) = q(x_prev, x, temp)q(z)q(κ)q(ω)q(β)
+    q(β) :: ProjectedTo(Gamma)
 end
+
+import ReactiveMP: as_companion_matrix, ar_transition, getvform, getorder, add_transition!
 
 @meta function hgfmeta_smoothing()
     # Lets use 31 approximation points in the Gauss Hermite cubature approximation method
-    GCV() -> GCVMetadata(GaussHermiteCubature(31)) 
-    # sigmoid() -> DeltaMeta(method = Linearization())
+    GCV() -> GCVMetadata(GaussHermiteCubature(31))
 end
 
 
@@ -141,27 +140,28 @@ end
 
 
 
-function run_inference_smoothing(obs, resp, z_variance)
+
+
+
+function run_inference_smoothing(obs, resp, z_variance, niterations=10)
     @initialization function hgf_init_smoothing()
-        q(x) = NormalMeanVariance(0.0,1.0)
-        μ(x) = vague(NormalMeanVariance)
-        q(z) = NormalMeanVariance(0.0,1.0)
-        q(κ) = NormalMeanVariance(1.0,1.0)
-        q(ω) = NormalMeanVariance(0.0,1.0)
-        q(β) = GammaShapeRate(2.0,2.0)
+        q(z) = NormalMeanVariance(0, 10)
+        q(κ) = NormalMeanVariance(1.0, 0.1)
+        q(ω) = NormalMeanVariance(0.0, 0.01)
+        q(β) = GammaShapeRate(0.1, 0.1)
     end
 
-    #Let's do inference with 20 iterations 
     return infer(
-        model = hgf_smoothing(z_variance = z_variance,),
-        data = (obs = obs,resp=resp,),
+        model = hgf_smoothing(z_variance = 0.1,),  # Reduced z_variance
+        data = (obs = obs, resp = resp,),
         meta = hgfmeta_smoothing(),
         constraints = hgfconstraints_smoothing(),
         initialization = hgf_init_smoothing(),
-        iterations = 20,
-        options = (limit_stack_depth = 100,), 
-        returnvars = (x = KeepLast(), z = KeepLast(),ω=KeepLast(),κ=KeepLast(),β=KeepLast(),),
-        free_energy = true,
+        iterations = niterations,  # More iterations
+        options = (limit_stack_depth = 500,),  # Increased stack depth
+        returnvars = (x = KeepLast(), z = KeepLast(), ω=KeepLast(), κ=KeepLast(), β=KeepLast(), temp=KeepLast(),),
+        free_energy = true,  # Enable to monitor convergence
+        showprogress = true,
         callbacks      = (
             before_model_creation = before_model_creation,
             after_model_creation = after_model_creation,
@@ -172,78 +172,67 @@ function run_inference_smoothing(obs, resp, z_variance)
             before_data_update = before_data_update,
             after_data_update = after_data_update,
             on_marginal_update = on_marginal_update
-        )
+        ),
     )
 end
 
-# Read the CSV file
-data = CSV.read("task_data_5a5ec79cacc75b00017aa095.csv", DataFrame)
+infer_result = run_inference_smoothing(obs_data, resp_data, 5.0, 20)
 
-# Extract the 'observed' column as a vector
-obs = data.observed
-# Convert to Float64 
-obs = Float64.(obs)
+# Extract posteriors
+x_posterior = infer_result.posteriors[:x]
+z_posterior = infer_result.posteriors[:z]
+κ_posterior = infer_result.posteriors[:κ] 
+ω_posterior = infer_result.posteriors[:ω]
+β_posterior = infer_result.posteriors[:β]
+temp_posterior = infer_result.posteriors[:temp]
+# Print mean and standard deviation of parameters
+println("Parameter Estimates:")
+println("κ: mean = $(mean(κ_posterior)), std = $(std(κ_posterior))")
+println("ω: mean = $(mean(ω_posterior)), std = $(std(ω_posterior))")
+println("β: mean = $(mean(β_posterior)), std = $(std(β_posterior))")
 
-# Extract the 'response' column as a vector
-resp = data.response
-# Convert to Float64
-resp = Float64.(resp)
+# Plot the hidden states x and z
+p1 = plot(mean.(x_posterior), ribbon=2*std.(x_posterior), 
+    label="x (Lower layer)", title="Hidden States", 
+    fillalpha=0.3)
+plot!(p1, mean.(z_posterior), ribbon=2*std.(z_posterior), 
+    label="z (Higher layer)", fillalpha=0.3)
+scatter!(p1, 1:length(obs_data), obs_data, label="Observations", 
+    markersize=4)
+scatter!(p1, 1:length(resp_data), resp_data, label="Responses", 
+    markersize=4)
+
+# Plot parameter posteriors
+p2 = plot(
+    histogram(rand(κ_posterior, 1000), title="κ", label=""),
+    histogram(rand(ω_posterior, 1000), title="ω", label=""),
+    histogram(rand(β_posterior, 1000), title="β", label=""),
+    layout=(1,3)
+)
+
+plot(p1, p2, layout=(2,1), size=(800,600))
 
 
 
 
-# You can verify the data was loaded correctly
-# println("First 10 observations: ", obs[1:10])
-# println("Length of data: ", length(obs))
-z_variance = abs2(0.2)
+## Investigate Accuracy of the Model
 
-result_smoothing = run_inference_smoothing(obs, resp, z_variance);
-mz_smoothing = result_smoothing.posteriors[:z];
-mx_smoothing = result_smoothing.posteriors[:x];
-n = length(obs)  
-let 
-    pz = plot(title = "Hidden States Z")
-    px = plot(title = "Hidden States X")
-    
-    # plot!(pz, 1:n, z, label = "z_i", color = :orange)
-    plot!(pz, 1:n, mean.(mz_smoothing), ribbon = std.(mz_smoothing), label = "estimated z_i", color = :teal)
-    
-    # plot!(px, 1:n, x, label = "x_i", color = :green)
-    plot!(px, 1:n, mean.(mx_smoothing), ribbon = std.(mx_smoothing), label = "estimated x_i", color = :violet)
-    
-    plot(pz, px, layout = @layout([ a; b ]))
-    savefig("EF_model_results_smoothing.png")
-end
+# Extract free energy values
+free_energy_vals = infer_result.free_energy
+println("Free Energy values: ", free_energy_vals)
 
-# plot the free energy
-let
-    plot(result_smoothing.free_energy, label = "Bethe Free Energy")
-    savefig("Bethe_free_energy.png")
-end
+# Plot Free Energy to check convergence
+plot(free_energy_vals, title="Free Energy over Iterations", xlabel="Iteration", ylabel="Free Energy", label="")
 
-# plot the posteriors of κ and ω
-q_κ = result_smoothing.posteriors[:κ]
-q_ω = result_smoothing.posteriors[:ω]
 
-println("Approximate value of κ: ", mean(q_κ))
-println("Approximate value of ω: ", mean(q_ω))
+# Get probability assigned to response
+# not sure if I should use the mean or precision-weighted mean
+probit_prob = [cdf(Normal(0,1), t.xi / t.w) for t in temp_posterior]
+probit_prob = [cdf(Normal(0,1), t.xi ) for t in temp_posterior]
 
-# visualize the marginal posteriors of κ and ω
-range_w = range(-1,0.5,length = 200)
-range_k = range(0,6,length = 200)
-let 
-    pw = plot(title = "Marginal q(w)")
-    pk = plot(title = "Marginal q(k)")
-    
-    plot!(pw, range_w, (x) -> pdf(q_ω, x), fillalpha=0.3, fillrange = 0, label="Posterior q(w)", c=3, legend_position=(0.1,0.95), legendfontsize=9)
-    # vline!([real_w], label="Real w")
-    xlabel!("w")
-    
-    
-    plot!(pk, range_k, (x) -> pdf(q_κ, x), fillalpha=0.3, fillrange = 0, label="Posterior q(k)", c=3, legend_position=(0.1,0.95), legendfontsize=9)
-    # vline!([real_k], label="Real k")
-    xlabel!("k")
-    
-    plot(pk, pw, layout = @layout([ a; b ]))
-    savefig("EF_marginal_posteriors.png")
-end
+action_probability_values = [resp == 1 ? p : 1 - p for (resp, p) in zip(resp_data, probit_prob)]
+mean(action_probability_values)
+
+
+
+
