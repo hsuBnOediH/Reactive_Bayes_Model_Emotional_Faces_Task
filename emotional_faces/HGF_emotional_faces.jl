@@ -23,24 +23,24 @@ rng = StableRNG(seed)
 
 
 # define nonlinear node
-function sigmoid(x)
-    return 1.0 / (1.0 + exp(-x))
-end
+# function sigmoid(x)
+#     return 1.0 / (1.0 + exp(-x))
+# end
 
-
-
+# dot([2,3],[4,5])
+# dot([5,2],6)
 
 #####################################################
  #  try learning the parameters k and w
  #  Model for offline learning (smoothing)
- @model function hgf_smoothing(f,obs, resp, z_variance)
+ @model function hgf_smoothing(obs, resp, z_variance)
     # Initial states
-    z_prev ~ Normal(mean = 0.0, variance = 5.0)  # Higher layer hidden state
-    x_prev ~ Normal(mean = 0.0, variance = 5.0)  # Lower layer hidden state
+    z_prev ~ Normal(mean = 0.0, variance = 1.0)  # Higher layer hidden state
+    x_prev ~ Normal(mean = 0.0, variance = 1.0)  # Lower layer hidden state
 
     # Priors on κ and ω
-    κ ~ Normal(mean = 1.5, variance = 1.0)
-    ω ~ Normal(mean = 0.0, variance = 0.05)
+    κ ~ Normal(mean = 1.0, variance = 1.0)
+    ω ~ Normal(mean = 0.0, variance = 1.0)
     β ~ Gamma(shape = 2.0, rate = 2.0)  # Inverse temperature parameter for response model
 
     for i in eachindex(obs)
@@ -51,17 +51,24 @@ end
         x[i] ~ GCV(x_prev, z[i], κ, ω)
 
         # Apply sigmoid function to convert to probability
-        p[i] := sigmoid(x[i]) # Sigmoid transformation
+        # p[i] := sigmoid(x[i]) # Sigmoid transformation
 
         # Noisy binary observations (Bernoulli likelihood)
-        obs[i] ~ Bernoulli(p[i])
+        # obs[i] ~ Bernoulli(p[i])
+
+        # use probit function to convert continuous value x to binary outcome obs
+        obs[i] ~ Probit(x[i])
 
         # Response model: assume a softmax function governs responses
-        resp_p[i] := sigmoid(β * x[i])
+        # resp_p[i] := sigmoid(β * x[i])
+
+        # use softdot function to govern temperature
+        # temp = obs[i]
+        resp_p[i] ~ SoftDot(x[i], β, 1e2)
+
 
         # Noisy binary response (Bernoulli likelihood)
-        resp[i] ~ Bernoulli(resp_p[i])
-
+        resp[i] ~ Probit(resp_p[i])
 
         # Update previous states
         z_prev = z[i]
@@ -72,13 +79,17 @@ end
 
 @constraints function hgfconstraints_smoothing() 
     #Structured mean-field factorization constraints
-    q(x_prev,x, z,κ,ω,β) = q(x_prev,x)q(z)q(κ)q(ω)q(β)
+    # q(x_prev,x, z,κ,ω,β) = q(x_prev,x)q(z)q(κ)q(ω)q(β)
+    q(x_prev,x, z,κ,ω,β) = q(x_prev,x,β)q(z)q(κ)q(ω)
+    # q(β) :: PointMassFormConstraint()
+    # q(β) :: SampleListFormConstraint(1000)
+
 end
 
 @meta function hgfmeta_smoothing()
     # Lets use 31 approximation points in the Gauss Hermite cubature approximation method
     GCV() -> GCVMetadata(GaussHermiteCubature(31)) 
-    sigmoid() -> DeltaMeta(method = Linearization())
+    # sigmoid() -> DeltaMeta(method = Linearization())
 end
 
 
@@ -132,17 +143,17 @@ end
 
 function run_inference_smoothing(obs, resp, z_variance)
     @initialization function hgf_init_smoothing()
-        q(x) = NormalMeanVariance(0.0,5.0)
+        q(x) = NormalMeanVariance(0.0,1.0)
         μ(x) = vague(NormalMeanVariance)
-        q(z) = NormalMeanVariance(0.0,5.0)
-        q(κ) = NormalMeanVariance(1.5,1.0)
-        q(ω) = NormalMeanVariance(0.0,0.05)
+        q(z) = NormalMeanVariance(0.0,1.0)
+        q(κ) = NormalMeanVariance(1.0,1.0)
+        q(ω) = NormalMeanVariance(0.0,1.0)
         q(β) = GammaShapeRate(2.0,2.0)
     end
 
     #Let's do inference with 20 iterations 
     return infer(
-        model = hgf_smoothing(f=sigmoid, z_variance = z_variance,),
+        model = hgf_smoothing(z_variance = z_variance,),
         data = (obs = obs,resp=resp,),
         meta = hgfmeta_smoothing(),
         constraints = hgfconstraints_smoothing(),
