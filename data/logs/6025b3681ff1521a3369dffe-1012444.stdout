@@ -1,0 +1,34 @@
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2022 The MathWorks, Inc.
+             R2022a Update 4 (9.12.0.2009381) 64-bit (glnxa64)
+                                July 7, 2022
+
+[Warning: Unable to load Toolbox Path Cache
+/home/librad.laureateinstitute.org/cgoldman/.matlab/R2022a/toolbox_cache-9.12.0-1136799182-glnxa64.xml.
+The cache file is not in the correct format. It will be regenerated upon
+quitting MATLAB.] 
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+>> >> >> >> >> >> 
+perception_model =
+
+    'tapas_hgf_binary_config'
+
+>> 
+observation_model =
+
+    'tapas_condhalluc_obs2_config_CMG'
+
+>> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> >> Behavioral file caused script to error for 6025b3681ff1521a3369dffe
+  MException with properties:
+
+    identifier: 'MATLAB:structRefFromNonStruct'
+       message: 'Dot indexing is not supported for variables of this type.'
+         cause: {}
+         stack: [0x1 struct]
+    Correction: []
+
+>> >> 

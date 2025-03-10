@@ -1,22 +1,38 @@
 # import Pkg
-# Pkg.add("CSV")
-# Pkg.add("DataFrames")
-# Pkg.activate(".")  # Activate the current directory as the project environment
-# Pkg.add("RxInfer")
-# Pkg.add("Distributions")
-# Pkg.add("Random")
-# Pkg.add("ReactiveMP")
-# Pkg.add("Cairo")
-# Pkg.add("GraphPlot")
-# Pkg.add("Plots")
-# Pkg.add("BenchmarkTools")
-# Pkg.add("StableRNGs")
-# Pkg.add("ExponentialFamilyProjection")
-# Pkg.add("ExponentialFamily")
-# Pkg.add("StatsPlots")
-# Pkg.add("ReactiveMP")
+# Pkg.add(["RxInfer", "DataFrames", "CSV", "Plots", "StatsPlots", "Distributions", 
+# "BenchmarkTools", "StableRNGs", "ExponentialFamilyProjection", "ExponentialFamily",
+# "ReactiveMP", "Cairo", "GraphPlot", "Random"])
 # Activate local environment, see `Project.toml`
-import Pkg; Pkg.activate("."); Pkg.instantiate();
+import Pkg; 
+
+# determine if running on cluster or locally
+if get(ENV, "CLUSTER", "false") == "true"
+    println("Running on the cluster...")
+    # println(ENV)
+    println("SUBJECT: ", get(ENV, "SUBJECT", "NOT SET"))
+    println("PREDICTIONS_OR_RESPONSES: ", get(ENV, "PREDICTIONS_OR_RESPONSES", "NOT SET"))
+    println("RESULTS: ", get(ENV, "RESULTS", "NOT SET"))
+
+    Pkg.activate("/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces/cluster_environment/")
+    subject_id = get(ENV, "SUBJECT", "SUBJECT_NOT_SET")
+    predictions_or_responses = get(ENV, "PREDICTIONS_OR_RESPONSES","PREDICTIONS_OR_RESPONSES_NOT_SET")
+    results_dir = get(ENV, "RESULTS","RESULTS_NOT_SET")
+    root = "/media/labs/"
+    formatted_time = ""
+else
+    println("Running locally...")
+    Pkg.activate("L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces/"); # Note that the Project and Manifest files are in the same directory as this script
+    subject_id = "55bcd160fdf99b1c4e4ae632"
+    predictions_or_responses = "responses"
+    results_dir = "L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/model_output_prolific/hgf_RxInfer_test"
+    root = "L:/"
+    # get current datetime
+    using Dates
+    now_time = now()
+    formatted_time = "_" * Dates.format(now_time, "yyyy-mm-ddTHH_MM_SS")
+end
+Pkg.instantiate()  # Reinstall missing dependencies
+
 
 using RxInfer
 using ExponentialFamilyProjection, ExponentialFamily
@@ -30,22 +46,18 @@ using CSV, DataFrames
 seed = 23
 rng = StableRNG(seed)
 
+# Read in the task data
 
-# Create a pattern where the correct response changes a few times
-# This simulates a learning environment where rules change
-# Read the CSV file
-data = CSV.read("task_data_5a5ec79cacc75b00017aa095.csv", DataFrame)
-
-# Extract the 'observed' column as a vector
+file_name = root * "rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/data/task_data_$(subject_id)_$(predictions_or_responses).csv"
+data = CSV.read(file_name, DataFrame)
 obs_data = data.observed
-# Convert to Float64 
 obs_data = Float64.(obs_data)
-
-# Extract the 'response' column as a vector
 resp_data = data.response
-# Convert to Float64
 resp_data = Float64.(resp_data)
 
+
+
+# todo: esitmate variance on top level (z_variance). could potentially fix the middle mean to .5; 
 @model function hgf_smoothing(obs, resp, z_variance)
     # Initial states - adjust means to be closer to data range
     z_prev ~ Normal(mean = 0.0, variance = 1.0)  # Reduced variance
@@ -140,9 +152,6 @@ end
 
 
 
-
-
-
 function run_inference_smoothing(obs, resp, z_variance, niterations=10)
     @initialization function hgf_init_smoothing()
         q(z) = NormalMeanVariance(0, 10)
@@ -211,8 +220,7 @@ p2 = plot(
 )
 
 plot(p1, p2, layout=(2,1), size=(800,600))
-
-
+savefig(joinpath(results_dir, "hidden_states_and_parameters_" * subject_id * formatted_time * ".png"))
 
 
 ## Investigate Accuracy of the Model
@@ -223,6 +231,7 @@ println("Free Energy values: ", free_energy_vals)
 
 # Plot Free Energy to check convergence
 plot(free_energy_vals, title="Free Energy over Iterations", xlabel="Iteration", ylabel="Free Energy", label="")
+savefig(joinpath(results_dir, "free_energy_" * subject_id * formatted_time * ".png"))
 
 
 # Get probability assigned to response
@@ -236,3 +245,21 @@ mean(action_probability_values)
 
 
 
+
+
+## save results
+results_df = DataFrame(
+    id = subject_id,
+    kappa_mean = mean(κ_posterior),
+    kappa_std = std(κ_posterior),
+    omega_mean = mean(ω_posterior),
+    omega_std = std(ω_posterior),
+    beta_mean = mean(β_posterior),
+    beta_std = std(β_posterior),
+    free_energy_last = last(free_energy_vals),
+    mean_action_prob = mean(action_probability_values)
+)
+
+# Save the results as a CSV file
+output_file = joinpath(results_dir, "model_results_" * subject_id * formatted_time * ".csv")
+CSV.write(output_file, results_df)

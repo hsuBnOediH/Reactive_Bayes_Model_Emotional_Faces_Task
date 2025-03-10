@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+#SBATCH --partition=c3
+#SBATCH --ntasks=1
+#SBATCH --mem=12000
+#SBATCH --nodes=1
+#SBATCH --chdir=/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces
+#SBATCH --begin=now
+#SBATCH --job-name=HGF-fit-rxinfer
+#
+#################################################
+
+export JULIA_DEPOT_PATH="/var/tmp/$USER/julia_depot_shared"
+mkdir -p "$JULIA_DEPOT_PATH"
+export JULIA_PKG_PRECOMPILE_AUTO=0
+
+
+export CLUSTER="true"
+
+RESULTS=$1
+export RESULTS
+
+SUBJECT=$2
+export SUBJECT
+
+PREDICTIONS_OR_RESPONSES=$3
+export PREDICTIONS_OR_RESPONSES
+
+# Set the Julia path (adjust if necessary)
+JULIA_PATH=$HOME/julia-1.11.3/bin/julia
+
+# Path to your Julia script
+JULIA_SCRIPT="/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces/HGF_emotional_faces.jl"
+
+# Run Julia script with arguments
+$JULIA_PATH $JULIA_SCRIPT
+
+
