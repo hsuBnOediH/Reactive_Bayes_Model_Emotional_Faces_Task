@@ -1,0 +1,47 @@
+#!/bin/bash
+#
+#SBATCH --partition=c3
+#SBATCH --ntasks=1
+#SBATCH --mem=60000
+#SBATCH --nodes=1
+#SBATCH --chdir=/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts
+#SBATCH --begin=now
+#SBATCH --job-name=HGF-fit-rxinfer
+#
+#################################################
+
+export JULIA_DEPOT_PATH="/var/tmp/cgoldman/julia_depot_separate_jobs/$SLURM_JOB_ID/"
+export JULIA_PKG_PRECOMPILE_AUTO=0 # Prevents precompilation
+
+export JULIA_PROJECT="/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/cluster_environment/"
+
+export CLUSTER="true"
+
+RESULTS=$1
+export RESULTS
+
+SUBJECT=$2
+export SUBJECT
+
+PREDICTIONS_OR_RESPONSES=$3
+export PREDICTIONS_OR_RESPONSES
+
+BATCH_RUN_ID=$4
+
+HYPERPARAM_STR=$5
+export HYPERPARAM_STR
+
+
+# Set the Julia path (adjust if necessary)
+JULIA_PATH=$HOME/julia-1.11.3/bin/julia
+
+# Path to your Julia script
+JULIA_SCRIPT="/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/HGF_emotional_faces.jl"
+
+# Run Julia script with arguments
+$JULIA_PATH $JULIA_SCRIPT
+
+csv_file="${RESULTS}/model_results_${SUBJECT}.csv"
+
+# Call Python to log the results to Neptune, passing batch_run_id
+python3 /media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/log_to_neptune.py "$csv_file" "$BATCH_RUN_ID"
