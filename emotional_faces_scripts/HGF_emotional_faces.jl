@@ -13,7 +13,7 @@ if get(ENV, "CLUSTER", "false") == "true"
     println("PREDICTIONS_OR_RESPONSES: ", get(ENV, "PREDICTIONS_OR_RESPONSES", "NOT SET"))
     println("RESULTS: ", get(ENV, "RESULTS", "NOT SET"))
 
-    Pkg.activate("/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces/cluster_environment/")
+    Pkg.activate("/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/cluster_environment/")
     subject_id = get(ENV, "SUBJECT", "SUBJECT_NOT_SET")
     predictions_or_responses = get(ENV, "PREDICTIONS_OR_RESPONSES","PREDICTIONS_OR_RESPONSES_NOT_SET")
     results_dir = get(ENV, "RESULTS","RESULTS_NOT_SET")
@@ -47,9 +47,10 @@ if get(ENV, "CLUSTER", "false") == "true"
     niterations = Int(niterations) # cast as an integer
 else
     println("Running locally...")
-    Pkg.activate("L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces/"); # Note that the Project and Manifest files are in the same directory as this script.
+    Pkg.activate("L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/"); # Note that the Project and Manifest files are in the same directory as this script.
     # Click Julia: Activate this Environment to run the REPL
-    subject_id = "5c3c1617f5ebd500018596cb"
+    subject_id = "5a5ec79cacc75b00017aa095"
+    subject_id = "6630fcae418bde6a9e7c3b47"
     predictions_or_responses = "responses" # Haven't set up infrastructure to fit predictions
     results_dir = "L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/model_output_prolific/hgf_RxInfer_test"
     root = "L:/"
@@ -86,7 +87,6 @@ using Distributions
 using Plots, StatsPlots
 using StableRNGs
 using CSV, DataFrames
-import ReactiveMP: as_companion_matrix, ar_transition, getvform, getorder, add_transition!
 
 
 # Seed for reproducibility
@@ -96,10 +96,26 @@ rng = StableRNG(seed)
 # Read in the task data
 file_name = root * "rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_processed_data/task_data_$(subject_id)_$(predictions_or_responses).csv"
 data = CSV.read(file_name, DataFrame)
-obs_data = data.observed
+# Create variable for observations
+obs_data = data.observed 
 obs_data = Float64.(obs_data)
+# Create variable for responses
 resp_data = data.response
 resp_data = Float64.(resp_data)
+# Count the number of missing responses
+nan_responses = count(isnan, resp_data)
+println("Number of NaN Responses: ", nan_responses)
+# Replace NaN responses with the missing keyword
+resp_data = convert(Vector{Union{Missing, Float64}}, resp_data)
+resp_data .= ifelse.(isnan.(resp_data), missing, resp_data)
+# If there are missing responses, we won't be able to compute Bethe Free Energy values because the graph is incomplete
+# The RxInfer developers seem to be working on this issue, so we can check later if it's been resolved
+if nan_responses > 0
+    compute_bethe_free_energy = false
+else
+    compute_bethe_free_energy = true
+end
+
 
 
 
@@ -127,19 +143,64 @@ resp_data = Float64.(resp_data)
         # Noisy binary response (Bernoulli likelihood)
         temp[i] ~ softdot(β, x[i], 1.0)
         resp[i] ~ Probit(temp[i])
- 
+
+        # Failed Solution 1:
+        # if !ismissing(resp[i])
+        #     temp[i] ~ softdot(β, x[i], 1.0)
+        #     resp[i] ~ Probit(temp[i])
+        # end
+
+        # Failed Solution 2:
+        # if !ismissing(resp[i])
+        #     temp[i] ~ softdot(β, x[i], 1.0)
+        #     resp[i] ~ Probit(temp[i])
+        # else
+        #     temp[i] ~ Normal(mean = 0.0, precision = 1.0)  # Dummy placeholder
+        #     resp[i] ~ Normal(mean = temp[i], precision = 1.0)  # Dummy placeholder
+        # end
+
+        # Failed Solution 3:
+        #  if !ismissing(resp[i])
+        #     temp[i] ~ softdot(β, x[i], 1.0)
+        #     resp[i] ~ Probit(temp[i])
+        # else
+        #     temp[i] ~ Uninformative()  # Dummy placeholder
+        #     resp[i] ~ Probit(temp[i])  # Dummy placeholder
+        # end
+
         # Update previous states
         z_prev = z[i]
         x_prev = x[i]
     end 
  end
- 
+
+ #  # Add a rule to account for missing input to the Probit node
+#  # Todo - might want to change this
+#  @rule Probit(:out, Marginalisation) (q_in::Missing, meta::ProbitMeta) = begin
+#     return missing
+# end
+
+# # @rule Probit(:out, Marginalisation) (q_in::Uninformative, meta::ProbitMeta) = begin
+#     return Bernoulli(0.5)
+# end
+
+# @rule Probit(:out, Marginalisation) (q_in::NormalMeanVariance, meta::ProbitMeta) = begin
+#     return Bernoulli(0.5)
+# end
+
+# @rule Probit(:out, Marginalisation) (q_in::NormalWeightedMeanPrecision, meta::ProbitMeta) = begin
+#     return Bernoulli(0.5)
+# end
  
 @constraints function hgfconstraints_smoothing() 
     #Structured mean-field factorization constraints
     q(x_prev, x, temp, z, κ, ω, β) = q(x_prev, x, temp)q(z)q(κ)q(ω)q(β)
     q(β) :: ProjectedTo(Gamma)
 end
+
+import ReactiveMP: as_companion_matrix, ar_transition, getvform, getorder, add_transition!
+# Add Base methods to prevent compiler ambiguity
+Base.prod(::GenericProd, left::ProductOf{L, R}, ::Missing) where {L, R} = left
 
 
 @meta function hgfmeta_smoothing()
@@ -206,14 +267,14 @@ function run_inference_smoothing(obs, resp, z_variance, niterations)
 
     return infer(
         model = hgf_smoothing(z_variance=z_variance,),  # Reduced z_variance
-        data = (obs = obs, resp = resp,),
+        data = (obs = obs, resp = UnfactorizedData(resp),),
         meta = hgfmeta_smoothing(),
         constraints = hgfconstraints_smoothing(),
         initialization = hgf_init_smoothing(),
         iterations = niterations,  # More iterations
         options = (limit_stack_depth = 500,),  # Increased stack depth
         returnvars = (x = KeepLast(), z = KeepLast(), ω=KeepLast(), κ=KeepLast(), β=KeepLast(), temp=KeepLast(),),
-        free_energy = true,  # Enable to monitor convergence
+        free_energy = compute_bethe_free_energy,  # Compute Bethe Free Energy when there are no missing values
         showprogress = true,
         callbacks      = (
             before_model_creation = before_model_creation,
@@ -268,30 +329,38 @@ savefig(joinpath(results_dir, "hidden_states_and_parameters_" * subject_id * for
 
 
 ## Investigate Accuracy of the Model
-# Extract free energy values
-free_energy_vals = infer_result.free_energy
-println("Free Energy values: ", free_energy_vals)
+# Extract free energy values when they were recorded
+if compute_bethe_free_energy
+    free_energy_vals = infer_result.free_energy
+    println("Free Energy values: ", free_energy_vals)
 
-# Plot Free Energy to check convergence
-plot(free_energy_vals, title="Free Energy over Iterations", xlabel="Iteration", ylabel="Free Energy", label="")
-savefig(joinpath(results_dir, "free_energy_" * subject_id * formatted_time * ".png"))
+    # Plot Free Energy to check convergence
+    plot(free_energy_vals, title="Free Energy over Iterations", xlabel="Iteration", ylabel="Free Energy", label="")
+    savefig(joinpath(results_dir, "free_energy_" * subject_id * formatted_time * ".png"))
 
+end
 
-# Get probability assigned to response
-# For each temp_posterior, pull out the weighted mean (xi) and precision (w) values and calculate the probability of the response
-probit_prob = [cdf(Normal(0,1), t.xi / t.w) for t in temp_posterior]
-# Calculate the probability that the model assigned to each response
-action_probability_values = [resp == 1 ? p : 1 - p for (resp, p) in zip(resp_data, probit_prob)]
-mean(action_probability_values)
-
-
-
+# Get the probability assigned to each response, accounting for missing responses
+# Filter out Uninformative() values and NaN responses in a single step
+filtered_data = [(t, resp) for (t, resp) in zip(temp_posterior, resp_data) if !(t isa Uninformative) && !ismissing(resp)]
+# Extract valid temp_posterior and resp_data values
+filtered_temp_posterior, filtered_resp_data = first.(filtered_data), last.(filtered_data)
+# Compute probabilities
+probit_prob = [cdf(Normal(0,1), t.xi / t.w) for t in filtered_temp_posterior]
+# Compute action probabilities
+action_probability_values = [resp == 1 ? p : 1 - p for (resp, p) in zip(filtered_resp_data, probit_prob)]
+# Mean action probability
+mean_action_prob = mean(action_probability_values)
+println("Mean action probability: ", mean_action_prob)
+# Compute mean model accuracy, the proportion of choices that the model assigned a probability greater than .5
+mean_model_accuracy = mean(action_probability_values .> 0.5)
 
 
 
 ## save results
 results_df = DataFrame(
     id = subject_id,
+    number_missing_responses = nan_responses,
     kappa_mean = mean(κ_posterior),
     kappa_std = std(κ_posterior),
     omega_mean = mean(ω_posterior),
@@ -300,6 +369,7 @@ results_df = DataFrame(
     beta_std = std(β_posterior),
     free_energy_last = last(free_energy_vals),
     mean_action_prob = mean(action_probability_values),
+    mean_model_accuracy = mean_model_accuracy,
     prior_kappa_mean = prior_kappa_mean,
     prior_kappa_variance = prior_kappa_variance,
     prior_omega_mean = prior_omega_mean,
