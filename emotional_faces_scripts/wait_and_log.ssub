@@ -1,0 +1,21 @@
+#!/bin/bash
+#SBATCH --job-name=wait_and_log
+#SBATCH --time=04:00:00
+
+# Arguments: SLURM_JOB_ID NEPTUNE_RUN_ID
+NEPTUNE_RUN_ID=$1
+
+echo "Waiting for SLURM job $NEPTUNE_RUN_ID to finish..."
+sleep 30
+# Wait until no matching SLURM jobs with this ID are active
+while squeue -u $USER | grep -q "$NEPTUNE_RUN_ID"; do
+    sleep 100
+done
+
+echo "All EF-RxInfer jobs finished. Starting aggregation..."
+
+
+# Run the Python script to aggregate CSVs and update Neptune
+python /media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/aggregate_csvs_to_fits_table.py "$NEPTUNE_RUN_ID"
+
+echo "Neptune aggregation complete."

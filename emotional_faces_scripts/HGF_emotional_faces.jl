@@ -49,8 +49,7 @@ else
     println("Running locally...")
     Pkg.activate("L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/"); # Note that the Project and Manifest files are in the same directory as this script.
     # Click Julia: Activate this Environment to run the REPL
-    subject_id = "5a5ec79cacc75b00017aa095"
-    subject_id = "6630fcae418bde6a9e7c3b47"
+    subject_id = "62bf234d622ba94e5dfdb997"
     predictions_or_responses = "responses" # Haven't set up infrastructure to fit predictions
     results_dir = "L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/model_output_prolific/hgf_RxInfer_test"
     root = "L:/"
@@ -105,9 +104,18 @@ resp_data = Float64.(resp_data)
 # Count the number of missing responses
 nan_responses = count(isnan, resp_data)
 println("Number of NaN Responses: ", nan_responses)
+
+# Exit if participant has 200 mising responses
+if nan_responses == 200
+    println("Too many missing responses. Exiting.")
+    exit()
+end
+
+
 # Replace NaN responses with the missing keyword
 resp_data = convert(Vector{Union{Missing, Float64}}, resp_data)
 resp_data .= ifelse.(isnan.(resp_data), missing, resp_data)
+
 # If there are missing responses, we won't be able to compute Bethe Free Energy values because the graph is incomplete
 # The RxInfer developers seem to be working on this issue, so we can check later if it's been resolved
 if nan_responses > 0
@@ -144,53 +152,12 @@ end
         temp[i] ~ softdot(β, x[i], 1.0)
         resp[i] ~ Probit(temp[i])
 
-        # Failed Solution 1:
-        # if !ismissing(resp[i])
-        #     temp[i] ~ softdot(β, x[i], 1.0)
-        #     resp[i] ~ Probit(temp[i])
-        # end
-
-        # Failed Solution 2:
-        # if !ismissing(resp[i])
-        #     temp[i] ~ softdot(β, x[i], 1.0)
-        #     resp[i] ~ Probit(temp[i])
-        # else
-        #     temp[i] ~ Normal(mean = 0.0, precision = 1.0)  # Dummy placeholder
-        #     resp[i] ~ Normal(mean = temp[i], precision = 1.0)  # Dummy placeholder
-        # end
-
-        # Failed Solution 3:
-        #  if !ismissing(resp[i])
-        #     temp[i] ~ softdot(β, x[i], 1.0)
-        #     resp[i] ~ Probit(temp[i])
-        # else
-        #     temp[i] ~ Uninformative()  # Dummy placeholder
-        #     resp[i] ~ Probit(temp[i])  # Dummy placeholder
-        # end
-
         # Update previous states
         z_prev = z[i]
         x_prev = x[i]
     end 
  end
 
- #  # Add a rule to account for missing input to the Probit node
-#  # Todo - might want to change this
-#  @rule Probit(:out, Marginalisation) (q_in::Missing, meta::ProbitMeta) = begin
-#     return missing
-# end
-
-# # @rule Probit(:out, Marginalisation) (q_in::Uninformative, meta::ProbitMeta) = begin
-#     return Bernoulli(0.5)
-# end
-
-# @rule Probit(:out, Marginalisation) (q_in::NormalMeanVariance, meta::ProbitMeta) = begin
-#     return Bernoulli(0.5)
-# end
-
-# @rule Probit(:out, Marginalisation) (q_in::NormalWeightedMeanPrecision, meta::ProbitMeta) = begin
-#     return Bernoulli(0.5)
-# end
  
 @constraints function hgfconstraints_smoothing() 
     #Structured mean-field factorization constraints
@@ -199,7 +166,7 @@ end
 end
 
 import ReactiveMP: as_companion_matrix, ar_transition, getvform, getorder, add_transition!
-# Add Base methods to prevent compiler ambiguity
+# Add this method to prevent compiler ambiguity for the product of colliding messages
 Base.prod(::GenericProd, left::ProductOf{L, R}, ::Missing) where {L, R} = left
 
 
@@ -273,8 +240,9 @@ function run_inference_smoothing(obs, resp, z_variance, niterations)
         initialization = hgf_init_smoothing(),
         iterations = niterations,  # More iterations
         options = (limit_stack_depth = 500,),  # Increased stack depth
-        returnvars = (x = KeepLast(), z = KeepLast(), ω=KeepLast(), κ=KeepLast(), β=KeepLast(), temp=KeepLast(),),
+        returnvars = (x = KeepEach(), z = KeepEach(), ω=KeepEach(), κ=KeepEach(), β=KeepEach(), temp=KeepEach(),),
         free_energy = compute_bethe_free_energy,  # Compute Bethe Free Energy when there are no missing values
+        free_energy_diagnostics = nothing, # turns off the error for NaN or inf FE
         showprogress = true,
         callbacks      = (
             before_model_creation = before_model_creation,
@@ -292,13 +260,21 @@ end
 
 infer_result = run_inference_smoothing(obs_data, resp_data, 1.0, niterations)
 
+# If free energy was computed, find the last iteration where free energy was neither NaN or infinity
+if compute_bethe_free_energy
+    free_energy_vals = infer_result.free_energy
+    niterations_used = findlast(isfinite, free_energy_vals) # checks for not NaN or inf
+else
+    niterations_used = niterations
+end
+
 # Extract posteriors
-x_posterior = infer_result.posteriors[:x]
-z_posterior = infer_result.posteriors[:z]
-κ_posterior = infer_result.posteriors[:κ] 
-ω_posterior = infer_result.posteriors[:ω]
-β_posterior = infer_result.posteriors[:β]
-temp_posterior = infer_result.posteriors[:temp]
+x_posterior = infer_result.posteriors[:x][niterations_used]
+z_posterior = infer_result.posteriors[:z][niterations_used]
+κ_posterior = infer_result.posteriors[:κ][niterations_used]
+ω_posterior = infer_result.posteriors[:ω][niterations_used]
+β_posterior = infer_result.posteriors[:β][niterations_used]
+temp_posterior = infer_result.posteriors[:temp][niterations_used]
 # Print mean and standard deviation of parameters
 println("Parameter Estimates:")
 println("κ: mean = $(mean(κ_posterior)), std = $(std(κ_posterior))")
@@ -355,21 +331,28 @@ println("Mean action probability: ", mean_action_prob)
 # Compute mean model accuracy, the proportion of choices that the model assigned a probability greater than .5
 mean_model_accuracy = mean(action_probability_values .> 0.5)
 
-
+# Get the free energy value if it was computed, otherwise leave NaN
+if compute_bethe_free_energy
+    bethe_free_energy = [free_energy_vals[niterations_used]]
+else
+    bethe_free_energy = NaN
+end
 
 ## save results
 results_df = DataFrame(
     id = subject_id,
     number_missing_responses = nan_responses,
+    num_iterations = niterations,
+    num_iterations_used = niterations_used,
+    mean_action_prob = mean(action_probability_values),
+    mean_model_accuracy = mean_model_accuracy,
+    free_energy = bethe_free_energy,
     kappa_mean = mean(κ_posterior),
     kappa_std = std(κ_posterior),
     omega_mean = mean(ω_posterior),
     omega_std = std(ω_posterior),
     beta_mean = mean(β_posterior),
     beta_std = std(β_posterior),
-    free_energy_last = last(free_energy_vals),
-    mean_action_prob = mean(action_probability_values),
-    mean_model_accuracy = mean_model_accuracy,
     prior_kappa_mean = prior_kappa_mean,
     prior_kappa_variance = prior_kappa_variance,
     prior_omega_mean = prior_omega_mean,
@@ -390,6 +373,8 @@ results_df = DataFrame(
     initial_beta_rate = initial_beta_rate,
     niterations = niterations,
 )
+
+
 
 # Save the results as a CSV 
 output_file = joinpath(results_dir, "model_results_" * subject_id * formatted_time * ".csv")

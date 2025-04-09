@@ -26,13 +26,15 @@ with open(subject_list_path) as infile:
         subjects.append(line.strip())
 
 # Read in Neptune API Token
-with open('carter_neptune_token.txt', 'r') as file:
+with open('/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/carter_neptune_token.txt', 'r') as file:
     neptune_api_token = file.read().strip()
+
+# sys.exit("Stopping early for debugging")
 
 # Initialize Neptune run to log hyperparameters and results
 run = neptune.init_run(
     project="navid.faryad/Emotional-Faces-RxInfer",
-    api_token={neptune_api_token},
+    api_token=neptune_api_token,
 )  
 run["batch/cluster"] = "true"
 run["batch/results_directory"] = results
@@ -78,7 +80,9 @@ print(f"Hyperparams String: {hyperparam_str}")  # Debugging
 
 # Fit each subjects' data
 for subject in subjects:
-    jobname = f'EF-RxInfer-{subject}'
+    # if subject != "62bf234d622ba94e5dfdb997" and subject != "5ac53209fa3b4e0001736f22"   and subject != "5afa19a4f856320001cf920f": 
+    #     continue
+    jobname = f'{batch_run_id}-RxInfer-{subject}'
 
     stdout_name = f"{results}/logs/{subject}-%J.stdout"
     stderr_name = f"{results}/logs/{subject}-%J.stderr"
@@ -86,4 +90,20 @@ for subject in subjects:
 
     print(f"SUBMITTED JOB [{jobname}]")
 
-#python3 /media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces/HGF_loop.py
+
+# Call the script to wait and log all the results
+agg_ssub_path = '/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/wait_and_log.ssub'
+agg_stdout = f"{results}/logs/wait_and_log-%J.stdout"
+agg_stderr = f"{results}/logs/wait_and_log-%J.stderr"
+agg_jobname = f'EF-RxInfer-WaitAndLog'
+os.system(f"sbatch -J {agg_jobname} -o {agg_stdout} -e {agg_stderr} {agg_ssub_path} {batch_run_id}")
+
+
+
+#python3 /media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/HGF_loop.py
+
+
+
+
+
+

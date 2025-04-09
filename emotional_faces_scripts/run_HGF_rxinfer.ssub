@@ -1,18 +1,40 @@
 #!/bin/bash
 #
-#SBATCH --partition=c3
+#SBATCH --partition=c3_short
 #SBATCH --ntasks=1
 #SBATCH --mem=60000
 #SBATCH --nodes=1
 #SBATCH --chdir=/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts
 #SBATCH --begin=now
 #SBATCH --job-name=HGF-fit-rxinfer
+#SBATCH --time=1:00:00
+
 #
 #################################################
 
-export JULIA_DEPOT_PATH="/var/tmp/cgoldman/julia_depot_separate_jobs/$SLURM_JOB_ID/"
-export JULIA_PKG_PRECOMPILE_AUTO=0 # Prevents precompilation
+# If not on a compute node, relaunch this script using srun on a compute node
+if [[ "$(hostname)" != compute* ]]; then
+    echo "Not on a compute node. Launching compute session..."
+    srun -N 1 --pty --x11 --partition=c3_short "$0" "$@"
+    exit 0
+fi
 
+echo "Running on compute node: $(hostname)"
+# Create a temporary Julia depot just for this job
+# This prevents conflicts and lets each SLURM job write its own precompilation/artifacts
+export JOB_DEPOT="/scratch/cgoldman/RxInfer_project/julia_depots/$SLURM_JOB_ID/"
+
+# Set the full JULIA_DEPOT_PATH: 
+# Julia will first check the persistent shared base depot (read-only),
+# then use the job-specific depot for writes (read-write)
+#export JULIA_DEPOT_PATH="/home/librad.laureateinstitute.org/cgoldman/julia_base_depot:$JOB_DEPOT"
+export JULIA_DEPOT_PATH=$JOB_DEPOT
+
+# Turn off automatic precompilation to save time and avoid file system bloat
+export JULIA_PKG_PRECOMPILE_AUTO=0
+
+# Point Julia to the correct environment for the project (i.e., the Project.toml/Manifest.toml)
+# This ensures the correct packages and versions are used for the model
 export JULIA_PROJECT="/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/cluster_environment/"
 
 export CLUSTER="true"
@@ -38,10 +60,24 @@ JULIA_PATH=$HOME/julia-1.11.3/bin/julia
 # Path to your Julia script
 JULIA_SCRIPT="/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/HGF_emotional_faces.jl"
 
+# Ensure cleanup on exit
+cleanup() {
+  echo "Cleaning up job-specific Julia depot at $JOB_DEPOT"
+  rm -rf "$JOB_DEPOT"
+}
+trap cleanup EXIT
+
+
+
 # Run Julia script with arguments
 $JULIA_PATH $JULIA_SCRIPT
 
 csv_file="${RESULTS}/model_results_${SUBJECT}.csv"
 
-# Call Python to log the results to Neptune, passing batch_run_id
-python3 /media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/log_to_neptune.py "$csv_file" "$BATCH_RUN_ID"
+# Only log to Neptune if the CSV was created
+if [ -f "$csv_file" ]; then
+    echo "Logging to Neptune with $csv_file"
+    python3 /media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/log_to_neptune.py "$csv_file" "$BATCH_RUN_ID"
+else
+    echo "WARNING: CSV file not found for $SUBJECT. Skipping Neptune logging."
+fi
