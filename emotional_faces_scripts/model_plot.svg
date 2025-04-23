@@ -1,0 +1,391 @@
+<svg width="583pt" height="720pt" viewBox="0.00 0.00 582.94 720.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(0.65 0.65) rotate(0) translate(4 1095.82)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-1095.82 886.45,-1095.82 886.45,4 -4,4"></polygon>
+<!-- z_variance_1:nothing -->
+<g id="node1" class="node">
+<title>z_variance_1:nothing</title>
+<ellipse fill="none" stroke="black" cx="390.42" cy="-830.03" rx="41.72" ry="41.72"></ellipse>
+<text text-anchor="middle" x="390.42" y="-826.93" font-family="Times New Roman,serif" font-size="12.00">z_variance</text>
+</g>
+<!-- GammaShapeRate_4 -->
+<g id="node4" class="node">
+<title>GammaShapeRate_4</title>
+<polygon fill="lightgray" stroke="black" points="366.89,-1048.48 261.89,-1048.48 261.89,-943.48 366.89,-943.48 366.89,-1048.48"></polygon>
+<text text-anchor="middle" x="314.39" y="-992.88" font-family="Times New Roman,serif" font-size="12.00">GammaShapeRate</text>
+</g>
+<!-- z_variance_1:nothing&#45;&#45;GammaShapeRate_4 -->
+<g id="edge1" class="edge">
+<title>z_variance_1:nothing--GammaShapeRate_4</title>
+<path fill="none" stroke="black" d="M372.97,-868.11C362.76,-890.4 349.71,-918.89 338.52,-943.31"></path>
+</g>
+<!-- NormalMeanVariance_26 -->
+<g id="node26" class="node">
+<title>NormalMeanVariance_26</title>
+<polygon fill="lightgray" stroke="black" points="549.99,-789.68 428.99,-789.68 428.99,-668.68 549.99,-668.68 549.99,-789.68"></polygon>
+<text text-anchor="middle" x="489.49" y="-726.08" font-family="Times New Roman,serif" font-size="12.00">NormalMeanVariance</text>
+</g>
+<!-- z_variance_1:nothing&#45;&#45;NormalMeanVariance_26 -->
+<g id="edge2" class="edge">
+<title>z_variance_1:nothing--NormalMeanVariance_26</title>
+<path fill="none" stroke="black" d="M419.87,-800.05C423.07,-796.8 426.4,-793.41 429.79,-789.95"></path>
+</g>
+<!-- constvar_2:1.0 -->
+<g id="node2" class="node">
+<title>constvar_2:1.0</title>
+<ellipse fill="none" stroke="black" cx="112.01" cy="-1072.12" rx="19.9" ry="19.9"></ellipse>
+<text text-anchor="middle" x="112.01" y="-1069.02" font-family="Times New Roman,serif" font-size="12.00">1.0</text>
+</g>
+<!-- constvar_2:1.0&#45;&#45;GammaShapeRate_4 -->
+<g id="edge3" class="edge">
+<title>constvar_2:1.0--GammaShapeRate_4</title>
+<path fill="none" stroke="black" d="M130.69,-1065.09C160.14,-1054.01 218.45,-1032.07 261.51,-1015.88"></path>
+</g>
+<!-- constvar_3:1.0 -->
+<g id="node3" class="node">
+<title>constvar_3:1.0</title>
+<ellipse fill="none" stroke="black" cx="521.15" cy="-1050.9" rx="19.9" ry="19.9"></ellipse>
+<text text-anchor="middle" x="521.15" y="-1047.8" font-family="Times New Roman,serif" font-size="12.00">1.0</text>
+</g>
+<!-- constvar_3:1.0&#45;&#45;GammaShapeRate_4 -->
+<g id="edge4" class="edge">
+<title>constvar_3:1.0--GammaShapeRate_4</title>
+<path fill="none" stroke="black" d="M502.07,-1045.83C471.68,-1037.76 411.21,-1021.7 367.1,-1009.98"></path>
+</g>
+<!-- z_initial_5:nothing -->
+<g id="node5" class="node">
+<title>z_initial_5:nothing</title>
+<ellipse fill="none" stroke="black" cx="650.77" cy="-671.19" rx="33.49" ry="33.49"></ellipse>
+<text text-anchor="middle" x="650.77" y="-668.09" font-family="Times New Roman,serif" font-size="12.00">z_initial</text>
+</g>
+<!-- NormalMeanVariance_8 -->
+<g id="node8" class="node">
+<title>NormalMeanVariance_8</title>
+<polygon fill="lightgray" stroke="black" points="670.67,-919.08 549.67,-919.08 549.67,-798.08 670.67,-798.08 670.67,-919.08"></polygon>
+<text text-anchor="middle" x="610.17" y="-855.48" font-family="Times New Roman,serif" font-size="12.00">NormalMeanVariance</text>
+</g>
+<!-- z_initial_5:nothing&#45;&#45;NormalMeanVariance_8 -->
+<g id="edge5" class="edge">
+<title>z_initial_5:nothing--NormalMeanVariance_8</title>
+<path fill="none" stroke="black" d="M643.7,-703.83C638.09,-729.73 630.09,-766.66 623.31,-797.94"></path>
+</g>
+<!-- z_initial_5:nothing&#45;&#45;NormalMeanVariance_26 -->
+<g id="edge6" class="edge">
+<title>z_initial_5:nothing--NormalMeanVariance_26</title>
+<path fill="none" stroke="black" d="M619.29,-682.51C599.67,-689.56 573.78,-698.87 550.28,-707.32"></path>
+</g>
+<!-- constvar_6:0.0 -->
+<g id="node6" class="node">
+<title>constvar_6:0.0</title>
+<ellipse fill="none" stroke="black" cx="793.48" cy="-1025" rx="19.9" ry="19.9"></ellipse>
+<text text-anchor="middle" x="793.48" y="-1021.9" font-family="Times New Roman,serif" font-size="12.00">0.0</text>
+</g>
+<!-- constvar_6:0.0&#45;&#45;NormalMeanVariance_8 -->
+<g id="edge7" class="edge">
+<title>constvar_6:0.0--NormalMeanVariance_8</title>
+<path fill="none" stroke="black" d="M778.79,-1011.66C755.59,-990.61 709.2,-948.48 670.93,-913.74"></path>
+</g>
+<!-- constvar_7:1.0 -->
+<g id="node7" class="node">
+<title>constvar_7:1.0</title>
+<ellipse fill="none" stroke="black" cx="826.32" cy="-774.62" rx="19.9" ry="19.9"></ellipse>
+<text text-anchor="middle" x="826.32" y="-771.52" font-family="Times New Roman,serif" font-size="12.00">1.0</text>
+</g>
+<!-- constvar_7:1.0&#45;&#45;NormalMeanVariance_8 -->
+<g id="edge8" class="edge">
+<title>constvar_7:1.0--NormalMeanVariance_8</title>
+<path fill="none" stroke="black" d="M807.89,-781.77C777.87,-793.43 717.14,-817.03 670.86,-835.01"></path>
+</g>
+<!-- x_initial_9:nothing -->
+<g id="node9" class="node">
+<title>x_initial_9:nothing</title>
+<ellipse fill="none" stroke="black" cx="288.61" cy="-437.84" rx="33.72" ry="33.72"></ellipse>
+<text text-anchor="middle" x="288.61" y="-434.74" font-family="Times New Roman,serif" font-size="12.00">x_initial</text>
+</g>
+<!-- NormalMeanVariance_12 -->
+<g id="node12" class="node">
+<title>NormalMeanVariance_12</title>
+<polygon fill="lightgray" stroke="black" points="270.61,-342.35 149.61,-342.35 149.61,-221.35 270.61,-221.35 270.61,-342.35"></polygon>
+<text text-anchor="middle" x="210.11" y="-278.75" font-family="Times New Roman,serif" font-size="12.00">NormalMeanVariance</text>
+</g>
+<!-- x_initial_9:nothing&#45;&#45;NormalMeanVariance_12 -->
+<g id="edge9" class="edge">
+<title>x_initial_9:nothing--NormalMeanVariance_12</title>
+<path fill="none" stroke="black" d="M273.28,-407.39C264,-388.95 251.84,-364.77 240.66,-342.56"></path>
+</g>
+<!-- GCV_28 -->
+<g id="node28" class="node">
+<title>GCV_28</title>
+<polygon fill="lightgray" stroke="black" points="390.73,-563.49 347.73,-563.49 347.73,-520.49 390.73,-520.49 390.73,-563.49"></polygon>
+<text text-anchor="middle" x="369.23" y="-538.89" font-family="Times New Roman,serif" font-size="12.00">GCV</text>
+</g>
+<!-- x_initial_9:nothing&#45;&#45;GCV_28 -->
+<g id="edge10" class="edge">
+<title>x_initial_9:nothing--GCV_28</title>
+<path fill="none" stroke="black" d="M309.37,-464.66C322.71,-481.9 339.83,-504.01 352.33,-520.16"></path>
+</g>
+<!-- constvar_10:0.0 -->
+<g id="node10" class="node">
+<title>constvar_10:0.0</title>
+<ellipse fill="none" stroke="black" cx="23.29" cy="-249.5" rx="19.9" ry="19.9"></ellipse>
+<text text-anchor="middle" x="23.29" y="-246.4" font-family="Times New Roman,serif" font-size="12.00">0.0</text>
+</g>
+<!-- constvar_10:0.0&#45;&#45;NormalMeanVariance_12 -->
+<g id="edge11" class="edge">
+<title>constvar_10:0.0--NormalMeanVariance_12</title>
+<path fill="none" stroke="black" d="M42.93,-252.9C68.04,-257.25 112.66,-264.98 149.5,-271.35"></path>
+</g>
+<!-- constvar_11:1.0 -->
+<g id="node11" class="node">
+<title>constvar_11:1.0</title>
+<ellipse fill="none" stroke="black" cx="68.98" cy="-47.82" rx="19.9" ry="19.9"></ellipse>
+<text text-anchor="middle" x="68.98" y="-44.72" font-family="Times New Roman,serif" font-size="12.00">1.0</text>
+</g>
+<!-- constvar_11:1.0&#45;&#45;NormalMeanVariance_12 -->
+<g id="edge12" class="edge">
+<title>constvar_11:1.0--NormalMeanVariance_12</title>
+<path fill="none" stroke="black" d="M79.35,-65.03C98.93,-97.49 142.15,-169.17 173.56,-221.24"></path>
+</g>
+<!-- κ_13:nothing -->
+<g id="node13" class="node">
+<title>κ_13:nothing</title>
+<ellipse fill="none" stroke="black" cx="348.34" cy="-669.82" rx="18" ry="18"></ellipse>
+<text text-anchor="middle" x="348.34" y="-666.72" font-family="Times New Roman,serif" font-size="12.00">κ</text>
+</g>
+<!-- NormalMeanVariance_16 -->
+<g id="node16" class="node">
+<title>NormalMeanVariance_16</title>
+<polygon fill="lightgray" stroke="black" points="270.53,-832.73 149.53,-832.73 149.53,-711.73 270.53,-711.73 270.53,-832.73"></polygon>
+<text text-anchor="middle" x="210.03" y="-769.13" font-family="Times New Roman,serif" font-size="12.00">NormalMeanVariance</text>
+</g>
+<!-- κ_13:nothing&#45;&#45;NormalMeanVariance_16 -->
+<g id="edge13" class="edge">
+<title>κ_13:nothing--NormalMeanVariance_16</title>
+<path fill="none" stroke="black" d="M333.8,-680.58C318.68,-691.78 294,-710.06 270.64,-727.35"></path>
+</g>
+<!-- κ_13:nothing&#45;&#45;GCV_28 -->
+<g id="edge14" class="edge">
+<title>κ_13:nothing--GCV_28</title>
+<path fill="none" stroke="black" d="M351.24,-652.04C355.01,-628.99 361.58,-588.8 365.65,-563.89"></path>
+</g>
+<!-- constvar_14:1.0 -->
+<g id="node14" class="node">
+<title>constvar_14:1.0</title>
+<ellipse fill="none" stroke="black" cx="27.18" cy="-745.97" rx="19.9" ry="19.9"></ellipse>
+<text text-anchor="middle" x="27.18" y="-742.87" font-family="Times New Roman,serif" font-size="12.00">1.0</text>
+</g>
+<!-- constvar_14:1.0&#45;&#45;NormalMeanVariance_16 -->
+<g id="edge15" class="edge">
+<title>constvar_14:1.0--NormalMeanVariance_16</title>
+<path fill="none" stroke="black" d="M46.75,-748.78C71.07,-752.27 113.72,-758.4 149.34,-763.51"></path>
+</g>
+<!-- constvar_15:0.1 -->
+<g id="node15" class="node">
+<title>constvar_15:0.1</title>
+<ellipse fill="none" stroke="black" cx="28.37" cy="-925.7" rx="19.9" ry="19.9"></ellipse>
+<text text-anchor="middle" x="28.37" y="-922.6" font-family="Times New Roman,serif" font-size="12.00">0.1</text>
+</g>
+<!-- constvar_15:0.1&#45;&#45;NormalMeanVariance_16 -->
+<g id="edge16" class="edge">
+<title>constvar_15:0.1--NormalMeanVariance_16</title>
+<path fill="none" stroke="black" d="M43.55,-912.88C66.66,-893.36 111.95,-855.1 149.46,-823.4"></path>
+</g>
+<!-- ω_17:nothing -->
+<g id="node17" class="node">
+<title>ω_17:nothing</title>
+<ellipse fill="none" stroke="black" cx="235.31" cy="-597.28" rx="18" ry="18"></ellipse>
+<text text-anchor="middle" x="235.31" y="-594.18" font-family="Times New Roman,serif" font-size="12.00">ω</text>
+</g>
+<!-- NormalMeanVariance_20 -->
+<g id="node20" class="node">
+<title>NormalMeanVariance_20</title>
+<polygon fill="lightgray" stroke="black" points="221.64,-556.3 100.64,-556.3 100.64,-435.3 221.64,-435.3 221.64,-556.3"></polygon>
+<text text-anchor="middle" x="161.14" y="-492.7" font-family="Times New Roman,serif" font-size="12.00">NormalMeanVariance</text>
+</g>
+<!-- ω_17:nothing&#45;&#45;NormalMeanVariance_20 -->
+<g id="edge17" class="edge">
+<title>ω_17:nothing--NormalMeanVariance_20</title>
+<path fill="none" stroke="black" d="M224.68,-582.74C219.39,-575.5 212.61,-566.22 205.45,-556.43"></path>
+</g>
+<!-- ω_17:nothing&#45;&#45;GCV_28 -->
+<g id="edge18" class="edge">
+<title>ω_17:nothing--GCV_28</title>
+<path fill="none" stroke="black" d="M252,-590.39C276.12,-580.43 320.74,-562 347.44,-550.98"></path>
+</g>
+<!-- constvar_18:0.0 -->
+<g id="node18" class="node">
+<title>constvar_18:0.0</title>
+<ellipse fill="none" stroke="black" cx="19.7" cy="-428.18" rx="19.9" ry="19.9"></ellipse>
+<text text-anchor="middle" x="19.7" y="-425.08" font-family="Times New Roman,serif" font-size="12.00">0.0</text>
+</g>
+<!-- constvar_18:0.0&#45;&#45;NormalMeanVariance_20 -->
+<g id="edge19" class="edge">
+<title>constvar_18:0.0--NormalMeanVariance_20</title>
+<path fill="none" stroke="black" d="M37.61,-436.75C53.52,-444.35 77.71,-455.92 100.48,-466.8"></path>
+</g>
+<!-- constvar_19:0.01 -->
+<g id="node19" class="node">
+<title>constvar_19:0.01</title>
+<ellipse fill="none" stroke="black" cx="23.6" cy="-595.48" rx="23.29" ry="23.29"></ellipse>
+<text text-anchor="middle" x="23.6" y="-592.38" font-family="Times New Roman,serif" font-size="12.00">0.01</text>
+</g>
+<!-- constvar_19:0.01&#45;&#45;NormalMeanVariance_20 -->
+<g id="edge20" class="edge">
+<title>constvar_19:0.01--NormalMeanVariance_20</title>
+<path fill="none" stroke="black" d="M42.72,-581.62C57.78,-570.71 79.64,-554.87 100.49,-539.76"></path>
+</g>
+<!-- β_21:nothing -->
+<g id="node21" class="node">
+<title>β_21:nothing</title>
+<ellipse fill="none" stroke="black" cx="652.69" cy="-503.56" rx="18" ry="18"></ellipse>
+<text text-anchor="middle" x="652.69" y="-500.46" font-family="Times New Roman,serif" font-size="12.00">β</text>
+</g>
+<!-- GammaShapeRate_24 -->
+<g id="node24" class="node">
+<title>GammaShapeRate_24</title>
+<polygon fill="lightgray" stroke="black" points="882.45,-383.58 777.45,-383.58 777.45,-278.58 882.45,-278.58 882.45,-383.58"></polygon>
+<text text-anchor="middle" x="829.95" y="-327.98" font-family="Times New Roman,serif" font-size="12.00">GammaShapeRate</text>
+</g>
+<!-- β_21:nothing&#45;&#45;GammaShapeRate_24 -->
+<g id="edge21" class="edge">
+<title>β_21:nothing--GammaShapeRate_24</title>
+<path fill="none" stroke="black" d="M665.72,-490.87C688.91,-468.31 738.52,-420.05 777.18,-382.43"></path>
+</g>
+<!-- SoftDot_33 -->
+<g id="node33" class="node">
+<title>SoftDot_33</title>
+<polygon fill="lightgray" stroke="black" points="559.53,-428.73 505.53,-428.73 505.53,-374.73 559.53,-374.73 559.53,-428.73"></polygon>
+<text text-anchor="middle" x="532.53" y="-398.63" font-family="Times New Roman,serif" font-size="12.00">SoftDot</text>
+</g>
+<!-- β_21:nothing&#45;&#45;SoftDot_33 -->
+<g id="edge22" class="edge">
+<title>β_21:nothing--SoftDot_33</title>
+<path fill="none" stroke="black" d="M638.91,-491.88C619.67,-475.58 584.38,-445.67 559.74,-424.79"></path>
+</g>
+<!-- constvar_22:1.0 -->
+<g id="node22" class="node">
+<title>constvar_22:1.0</title>
+<ellipse fill="none" stroke="black" cx="832.09" cy="-550.82" rx="19.9" ry="19.9"></ellipse>
+<text text-anchor="middle" x="832.09" y="-547.72" font-family="Times New Roman,serif" font-size="12.00">1.0</text>
+</g>
+<!-- constvar_22:1.0&#45;&#45;GammaShapeRate_24 -->
+<g id="edge23" class="edge">
+<title>constvar_22:1.0--GammaShapeRate_24</title>
+<path fill="none" stroke="black" d="M831.9,-530.93C831.58,-497.97 830.92,-430.97 830.46,-383.66"></path>
+</g>
+<!-- constvar_23:1.0 -->
+<g id="node23" class="node">
+<title>constvar_23:1.0</title>
+<ellipse fill="none" stroke="black" cx="806.2" cy="-74.18" rx="19.9" ry="19.9"></ellipse>
+<text text-anchor="middle" x="806.2" y="-71.08" font-family="Times New Roman,serif" font-size="12.00">1.0</text>
+</g>
+<!-- constvar_23:1.0&#45;&#45;GammaShapeRate_24 -->
+<g id="edge24" class="edge">
+<title>constvar_23:1.0--GammaShapeRate_24</title>
+<path fill="none" stroke="black" d="M808.02,-93.91C811.63,-132.98 819.8,-221.33 825.09,-278.48"></path>
+</g>
+<!-- z_25:nothing -->
+<g id="node25" class="node">
+<title>z_25:nothing</title>
+<ellipse fill="none" stroke="black" cx="501.88" cy="-595.92" rx="18" ry="18"></ellipse>
+<text text-anchor="start" x="497.38" y="-593.82" font-family="Times New Roman,serif" font-size="12.00">z</text>
+<text text-anchor="start" x="503.38" y="-593.82" font-family="Times New Roman,serif" baseline-shift="sub" font-size="6.00">1</text>
+</g>
+<!-- z_25:nothing&#45;&#45;NormalMeanVariance_26 -->
+<g id="edge25" class="edge">
+<title>z_25:nothing--NormalMeanVariance_26</title>
+<path fill="none" stroke="black" d="M500.21,-613.89C498.89,-628.03 496.98,-648.59 495.13,-668.45"></path>
+</g>
+<!-- z_25:nothing&#45;&#45;GCV_28 -->
+<g id="edge26" class="edge">
+<title>z_25:nothing--GCV_28</title>
+<path fill="none" stroke="black" d="M485.08,-589.09C461.23,-579.39 417.55,-561.64 391.18,-550.91"></path>
+</g>
+<!-- x_27:nothing -->
+<g id="node27" class="node">
+<title>x_27:nothing</title>
+<ellipse fill="none" stroke="black" cx="453.13" cy="-472.37" rx="18" ry="18"></ellipse>
+<text text-anchor="start" x="448.13" y="-470.27" font-family="Times New Roman,serif" font-size="12.00">x</text>
+<text text-anchor="start" x="455.13" y="-470.27" font-family="Times New Roman,serif" baseline-shift="sub" font-size="6.00">1</text>
+</g>
+<!-- x_27:nothing&#45;&#45;GCV_28 -->
+<g id="edge27" class="edge">
+<title>x_27:nothing--GCV_28</title>
+<path fill="none" stroke="black" d="M439.27,-483.86C426.15,-494.76 406.23,-511.28 390.99,-523.93"></path>
+</g>
+<!-- Probit_30 -->
+<g id="node30" class="node">
+<title>Probit_30</title>
+<polygon fill="lightgray" stroke="black" points="384.83,-352.69 339.83,-352.69 339.83,-307.69 384.83,-307.69 384.83,-352.69"></polygon>
+<text text-anchor="middle" x="362.33" y="-327.09" font-family="Times New Roman,serif" font-size="12.00">Probit</text>
+</g>
+<!-- x_27:nothing&#45;&#45;Probit_30 -->
+<g id="edge28" class="edge">
+<title>x_27:nothing--Probit_30</title>
+<path fill="none" stroke="black" d="M443.41,-457.15C427.4,-432.08 395.39,-381.96 376.74,-352.75"></path>
+</g>
+<!-- x_27:nothing&#45;&#45;SoftDot_33 -->
+<g id="edge29" class="edge">
+<title>x_27:nothing--SoftDot_33</title>
+<path fill="none" stroke="black" d="M466.6,-460.39C477.22,-450.94 492.37,-437.46 505.47,-425.81"></path>
+</g>
+<!-- obs_29:nothing -->
+<g id="node29" class="node">
+<title>obs_29:nothing</title>
+<ellipse fill="none" stroke="black" cx="315.18" cy="-67.42" rx="22.32" ry="22.32"></ellipse>
+<text text-anchor="start" x="305.18" y="-65.32" font-family="Times New Roman,serif" font-size="12.00">obs</text>
+<text text-anchor="start" x="322.18" y="-65.32" font-family="Times New Roman,serif" baseline-shift="sub" font-size="6.00">1</text>
+</g>
+<!-- obs_29:nothing&#45;&#45;Probit_30 -->
+<g id="edge30" class="edge">
+<title>obs_29:nothing--Probit_30</title>
+<path fill="none" stroke="black" d="M319.12,-89.37C327.95,-138.59 349.26,-257.35 358.24,-307.37"></path>
+</g>
+<!-- temp_31:nothing -->
+<g id="node31" class="node">
+<title>temp_31:nothing</title>
+<ellipse fill="none" stroke="black" cx="447.43" cy="-243.44" rx="26.44" ry="26.44"></ellipse>
+<text text-anchor="start" x="433.93" y="-241.34" font-family="Times New Roman,serif" font-size="12.00">temp</text>
+<text text-anchor="start" x="457.93" y="-241.34" font-family="Times New Roman,serif" baseline-shift="sub" font-size="6.00">1</text>
+</g>
+<!-- temp_31:nothing&#45;&#45;SoftDot_33 -->
+<g id="edge31" class="edge">
+<title>temp_31:nothing--SoftDot_33</title>
+<path fill="none" stroke="black" d="M459.99,-266.8C475.43,-295.52 501.6,-344.19 517.93,-374.56"></path>
+</g>
+<!-- Probit_35 -->
+<g id="node35" class="node">
+<title>Probit_35</title>
+<polygon fill="lightgray" stroke="black" points="619.14,-207.4 574.14,-207.4 574.14,-162.4 619.14,-162.4 619.14,-207.4"></polygon>
+<text text-anchor="middle" x="596.64" y="-181.8" font-family="Times New Roman,serif" font-size="12.00">Probit</text>
+</g>
+<!-- temp_31:nothing&#45;&#45;Probit_35 -->
+<g id="edge32" class="edge">
+<title>temp_31:nothing--Probit_35</title>
+<path fill="none" stroke="black" d="M472.4,-233.65C500.78,-222.51 546.68,-204.5 574.03,-193.77"></path>
+</g>
+<!-- constvar_32:1.0 -->
+<g id="node32" class="node">
+<title>constvar_32:1.0</title>
+<ellipse fill="none" stroke="black" cx="655.42" cy="-321.68" rx="19.9" ry="19.9"></ellipse>
+<text text-anchor="middle" x="655.42" y="-318.58" font-family="Times New Roman,serif" font-size="12.00">1.0</text>
+</g>
+<!-- constvar_32:1.0&#45;&#45;SoftDot_33 -->
+<g id="edge33" class="edge">
+<title>constvar_32:1.0--SoftDot_33</title>
+<path fill="none" stroke="black" d="M638.85,-332.47C618.54,-345.7 583.85,-368.3 559.64,-384.07"></path>
+</g>
+<!-- resp_34:nothing -->
+<g id="node34" class="node">
+<title>resp_34:nothing</title>
+<ellipse fill="none" stroke="black" cx="546.88" cy="-24.01" rx="24.02" ry="24.02"></ellipse>
+<text text-anchor="start" x="535.38" y="-21.91" font-family="Times New Roman,serif" font-size="12.00">resp</text>
+<text text-anchor="start" x="555.38" y="-21.91" font-family="Times New Roman,serif" baseline-shift="sub" font-size="6.00">1</text>
+</g>
+<!-- resp_34:nothing&#45;&#45;Probit_35 -->
+<g id="edge34" class="edge">
+<title>resp_34:nothing--Probit_35</title>
+<path fill="none" stroke="black" d="M554.01,-47.06C563.5,-77.73 580.16,-131.63 589.6,-162.15"></path>
+</g>
+</g>
+</svg>

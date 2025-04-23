@@ -50,12 +50,12 @@ hyperparameters = {
     "prior_omega_variance" : .01, # used to be .01
     "prior_beta_shape" : 1.0,
     "prior_beta_rate" : 1.0,
-    "prior_z_mean" : 0.0,
-    "prior_z_variance" : 1.0,
-    "prior_x_mean" : 0.0,
-    "prior_x_variance" : 1.0,
+    "prior_z_prev_mean" : 0.0,
+    "prior_z_prev_variance" : 1.0,
+    "prior_x_prev_mean" : 0.0,
+    "prior_x_prev_variance" : 1.0,
     "initial_z_mean" : 0.0,
-    "initial_z_variance" : 10.0,
+    "initial_z_variance" : 1.0,
     "initial_kappa_mean" : 1.0,
     "initial_kappa_variance" : 0.1,
     "initial_omega_mean" : 0.0,
@@ -79,7 +79,7 @@ hyperparam_str = ",".join(f"{key}={value}" for key, value in hyperparameters.ite
 print(f"Hyperparams String: {hyperparam_str}")  # Debugging
 
 # Fit each subjects' data
-for subject in subjects:
+for subject in subjects[4:5]:
     # if subject != "62bf234d622ba94e5dfdb997" and subject != "5ac53209fa3b4e0001736f22"   and subject != "5afa19a4f856320001cf920f": 
     #     continue
     jobname = f'{batch_run_id}-RxInfer-{subject}'

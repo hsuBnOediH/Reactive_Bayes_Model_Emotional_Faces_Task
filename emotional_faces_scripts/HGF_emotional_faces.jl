@@ -31,10 +31,10 @@ if get(ENV, "CLUSTER", "false") == "true"
     prior_omega_variance = get(hyperparam_dict, "prior_omega_variance", "NOT SET")
     prior_beta_shape = get(hyperparam_dict, "prior_beta_shape", "NOT SET")
     prior_beta_rate = get(hyperparam_dict, "prior_beta_rate", "NOT SET")
-    prior_z_mean = get(hyperparam_dict, "prior_z_mean", "NOT SET")
-    prior_z_variance = get(hyperparam_dict, "prior_z_variance", "NOT SET")
-    prior_x_mean = get(hyperparam_dict, "prior_x_mean", "NOT SET")
-    prior_x_variance = get(hyperparam_dict, "prior_x_variance", "NOT SET")
+    prior_z_prev_mean = get(hyperparam_dict, "prior_z_prev_mean", "NOT SET")
+    prior_z_prev_variance = get(hyperparam_dict, "prior_z_prev_variance", "NOT SET")
+    prior_x_prev_mean = get(hyperparam_dict, "prior_x_prev_mean", "NOT SET")
+    prior_x_prev_variance = get(hyperparam_dict, "prior_x_prev_variance", "NOT SET")
     initial_z_mean = get(hyperparam_dict, "initial_z_mean", "NOT SET")
     initial_z_variance = get(hyperparam_dict, "initial_z_variance", "NOT SET")
     initial_kappa_mean = get(hyperparam_dict, "initial_kappa_mean", "NOT SET")
@@ -49,7 +49,7 @@ else
     println("Running locally...")
     Pkg.activate("L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/"); # Note that the Project and Manifest files are in the same directory as this script.
     # Click Julia: Activate this Environment to run the REPL
-    subject_id = "62bf234d622ba94e5dfdb997"
+    subject_id = "5a5ec79cacc75b00017aa095"
     predictions_or_responses = "responses" # Haven't set up infrastructure to fit predictions
     results_dir = "L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/model_output_prolific/hgf_RxInfer_test"
     root = "L:/"
@@ -63,12 +63,12 @@ else
     prior_omega_variance = .01 # used to be .01
     prior_beta_shape = 1.0
     prior_beta_rate = 1.0
-    prior_z_mean = 0.0
-    prior_z_variance = 1.0
-    prior_x_mean = 0.0
-    prior_x_variance = 1.0
+    prior_z_prev_mean = 0.0
+    prior_z_prev_variance = 1.0
+    prior_x_prev_mean = 0.0
+    prior_x_prev_variance = 1.0
     initial_z_mean = 0.0
-    initial_z_variance = 10.0
+    initial_z_variance = 1.0
     initial_kappa_mean = 1.0
     initial_kappa_variance = 0.1
     initial_omega_mean = 0.0
@@ -87,6 +87,8 @@ using Plots, StatsPlots
 using StableRNGs
 using CSV, DataFrames
 
+# Import file containing callbacks functions and tagged logger
+include(root * "rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/callbacks.jl")
 
 # Seed for reproducibility
 seed = 23
@@ -101,6 +103,11 @@ obs_data = Float64.(obs_data)
 # Create variable for responses
 resp_data = data.response
 resp_data = Float64.(resp_data)
+
+# For debugging, let's just use two observations and responses
+resp_data = resp_data[1:2]
+obs_data = obs_data[1:2]
+
 # Count the number of missing responses
 nan_responses = count(isnan, resp_data)
 println("Number of NaN Responses: ", nan_responses)
@@ -128,29 +135,33 @@ end
 
 
 # todo: esitmate variance on top level (z_variance). could potentially fix the middle mean to .5; 
-@model function hgf_smoothing(obs, resp, z_variance)
+@model function hgf_smoothing(obs, resp)
     # Initial states - adjust means to be closer to data range
-    z_prev ~ Normal(mean = prior_z_mean, variance = prior_z_variance)  # Reduced variance
-    x_prev ~ Normal(mean = prior_x_mean, variance = prior_x_variance)  # Reduced variance
- 
+    # z_variance ~ Gamma(shape = 1.0, rate = 1.0)  # Reduced variance
+    z_initial ~ Normal(mean = prior_z_prev_mean, variance = prior_z_prev_variance)  where { pipeline = TaggedLogger("z_initial") }# Reduced variance
+    x_initial ~ Normal(mean = prior_x_prev_mean, variance = prior_x_prev_variance)  where { pipeline = TaggedLogger("x_initial") }# Reduced variance
+    
+    x_prev = x_initial 
+    z_prev = z_initial 
+
     # Priors on κ and ω - maybe adjust these
-    κ ~ Normal(mean = prior_kappa_mean, variance = prior_kappa_variance)  # Reduced variance and mean
-    ω ~ Normal(mean = prior_omega_mean, variance = prior_omega_variance)  # Reduced variance
-    β ~ Gamma(shape = prior_beta_shape, rate = prior_beta_rate)  # Less constrained
+    κ ~ Normal(mean = prior_kappa_mean, variance = prior_kappa_variance)  where { pipeline = TaggedLogger("κ") }# Reduced variance and mean
+    ω ~ Normal(mean = prior_omega_mean, variance = prior_omega_variance)  where { pipeline = TaggedLogger("ω") }# Reduced variance
+    β ~ Gamma(shape = prior_beta_shape, rate = prior_beta_rate)  where { pipeline = TaggedLogger("β") } # Less constrained
 
     for i in eachindex(obs)
         # Higher layer update (Gaussian random walk)
-        z[i] ~ Normal(mean = z_prev, variance = z_variance)
+        z[i] ~ Normal(mean = z_prev, variance = 1)  where { pipeline = TaggedLogger("z[$(i)]") }
  
         # Lower layer update
-        x[i] ~ GCV(x_prev, z[i], κ, ω)
+        x[i] ~ GCV(x_prev, z[i], κ, ω) where { pipeline = TaggedLogger("x[$(i)]") }
 
         # Noisy binary observations (Bernoulli likelihood)
-        obs[i] ~ Probit(x[i])
+        obs[i] ~ Probit(x[i]) where { pipeline = TaggedLogger("obs[$(i)]") }
  
         # Noisy binary response (Bernoulli likelihood)
-        temp[i] ~ softdot(β, x[i], 1.0)
-        resp[i] ~ Probit(temp[i])
+        temp[i] ~ softdot(β, x[i], 1.0) where { pipeline = TaggedLogger("temp[$(i)]") }
+        resp[i] ~ Probit(temp[i]) where { pipeline = TaggedLogger("resp[$(i)]") }
 
         # Update previous states
         z_prev = z[i]
@@ -158,11 +169,19 @@ end
     end 
  end
 
+ # Visualize model
+ model_generator = hgf_smoothing() | (obs = [1], resp = [1],)
+ model_to_plot   = RxInfer.getmodel(RxInfer.create_model(model_generator))
+ using GraphViz
+ # Call `load` function from `GraphViz` to visualise the structure of the graph
+ GraphViz.load(model_to_plot, strategy = :simple)
  
 @constraints function hgfconstraints_smoothing() 
     #Structured mean-field factorization constraints
-    q(x_prev, x, temp, z, κ, ω, β) = q(x_prev, x, temp)q(z)q(κ)q(ω)q(β)
+    #q(x, temp, z, κ, ω, β, x_initial,z_variance) = q(x, temp, x_initial)q(z,z_variance)q(κ)q(ω)q(β)
+    q(x, temp, z, κ, ω, β, x_initial) = q(x, temp, x_initial)q(z)q(κ)q(ω)q(β)
     q(β) :: ProjectedTo(Gamma)
+   # q(z_variance) :: ProjectedTo(Gamma)    
 end
 
 import ReactiveMP: as_companion_matrix, ar_transition, getvform, getorder, add_transition!
@@ -177,63 +196,24 @@ end
 
 
 
-function before_model_creation()
-    println("The model is about to be created")
-end
-
-function after_model_creation(model::ProbabilisticModel)
-    println("The model has been created")
-    println("  The number of factor nodes is: ", length(RxInfer.getfactornodes(model)))
-    println("  The number of latent states is: ", length(RxInfer.getrandomvars(model)))
-    println("  The number of data points is: ", length(RxInfer.getdatavars(model)))
-    println("  The number of constants is: ", length(RxInfer.getconstantvars(model)))
-end
-
-function before_inference(model::ProbabilisticModel)
-    println("The inference procedure is about to start")
-end
-
-function after_inference(model::ProbabilisticModel)
-    println("The inference procedure has ended")
-end
-
-function before_iteration(model::ProbabilisticModel, iteration::Int)
-    println("The iteration ", iteration, " is about to start")
-end
-
-function after_iteration(model::ProbabilisticModel, iteration::Int)
-    println("The iteration ", iteration, " has ended")
-end
-
-function before_data_update(model::ProbabilisticModel, data)
-    println("The data is about to be processed")
-end
-
-function after_data_update(model::ProbabilisticModel, data)
-    println("The data has been processed")
-end
-
-function on_marginal_update(model::ProbabilisticModel, name, update)
-    # Check if the name is :x or :ω (Symbols)
-    if name == :κ || name == :ω
-        println("New marginal update for ", name, ": ", update)
-    end
-end
-
-
-
-
-
-function run_inference_smoothing(obs, resp, z_variance, niterations)
+function run_inference_smoothing(obs, resp, niterations)
     @initialization function hgf_init_smoothing()
-        q(z) = NormalMeanVariance(initial_z_mean, initial_z_variance)
-        q(κ) = NormalMeanVariance(initial_kappa_mean, initial_kappa_variance)
-        q(ω) = NormalMeanVariance(initial_omega_mean, initial_omega_variance)
-        q(β) = GammaShapeRate(initial_beta_shape, initial_beta_rate)
+        # μ(z) = NormalMeanVariance(initial_z_mean, initial_z_variance)
+        q(z) = NormalMeanVariance(initial_z_mean, .02)
+        q(κ) = NormalMeanVariance(initial_kappa_mean, .03)
+        q(ω) = NormalMeanVariance(initial_omega_mean, .04)
+        q(β) = GammaShapeRate(initial_beta_shape, .05)
+        # q(z_variance) = GammaShapeRate(1, 1)
+        # μ(z) = map(_ -> NormalMeanPrecision(0, 1), 1:200) # create a vector of 200 Normal distributions
+        # μ(x) = map(_ -> NormalMeanPrecision(0, 1), 1:200) # create a vector of 200 Normal distributions
+        # μ(z) = NormalMeanPrecision(0, 1)
+        # μ(x) =NormalMeanPrecision(0, 1)
+        
+        #q(z_prev) = NormalMeanVariance(initial_z_mean, initial_z_variance)
     end
 
     return infer(
-        model = hgf_smoothing(z_variance=z_variance,),  # Reduced z_variance
+        model = hgf_smoothing(),  # Reduced z_variance
         data = (obs = obs, resp = UnfactorizedData(resp),),
         meta = hgfmeta_smoothing(),
         constraints = hgfconstraints_smoothing(),
@@ -255,10 +235,28 @@ function run_inference_smoothing(obs, resp, z_variance, niterations)
             after_data_update = after_data_update,
             on_marginal_update = on_marginal_update
         ),
+        addons = (AddonMemory(),), # uncomment this to get a more detailed description of the message computation
     )
 end
 
-infer_result = run_inference_smoothing(obs_data, resp_data, 1.0, niterations)
+
+
+# For ease of debugging, output to a file instead of the console
+if get(ENV, "CLUSTER", "false") == "true"
+    infer_result = run_inference_smoothing(obs_data, resp_data, niterations)
+else
+    # Open a log file with w, meaning it gets overwritten each time
+    logfile = open(results_dir*"/inference.log", "w")
+    # send all subsequent prints/errors into logfile…
+    redirect_stdout(logfile) do
+    redirect_stderr(logfile) do
+        infer_result = run_inference_smoothing(obs_data, resp_data, niterations)
+        # you can still use infer_result here if you like…
+    end
+    end
+    close(logfile)
+end
+
 
 # If free energy was computed, find the last iteration where free energy was neither NaN or infinity
 if compute_bethe_free_energy
@@ -270,11 +268,18 @@ end
 
 # Extract posteriors
 x_posterior = infer_result.posteriors[:x][niterations_used]
+x_posterior = getfield.(x_posterior, :data) # added this line because of addons
 z_posterior = infer_result.posteriors[:z][niterations_used]
+z_posterior = getfield.(z_posterior, :data) # added this line because of addons
 κ_posterior = infer_result.posteriors[:κ][niterations_used]
+κ_posterior = getfield(κ_posterior, :data) # added this line because of addons
 ω_posterior = infer_result.posteriors[:ω][niterations_used]
+ω_posterior = getfield(ω_posterior, :data) # added this line because of addons
 β_posterior = infer_result.posteriors[:β][niterations_used]
+β_posterior = getfield(β_posterior, :data) # added this line because of addons
 temp_posterior = infer_result.posteriors[:temp][niterations_used]
+temp_posterior = getfield.(temp_posterior, :data) # added this line because of addons
+
 # Print mean and standard deviation of parameters
 println("Parameter Estimates:")
 println("κ: mean = $(mean(κ_posterior)), std = $(std(κ_posterior))")
@@ -359,10 +364,10 @@ results_df = DataFrame(
     prior_omega_variance = prior_omega_variance,
     prior_beta_shape = prior_beta_shape,
     prior_beta_rate = prior_beta_rate,
-    prior_z_mean = prior_z_mean,
-    prior_z_variance = prior_z_variance,
-    prior_x_mean = prior_x_mean,
-    prior_x_variance = prior_x_variance,
+    prior_z_prev_mean = prior_z_prev_mean,
+    prior_z_prev_variance = prior_z_prev_variance,
+    prior_x_prev_mean = prior_x_prev_mean,
+    prior_x_prev_variance = prior_x_prev_variance,
     initial_z_mean = initial_z_mean,
     initial_z_variance = initial_z_variance,
     initial_kappa_mean = initial_kappa_mean,
