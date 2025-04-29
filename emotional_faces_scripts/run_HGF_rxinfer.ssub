@@ -58,7 +58,7 @@ export HYPERPARAM_STR
 JULIA_PATH=$HOME/julia-1.11.3/bin/julia
 
 # Path to your Julia script
-JULIA_SCRIPT="/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/HGF_emotional_faces.jl"
+JULIA_SCRIPT="/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/HGF_emotional_faces_smoothing.jl"
 
 # Ensure cleanup on exit
 cleanup() {

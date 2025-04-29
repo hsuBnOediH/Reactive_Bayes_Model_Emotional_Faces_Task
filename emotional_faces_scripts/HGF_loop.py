@@ -72,7 +72,8 @@ for key, value in hyperparameters.items():
 run["source_code/files"].upload_files([
     "/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/HGF_loop.py",
     "/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/run_HGF_rxinfer.ssub",
-    "/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/HGF_emotional_faces.jl"
+    "/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/HGF_emotional_faces_smoothing.jl",
+    "/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/HGF_emotional_faces_filtering.jl"
 ])
 # Create hyperaparameter string to pass into bash
 hyperparam_str = ",".join(f"{key}={value}" for key, value in hyperparameters.items())

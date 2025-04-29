@@ -62,6 +62,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
         using Dates
         now_time = now()
         formatted_time = "_" * Dates.format(now_time, "yyyy-mm-ddTHH_MM_SS")
+
         prior_kappa_mean = 1.0
         prior_kappa_variance = 0.1
         prior_omega_mean = 0.0
@@ -81,6 +82,9 @@ if abspath(PROGRAM_FILE) == @__FILE__
         initial_beta_shape = 0.1
         initial_beta_rate = 0.1
         niterations = 20
+
+        posterior_beta_shape = 1.555
+        posterior_beta_rate =1.555
     end
     Pkg.instantiate()  # Reinstall missing dependencies
 
@@ -143,6 +147,7 @@ end
 
 
 
+
 # todo: esitmate variance on top level (z_variance). could potentially fix the middle mean to .5; 
 @model function hgf_filtering(obs, resp, prior_z_prev_mean, prior_z_prev_variance, prior_x_prev_mean, prior_x_prev_variance, prior_kappa_mean, prior_kappa_variance, prior_omega_mean, prior_omega_variance, prior_beta_shape, prior_beta_rate)
     # Initial states - adjust means to be closer to data range
@@ -190,10 +195,10 @@ end
 autoupdates = @autoupdates begin 
     prior_z_prev_mean, prior_z_prev_variance = mean_var(q(z))
     prior_x_prev_mean, prior_x_prev_variance = mean_var(q(x))
-    prior_kappa_mean, prior_kappa_variance = mean_var(q(κ)) 
-    prior_omega_mean, prior_omega_variance = mean_var(q(ω))
-    prior_beta_shape = shape(q(β))
-    prior_beta_rate = rate(q(β))
+    # prior_kappa_mean, prior_kappa_variance = mean_var(q(κ)) 
+    # prior_omega_mean, prior_omega_variance = mean_var(q(ω))
+    # prior_beta_shape = shape(q(β))
+    # prior_beta_rate = rate(q(β))
 end
 
 import ReactiveMP: as_companion_matrix, ar_transition, getvform, getorder, add_transition!
@@ -218,7 +223,7 @@ function run_inference_filtering(obs, resp, niterations)
     end
 
     return infer(
-        model = hgf_filtering(),  # Reduced z_variance
+        model = hgf_filtering(prior_kappa_mean=1,prior_kappa_variance=1,prior_omega_mean=1,prior_omega_variance=1,prior_beta_shape=1,prior_beta_rate=1,),  # Reduced z_variance
         data = (obs = obs, resp = resp,),
         meta = hgfmeta_filtering(),
         constraints = hgfconstraints_filtering(),
@@ -243,7 +248,7 @@ function run_inference_filtering(obs, resp, niterations)
         ),
         autoupdates = autoupdates,
         addons = (AddonMemory(),), # uncomment this to get a more detailed description of the message computation
-        autostart = true,
+        autostart = true, # might want this to be false?
     )
 end
 
@@ -264,124 +269,3 @@ else
     end
     close(logfile)
 end
-
-
-# If free energy was computed, find the last iteration where free energy was neither NaN or infinity
-if compute_bethe_free_energy
-    free_energy_vals = infer_result.free_energy
-    niterations_used = findlast(isfinite, free_energy_vals) # checks for not NaN or inf
-else
-    niterations_used = niterations
-end
-
-# Extract posteriors
-x_posterior = infer_result.posteriors[:x][niterations_used]
-z_posterior = infer_result.posteriors[:z][niterations_used]
-κ_posterior = infer_result.posteriors[:κ][niterations_used]
-ω_posterior = infer_result.posteriors[:ω][niterations_used]
-β_posterior = infer_result.posteriors[:β][niterations_used]
-temp_posterior = infer_result.posteriors[:temp][niterations_used]
-# Print mean and standard deviation of parameters
-println("Parameter Estimates:")
-println("κ: mean = $(mean(κ_posterior)), std = $(std(κ_posterior))")
-println("ω: mean = $(mean(ω_posterior)), std = $(std(ω_posterior))")
-println("β: mean = $(mean(β_posterior)), std = $(std(β_posterior))")
-
-# Plot the hidden states x and z
-p1 = plot(mean.(x_posterior), ribbon=2*std.(x_posterior), 
-    label="x (Lower layer)", title="Hidden States", 
-    fillalpha=0.3)
-plot!(p1, mean.(z_posterior), ribbon=2*std.(z_posterior), 
-    label="z (Higher layer)", fillalpha=0.3)
-scatter!(p1, 1:length(obs_data), obs_data, label="Observations", 
-    markersize=4)
-scatter!(p1, 1:length(resp_data), resp_data, label="Responses", 
-    markersize=4)
-
-# Plot parameter posteriors
-p2 = plot(
-    histogram(rand(κ_posterior, 1000), title="κ", label=""),
-    histogram(rand(ω_posterior, 1000), title="ω", label=""),
-    histogram(rand(β_posterior, 1000), title="β", label=""),
-    layout=(1,3)
-)
-
-plot(p1, p2, layout=(2,1), size=(800,600))
-savefig(joinpath(results_dir, "hidden_states_and_parameters_" * subject_id * formatted_time * ".png"))
-
-
-## Investigate Accuracy of the Model
-# Extract free energy values when they were recorded
-if compute_bethe_free_energy
-    free_energy_vals = infer_result.free_energy
-    println("Free Energy values: ", free_energy_vals)
-
-    # Plot Free Energy to check convergence
-    plot(free_energy_vals, title="Free Energy over Iterations", xlabel="Iteration", ylabel="Free Energy", label="")
-    savefig(joinpath(results_dir, "free_energy_" * subject_id * formatted_time * ".png"))
-
-end
-
-# Get the probability assigned to each response, accounting for missing responses
-# Filter out Uninformative() values and NaN responses in a single step
-filtered_data = [(t, resp) for (t, resp) in zip(temp_posterior, resp_data) if !(t isa Uninformative) && !ismissing(resp)]
-# Extract valid temp_posterior and resp_data values
-filtered_temp_posterior, filtered_resp_data = first.(filtered_data), last.(filtered_data)
-# Compute probabilities
-probit_prob = [cdf(Normal(0,1), t.xi / t.w) for t in filtered_temp_posterior]
-# Compute action probabilities
-action_probability_values = [resp == 1 ? p : 1 - p for (resp, p) in zip(filtered_resp_data, probit_prob)]
-# Mean action probability
-mean_action_prob = mean(action_probability_values)
-println("Mean action probability: ", mean_action_prob)
-# Compute mean model accuracy, the proportion of choices that the model assigned a probability greater than .5
-mean_model_accuracy = mean(action_probability_values .> 0.5)
-
-# Get the free energy value if it was computed, otherwise leave NaN
-if compute_bethe_free_energy
-    bethe_free_energy = [free_energy_vals[niterations_used]]
-else
-    bethe_free_energy = NaN
-end
-
-## save results
-results_df = DataFrame(
-    id = subject_id,
-    number_missing_responses = nan_responses,
-    num_iterations = niterations,
-    num_iterations_used = niterations_used,
-    mean_action_prob = mean(action_probability_values),
-    mean_model_accuracy = mean_model_accuracy,
-    free_energy = bethe_free_energy,
-    kappa_mean = mean(κ_posterior),
-    kappa_std = std(κ_posterior),
-    omega_mean = mean(ω_posterior),
-    omega_std = std(ω_posterior),
-    beta_mean = mean(β_posterior),
-    beta_std = std(β_posterior),
-    prior_kappa_mean = prior_kappa_mean,
-    prior_kappa_variance = prior_kappa_variance,
-    prior_omega_mean = prior_omega_mean,
-    prior_omega_variance = prior_omega_variance,
-    prior_beta_shape = prior_beta_shape,
-    prior_beta_rate = prior_beta_rate,
-    prior_z_prev_mean = prior_z_prev_mean,
-    prior_z_prev_variance = prior_z_prev_variance,
-    prior_x_prev_mean = prior_x_prev_mean,
-    prior_x_prev_variance = prior_x_prev_variance,
-    initial_z_mean = initial_z_mean,
-    initial_z_variance = initial_z_variance,
-    initial_kappa_mean = initial_kappa_mean,
-    initial_kappa_variance = initial_kappa_variance,
-    initial_omega_mean = initial_omega_mean,
-    initial_omega_variance = initial_omega_variance,
-    initial_beta_shape = initial_beta_shape,
-    initial_beta_rate = initial_beta_rate,
-    niterations = niterations,
-)
-
-
-
-# Save the results as a CSV 
-output_file = joinpath(results_dir, "model_results_" * subject_id * formatted_time * ".csv")
-CSV.write(output_file, results_df)

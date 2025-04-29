@@ -246,7 +246,7 @@ if get(ENV, "CLUSTER", "false") == "true"
     infer_result = run_inference_smoothing(obs_data, resp_data, niterations)
 else
     # Open a log file with w, meaning it gets overwritten each time
-    logfile = open(results_dir*"/inference.log", "w")
+    logfile = open(results_dir*"/inference_smoothing.log", "w")
     # send all subsequent prints/errors into logfile…
     redirect_stdout(logfile) do
     redirect_stderr(logfile) do
@@ -384,3 +384,5 @@ results_df = DataFrame(
 # Save the results as a CSV 
 output_file = joinpath(results_dir, "model_results_" * subject_id * formatted_time * ".csv")
 CSV.write(output_file, results_df)
+
+# Call the filtering function using the posterior parameter values
