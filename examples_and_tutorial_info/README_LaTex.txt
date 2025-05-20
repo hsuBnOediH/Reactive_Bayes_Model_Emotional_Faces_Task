@@ -1,0 +1,1 @@
+After downloading MiKTeX, open TeXworks to create a diagram of the fourney style factor graph

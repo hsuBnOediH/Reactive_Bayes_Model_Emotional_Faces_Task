@@ -170,9 +170,9 @@ function run_inference_filtering(obs, resp, niterations)
     @initialization function hgf_init_filtering()
         q(x) = NormalMeanVariance(x_mean_mu, x_mean_sigma)
         q(z) = NormalMeanVariance(z_mean_mu, z_mean_sigma)
-        q(κ) = NormalMeanVariance(0, .03)
-        q(ω) = NormalMeanVariance(0, .04)
-        q(β) = GammaShapeRate(.05, .05) # i have a feeling these won't matter too much; will want to be consistent with smoothing
+        q(κ) = NormalMeanVariance(kappa_mu, kappa_sigma)
+        q(ω) = NormalMeanVariance(omega_mu, omega_sigma)
+        q(β) = GammaShapeRate(beta_shape, beta_rate) # i have a feeling these won't matter too much; will want to be consistent with smoothing
     end
 
     return infer(
@@ -292,5 +292,5 @@ for (param_name, marginals_list) in all_marginals
     end
 end
 
-df = DataFrame(rows)
+marginal_posteriors = DataFrame(rows)
 
