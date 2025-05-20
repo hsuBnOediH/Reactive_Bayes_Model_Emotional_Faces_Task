@@ -25,24 +25,25 @@ if get(ENV, "CLUSTER", "false") == "true"
         pair[1] => parse(Float64, pair[2]) for pair in 
         (split(kv, "=") for kv in split(hyperparam_str, ","))
     )
+    # Assign prior parameter values and initialize the marginal posteriors for some parameters
     prior_kappa_mean = get(hyperparam_dict, "prior_kappa_mean", "NOT SET")
     prior_kappa_variance = get(hyperparam_dict, "prior_kappa_variance", "NOT SET")
     prior_omega_mean = get(hyperparam_dict, "prior_omega_mean", "NOT SET")
     prior_omega_variance = get(hyperparam_dict, "prior_omega_variance", "NOT SET")
     prior_beta_shape = get(hyperparam_dict, "prior_beta_shape", "NOT SET")
     prior_beta_rate = get(hyperparam_dict, "prior_beta_rate", "NOT SET")
-    prior_z_prev_mean = get(hyperparam_dict, "prior_z_prev_mean", "NOT SET")
-    prior_z_prev_variance = get(hyperparam_dict, "prior_z_prev_variance", "NOT SET")
-    prior_x_prev_mean = get(hyperparam_dict, "prior_x_prev_mean", "NOT SET")
-    prior_x_prev_variance = get(hyperparam_dict, "prior_x_prev_variance", "NOT SET")
-    initial_z_mean = get(hyperparam_dict, "initial_z_mean", "NOT SET")
-    initial_z_variance = get(hyperparam_dict, "initial_z_variance", "NOT SET")
-    initial_kappa_mean = get(hyperparam_dict, "initial_kappa_mean", "NOT SET")
-    initial_kappa_variance = get(hyperparam_dict, "initial_kappa_variance", "NOT SET")
-    initial_omega_mean = get(hyperparam_dict, "initial_omega_mean", "NOT SET")
-    initial_omega_variance = get(hyperparam_dict, "initial_omega_variance", "NOT SET")
-    initial_beta_shape = get(hyperparam_dict, "initial_beta_shape", "NOT SET")
-    initial_beta_rate = get(hyperparam_dict, "initial_beta_rate", "NOT SET")
+    prior_z_initial_mean = get(hyperparam_dict, "prior_z_initial_mean", "NOT SET")
+    prior_z_initial_variance = get(hyperparam_dict, "prior_z_initial_variance", "NOT SET")
+    prior_x_initial_mean = get(hyperparam_dict, "prior_x_initial_mean", "NOT SET")
+    prior_x_initial_variance = get(hyperparam_dict, "prior_x_initial_variance", "NOT SET")
+    initialized_z_mean = get(hyperparam_dict, "initialized_z_mean", "NOT SET")
+    initialized_z_variance = get(hyperparam_dict, "initialized_z_variance", "NOT SET")
+    initialized_kappa_mean = get(hyperparam_dict, "initialized_kappa_mean", "NOT SET")
+    initialized_kappa_variance = get(hyperparam_dict, "initialized_kappa_variance", "NOT SET")
+    initialized_omega_mean = get(hyperparam_dict, "initialized_omega_mean", "NOT SET")
+    initialized_omega_variance = get(hyperparam_dict, "initialized_omega_variance", "NOT SET")
+    initialized_beta_shape = get(hyperparam_dict, "initialized_beta_shape", "NOT SET")
+    initialized_beta_rate = get(hyperparam_dict, "initialized_beta_rate", "NOT SET")
     niterations = get(hyperparam_dict, "niterations", "NOT SET")
     niterations = Int(niterations) # cast as an integer
 else
@@ -57,24 +58,25 @@ else
     using Dates
     now_time = now()
     formatted_time = "_" * Dates.format(now_time, "yyyy-mm-ddTHH_MM_SS")
+    # Assign prior parameter values and initialize the marginal posteriors for some parameters
     prior_kappa_mean = 1.0
     prior_kappa_variance = 0.1
     prior_omega_mean = 0.0
     prior_omega_variance = .01 # used to be .01
     prior_beta_shape = 1.0
     prior_beta_rate = 1.0
-    prior_z_prev_mean = 0.0
-    prior_z_prev_variance = 1.0
-    prior_x_prev_mean = 0.0
-    prior_x_prev_variance = 1.0
-    initial_z_mean = 0.0
-    initial_z_variance = 1.0
-    initial_kappa_mean = 1.0
-    initial_kappa_variance = 0.1
-    initial_omega_mean = 0.0
-    initial_omega_variance = 0.01
-    initial_beta_shape = 0.1
-    initial_beta_rate = 0.1
+    prior_z_initial_mean = 0.0
+    prior_z_initial_variance = 1.0
+    prior_x_initial_mean = 0.0
+    prior_x_initial_variance = 1.0
+    initialized_z_mean = 0.0
+    initialized_z_variance = 1.0
+    initialized_kappa_mean = 1.0
+    initialized_kappa_variance = 0.1
+    initialized_omega_mean = 0.0
+    initialized_omega_variance = 0.01
+    initialized_beta_shape = 0.1
+    initialized_beta_rate = 0.1
     niterations = 20
 end
 Pkg.instantiate()  # Reinstall missing dependencies
@@ -138,8 +140,8 @@ end
 @model function hgf_smoothing(obs, resp)
     # Initial states - adjust means to be closer to data range
     # z_variance ~ Gamma(shape = 1.0, rate = 1.0)  # Reduced variance
-    z_initial ~ Normal(mean = prior_z_prev_mean, variance = prior_z_prev_variance)  where { pipeline = TaggedLogger("z_initial") }# Reduced variance
-    x_initial ~ Normal(mean = prior_x_prev_mean, variance = prior_x_prev_variance)  where { pipeline = TaggedLogger("x_initial") }# Reduced variance
+    z_initial ~ Normal(mean = prior_z_initial_mean, variance = prior_z_initial_variance)  where { pipeline = TaggedLogger("z_initial") }# Reduced variance
+    x_initial ~ Normal(mean = prior_x_initial_mean, variance = prior_x_initial_variance)  where { pipeline = TaggedLogger("x_initial") }# Reduced variance
     
     x_prev = x_initial 
     z_prev = z_initial 
@@ -198,18 +200,18 @@ end
 
 function run_inference_smoothing(obs, resp, niterations)
     @initialization function hgf_init_smoothing()
-        # μ(z) = NormalMeanVariance(initial_z_mean, initial_z_variance)
-        q(z) = NormalMeanVariance(initial_z_mean, .02)
-        q(κ) = NormalMeanVariance(initial_kappa_mean, .03)
-        q(ω) = NormalMeanVariance(initial_omega_mean, .04)
-        q(β) = GammaShapeRate(initial_beta_shape, .05)
+        # μ(z) = NormalMeanVariance(initialized_z_mean, initialized_z_variance)
+        q(z) = NormalMeanVariance(initialized_z_mean, initialized_z_variance)
+        q(κ) = NormalMeanVariance(initialized_kappa_mean, initialized_kappa_variance)
+        q(ω) = NormalMeanVariance(initialized_omega_mean, initialized_omega_variance)
+        q(β) = GammaShapeRate(initialized_beta_shape, initialized_beta_rate)
         # q(z_variance) = GammaShapeRate(1, 1)
         # μ(z) = map(_ -> NormalMeanPrecision(0, 1), 1:200) # create a vector of 200 Normal distributions
         # μ(x) = map(_ -> NormalMeanPrecision(0, 1), 1:200) # create a vector of 200 Normal distributions
         # μ(z) = NormalMeanPrecision(0, 1)
         # μ(x) =NormalMeanPrecision(0, 1)
         
-        #q(z_prev) = NormalMeanVariance(initial_z_mean, initial_z_variance)
+        #q(z_prev) = NormalMeanVariance(initialized_z_mean, initialized_z_variance)
     end
 
     return infer(
@@ -220,7 +222,7 @@ function run_inference_smoothing(obs, resp, niterations)
         initialization = hgf_init_smoothing(),
         iterations = niterations,  # More iterations
         options = (limit_stack_depth = 500,),  # Increased stack depth
-        returnvars = (x = KeepEach(), z = KeepEach(), ω=KeepEach(), κ=KeepEach(), β=KeepEach(), temp=KeepEach(),),
+        returnvars = (x = KeepEach(), z = KeepEach(), ω=KeepEach(), κ=KeepEach(), β=KeepEach(), temp=KeepEach(),z_initial=KeepEach(), x_initial=KeepEach(),),
         free_energy = compute_bethe_free_energy,  # Compute Bethe Free Energy when there are no missing values
         free_energy_diagnostics = nothing, # turns off the error for NaN or inf FE
         showprogress = true,
@@ -251,10 +253,12 @@ else
     redirect_stdout(logfile) do
     redirect_stderr(logfile) do
         infer_result = run_inference_smoothing(obs_data, resp_data, niterations)
-        # you can still use infer_result here if you like…
     end
     end
     close(logfile)
+    # also run it here so you have access to the result
+    infer_result = run_inference_smoothing(obs_data, resp_data, niterations)
+
 end
 
 
@@ -267,6 +271,11 @@ else
 end
 
 # Extract posteriors
+x_initial_posterior = infer_result.posteriors[:x_initial][niterations_used]
+x_initial_posterior = getfield(x_initial_posterior, :data) # added this line because of addons
+z_initial_posterior = infer_result.posteriors[:z_initial][niterations_used]
+z_initial_posterior = getfield(z_initial_posterior, :data) # added this line because of addons
+
 x_posterior = infer_result.posteriors[:x][niterations_used]
 x_posterior = getfield.(x_posterior, :data) # added this line because of addons
 z_posterior = infer_result.posteriors[:z][niterations_used]
@@ -284,8 +293,9 @@ temp_posterior = getfield.(temp_posterior, :data) # added this line because of a
 println("Parameter Estimates:")
 println("κ: mean = $(mean(κ_posterior)), std = $(std(κ_posterior))")
 println("ω: mean = $(mean(ω_posterior)), std = $(std(ω_posterior))")
-println("β: mean = $(mean(β_posterior)), std = $(std(β_posterior))")
-
+println("β: shape = $(shape(β_posterior)), scale = $(scale(β_posterior))")
+println("x initial: mean = $(mean(x_initial_posterior)), std = $(std(x_initial_posterior))")
+println("z initial: mean = $(mean(z_initial_posterior)), std = $(std(z_initial_posterior))")
 # Plot the hidden states x and z
 p1 = plot(mean.(x_posterior), ribbon=2*std.(x_posterior), 
     label="x (Lower layer)", title="Hidden States", 
@@ -302,7 +312,9 @@ p2 = plot(
     histogram(rand(κ_posterior, 1000), title="κ", label=""),
     histogram(rand(ω_posterior, 1000), title="ω", label=""),
     histogram(rand(β_posterior, 1000), title="β", label=""),
-    layout=(1,3)
+    histogram(rand(x_initial_posterior, 1000), title="Initial X", label=""),
+    histogram(rand(z_initial_posterior, 1000), title="Initial Z", label=""),
+    layout=(2,3)
 )
 
 plot(p1, p2, layout=(2,1), size=(800,600))
@@ -356,26 +368,30 @@ results_df = DataFrame(
     kappa_std = std(κ_posterior),
     omega_mean = mean(ω_posterior),
     omega_std = std(ω_posterior),
-    beta_mean = mean(β_posterior),
-    beta_std = std(β_posterior),
+    beta_shape = shape(β_posterior), 
+    beta_scale = scale(β_posterior),
+    x_initial_mean = mean(x_initial_posterior),
+    x_initial_std = std(x_initial_posterior),
+    z_initial_mean = mean(z_initial_posterior),
+    z_initial_std = std(z_initial_posterior),
     prior_kappa_mean = prior_kappa_mean,
     prior_kappa_variance = prior_kappa_variance,
     prior_omega_mean = prior_omega_mean,
     prior_omega_variance = prior_omega_variance,
     prior_beta_shape = prior_beta_shape,
     prior_beta_rate = prior_beta_rate,
-    prior_z_prev_mean = prior_z_prev_mean,
-    prior_z_prev_variance = prior_z_prev_variance,
-    prior_x_prev_mean = prior_x_prev_mean,
-    prior_x_prev_variance = prior_x_prev_variance,
-    initial_z_mean = initial_z_mean,
-    initial_z_variance = initial_z_variance,
-    initial_kappa_mean = initial_kappa_mean,
-    initial_kappa_variance = initial_kappa_variance,
-    initial_omega_mean = initial_omega_mean,
-    initial_omega_variance = initial_omega_variance,
-    initial_beta_shape = initial_beta_shape,
-    initial_beta_rate = initial_beta_rate,
+    prior_z_initial_mean = prior_z_initial_mean,
+    prior_z_initial_variance = prior_z_initial_variance,
+    prior_x_initial_mean = prior_x_initial_mean,
+    prior_x_initial_variance = prior_x_initial_variance,
+    initialized_z_mean = initialized_z_mean,
+    initialized_z_variance = initialized_z_variance,
+    initialized_kappa_mean = initialized_kappa_mean,
+    initialized_kappa_variance = initialized_kappa_variance,
+    initialized_omega_mean = initialized_omega_mean,
+    initialized_omega_variance = initialized_omega_variance,
+    initialized_beta_shape = initialized_beta_shape,
+    initialized_beta_rate = initialized_beta_rate,
     niterations = niterations,
 )
 
@@ -386,3 +402,7 @@ output_file = joinpath(results_dir, "model_results_" * subject_id * formatted_ti
 CSV.write(output_file, results_df)
 
 # Call the filtering function using the posterior parameter values
+include(root*"rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/HGF_emotional_faces_filtering.jl")
+
+
+
