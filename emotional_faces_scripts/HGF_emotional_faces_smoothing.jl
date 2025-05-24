@@ -37,7 +37,7 @@ if get(ENV, "CLUSTER", "false") == "true"
     prior_x_initial_mean = get(hyperparam_dict, "prior_x_initial_mean", "NOT SET")
     prior_x_initial_variance = get(hyperparam_dict, "prior_x_initial_variance", "NOT SET")
     initialized_z_mean = get(hyperparam_dict, "initialized_z_mean", "NOT SET")
-    initialized_z_variance = get(hyperparam_dict, "initialized_z_variance", "NOT SET")
+    initialized_z_precision = get(hyperparam_dict, "initialized_z_precision", "NOT SET")
     initialized_kappa_mean = get(hyperparam_dict, "initialized_kappa_mean", "NOT SET")
     initialized_kappa_variance = get(hyperparam_dict, "initialized_kappa_variance", "NOT SET")
     initialized_omega_mean = get(hyperparam_dict, "initialized_omega_mean", "NOT SET")
@@ -59,6 +59,10 @@ else
     now_time = now()
     formatted_time = "_" * Dates.format(now_time, "yyyy-mm-ddTHH_MM_SS")
     # Assign prior parameter values and initialize the marginal posteriors for some parameters
+    prior_z_precision_shape = 1.0
+    prior_z_precision_rate = 1.0
+    initialized_z_precision_shape = 1.0
+    initialized_z_precision_rate = 1.0
     prior_kappa_mean = 1.0
     prior_kappa_variance = 0.1
     prior_omega_mean = 0.0
@@ -70,14 +74,14 @@ else
     prior_x_initial_mean = 0.0
     prior_x_initial_variance = 1.0
     initialized_z_mean = 0.0
-    initialized_z_variance = 1.0
+    initialized_z_precision = 1.0
     initialized_kappa_mean = 1.0
     initialized_kappa_variance = 0.1
     initialized_omega_mean = 0.0
     initialized_omega_variance = 0.01
     initialized_beta_shape = 0.1
     initialized_beta_rate = 0.1
-    niterations = 20
+    niterations = 4
 end
 Pkg.instantiate()  # Reinstall missing dependencies
 
@@ -108,8 +112,8 @@ resp_data = data.response
 resp_data = Float64.(resp_data)
 
 # For debugging, let's just use two observations and responses
-resp_data = resp_data[1:2]
-obs_data = obs_data[1:2]
+# resp_data = resp_data[1:2]
+# obs_data = obs_data[1:2]
 
 # Count the number of missing responses
 nan_responses = count(isnan, resp_data)
@@ -137,10 +141,9 @@ end
 
 
 
-# todo: esitmate variance on top level (z_variance). could potentially fix the middle mean to .5; 
 @model function hgf_smoothing(obs, resp)
     # Initial states - adjust means to be closer to data range
-    z_variance ~ Gamma(shape = 1.0, rate = 1.0) where { pipeline = TaggedLogger("z_variance") }# Reduced variance
+    z_precision ~ Gamma(shape = prior_z_precision_shape, rate = prior_z_precision_rate) where { pipeline = TaggedLogger("z_precision") }# Reduced variance
     z_initial ~ Normal(mean = prior_z_initial_mean, variance = prior_z_initial_variance)  where { pipeline = TaggedLogger("z_initial") }# Reduced variance
     x_initial ~ Normal(mean = prior_x_initial_mean, variance = prior_x_initial_variance)  where { pipeline = TaggedLogger("x_initial") }# Reduced variance
     
@@ -154,7 +157,7 @@ end
 
     for i in eachindex(obs)
         # Higher layer update (Gaussian random walk)
-        z[i] ~ Normal(mean = z_prev, variance = z_variance)  where { pipeline = TaggedLogger("z[$(i)]") }
+        z[i] ~ Normal(mean = z_prev, precision = z_precision)  where { pipeline = TaggedLogger("z[$(i)]") }
  
         # Lower layer update
         x[i] ~ GCV(x_prev, z[i], κ, ω) where { pipeline = TaggedLogger("x[$(i)]") }
@@ -181,10 +184,9 @@ end
  
 @constraints function hgfconstraints_smoothing() 
     #Structured mean-field factorization constraints
-    #q(x, temp, z, κ, ω, β, x_initial,z_variance) = q(x, temp, x_initial)q(z,z_variance)q(κ)q(ω)q(β)
-    q(x, z, temp, κ, ω, β, x_initial,z_variance,z_initial) = q(x, temp, x_initial)q(z_variance)q(z, z_initial)q(κ)q(ω)q(β)
+    q(x, z, temp, κ, ω, β, x_initial,z_precision,z_initial) = q(x, temp, x_initial)q(z_precision)q(z, z_initial)q(κ)q(ω)q(β)
+    #q(x, z, temp, κ, ω, β, x_initial,z_initial) = q(x, temp, x_initial)q(z, z_initial)q(κ)q(ω)q(β)
     q(β) :: ProjectedTo(Gamma)
-    # μ(z_variance) :: ProjectedTo(Gamma)    
 end
 
 import ReactiveMP: as_companion_matrix, ar_transition, getvform, getorder, add_transition!
@@ -201,32 +203,23 @@ end
 
 function run_inference_smoothing(obs, resp, niterations)
     @initialization function hgf_init_smoothing()
-        # μ(z) = NormalMeanVariance(initialized_z_mean, initialized_z_variance)
-        q(z) = NormalMeanVariance(initialized_z_mean, initialized_z_variance)
+        q(z) = NormalMeanPrecision(initialized_z_mean, initialized_z_precision)
         q(κ) = NormalMeanVariance(initialized_kappa_mean, initialized_kappa_variance)
         q(ω) = NormalMeanVariance(initialized_omega_mean, initialized_omega_variance)
         q(β) = GammaShapeRate(initialized_beta_shape, initialized_beta_rate)
-        q(z_variance) = GammaShapeRate(1, 1)
+        q(z_precision) = GammaShapeRate(initialized_z_precision_shape, initialized_z_precision_rate)
         q(z_initial) = vague(NormalMeanVariance)
-        # μ(z) = vague(NormalMeanVariance)
-
-
-        # μ(z) = map(_ -> NormalMeanPrecision(0, 1), 1:200) # create a vector of 200 Normal distributions
-        # μ(x) = map(_ -> NormalMeanPrecision(0, 1), 1:200) # create a vector of 200 Normal distributions
-        # μ(x) =NormalMeanPrecision(0, 1)
-        
-        #q(z_prev) = NormalMeanVariance(initialized_z_mean, initialized_z_variance)
     end
 
     return infer(
-        model = hgf_smoothing(),  # Reduced z_variance
+        model = hgf_smoothing(),  
         data = (obs = obs, resp = UnfactorizedData(resp),),
         meta = hgfmeta_smoothing(),
         constraints = hgfconstraints_smoothing(),
         initialization = hgf_init_smoothing(),
         iterations = niterations,  # More iterations
         options = (limit_stack_depth = 500,),  # Increased stack depth
-        returnvars = (x = KeepEach(), z = KeepEach(), ω=KeepEach(), κ=KeepEach(), β=KeepEach(), temp=KeepEach(),z_initial=KeepEach(), x_initial=KeepEach(), z_variance=KeepEach(),),
+        returnvars = (x = KeepEach(), z = KeepEach(), ω=KeepEach(), κ=KeepEach(), β=KeepEach(), temp=KeepEach(),z_initial=KeepEach(), x_initial=KeepEach(),z_precision=KeepEach(),),
         free_energy = compute_bethe_free_energy,  # Compute Bethe Free Energy when there are no missing values
         free_energy_diagnostics = nothing, # turns off the error for NaN or inf FE
         showprogress = true,
@@ -286,7 +279,6 @@ x_initial_posterior = infer_result.posteriors[:x_initial][niterations_used]
 x_initial_posterior = getfield(x_initial_posterior, :data) # added this line because of addons
 z_initial_posterior = infer_result.posteriors[:z_initial][niterations_used]
 z_initial_posterior = getfield(z_initial_posterior, :data) # added this line because of addons
-
 x_posterior = infer_result.posteriors[:x][niterations_used]
 x_posterior = getfield.(x_posterior, :data) # added this line because of addons
 z_posterior = infer_result.posteriors[:z][niterations_used]
@@ -297,6 +289,8 @@ z_posterior = getfield.(z_posterior, :data) # added this line because of addons
 ω_posterior = getfield(ω_posterior, :data) # added this line because of addons
 β_posterior = infer_result.posteriors[:β][niterations_used]
 β_posterior = getfield(β_posterior, :data) # added this line because of addons
+z_precision_posterior = infer_result.posteriors[:z_precision][niterations_used]
+z_precision_posterior = getfield(z_precision_posterior, :data) # added this line because of addons
 temp_posterior = infer_result.posteriors[:temp][niterations_used]
 temp_posterior = getfield.(temp_posterior, :data) # added this line because of addons
 
@@ -305,6 +299,7 @@ println("Parameter Estimates:")
 println("κ: mean = $(mean(κ_posterior)), std = $(std(κ_posterior))")
 println("ω: mean = $(mean(ω_posterior)), std = $(std(ω_posterior))")
 println("β: shape = $(shape(β_posterior)), scale = $(scale(β_posterior))")
+println("z precision: shape = $(shape(z_precision_posterior)), scale = $(scale(z_precision_posterior))")
 println("x initial: mean = $(mean(x_initial_posterior)), std = $(std(x_initial_posterior))")
 println("z initial: mean = $(mean(z_initial_posterior)), std = $(std(z_initial_posterior))")
 # Plot the hidden states x and z
@@ -323,6 +318,7 @@ p2 = plot(
     histogram(rand(κ_posterior, 1000), title="κ", label=""),
     histogram(rand(ω_posterior, 1000), title="ω", label=""),
     histogram(rand(β_posterior, 1000), title="β", label=""),
+    histogram(rand(z_precision_posterior, 1000), title="z_precision_posterior", label=""),
     histogram(rand(x_initial_posterior, 1000), title="Initial X", label=""),
     histogram(rand(z_initial_posterior, 1000), title="Initial Z", label=""),
     layout=(2,3)
@@ -396,7 +392,7 @@ results_df = DataFrame(
     prior_x_initial_mean = prior_x_initial_mean,
     prior_x_initial_variance = prior_x_initial_variance,
     initialized_z_mean = initialized_z_mean,
-    initialized_z_variance = initialized_z_variance,
+    initialized_z_precision = initialized_z_precision,
     initialized_kappa_mean = initialized_kappa_mean,
     initialized_kappa_variance = initialized_kappa_variance,
     initialized_omega_mean = initialized_omega_mean,
