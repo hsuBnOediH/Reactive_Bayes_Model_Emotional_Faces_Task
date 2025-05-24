@@ -99,8 +99,9 @@ rng = StableRNG(seed)
 # Read in the task data
 file_name = root * "rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_processed_data/task_data_$(subject_id)_$(predictions_or_responses).csv"
 data = CSV.read(file_name, DataFrame)
-# Create variable for observations
-obs_data = data.observed 
+# Create variable for observations which is equal to 1 (congruent, high intensity), .75 (congruent, low intensity), .25 (incongruent, low intensity), 0 (incongruent, high intensity)
+#obs_data = data.observed 
+obs_data = data.intensity
 obs_data = Float64.(obs_data)
 # Create variable for responses
 resp_data = data.response
@@ -139,7 +140,7 @@ end
 # todo: esitmate variance on top level (z_variance). could potentially fix the middle mean to .5; 
 @model function hgf_smoothing(obs, resp)
     # Initial states - adjust means to be closer to data range
-    # z_variance ~ Gamma(shape = 1.0, rate = 1.0)  # Reduced variance
+    z_variance ~ Gamma(shape = 1.0, rate = 1.0) where { pipeline = TaggedLogger("z_variance") }# Reduced variance
     z_initial ~ Normal(mean = prior_z_initial_mean, variance = prior_z_initial_variance)  where { pipeline = TaggedLogger("z_initial") }# Reduced variance
     x_initial ~ Normal(mean = prior_x_initial_mean, variance = prior_x_initial_variance)  where { pipeline = TaggedLogger("x_initial") }# Reduced variance
     
@@ -153,7 +154,7 @@ end
 
     for i in eachindex(obs)
         # Higher layer update (Gaussian random walk)
-        z[i] ~ Normal(mean = z_prev, variance = 1)  where { pipeline = TaggedLogger("z[$(i)]") }
+        z[i] ~ Normal(mean = z_prev, variance = z_variance)  where { pipeline = TaggedLogger("z[$(i)]") }
  
         # Lower layer update
         x[i] ~ GCV(x_prev, z[i], κ, ω) where { pipeline = TaggedLogger("x[$(i)]") }
@@ -181,9 +182,9 @@ end
 @constraints function hgfconstraints_smoothing() 
     #Structured mean-field factorization constraints
     #q(x, temp, z, κ, ω, β, x_initial,z_variance) = q(x, temp, x_initial)q(z,z_variance)q(κ)q(ω)q(β)
-    q(x, temp, z, κ, ω, β, x_initial) = q(x, temp, x_initial)q(z)q(κ)q(ω)q(β)
+    q(x, z, temp, κ, ω, β, x_initial,z_variance,z_initial) = q(x, temp, x_initial)q(z_variance)q(z, z_initial)q(κ)q(ω)q(β)
     q(β) :: ProjectedTo(Gamma)
-   # q(z_variance) :: ProjectedTo(Gamma)    
+    # μ(z_variance) :: ProjectedTo(Gamma)    
 end
 
 import ReactiveMP: as_companion_matrix, ar_transition, getvform, getorder, add_transition!
@@ -205,10 +206,13 @@ function run_inference_smoothing(obs, resp, niterations)
         q(κ) = NormalMeanVariance(initialized_kappa_mean, initialized_kappa_variance)
         q(ω) = NormalMeanVariance(initialized_omega_mean, initialized_omega_variance)
         q(β) = GammaShapeRate(initialized_beta_shape, initialized_beta_rate)
-        # q(z_variance) = GammaShapeRate(1, 1)
+        q(z_variance) = GammaShapeRate(1, 1)
+        q(z_initial) = vague(NormalMeanVariance)
+        # μ(z) = vague(NormalMeanVariance)
+
+
         # μ(z) = map(_ -> NormalMeanPrecision(0, 1), 1:200) # create a vector of 200 Normal distributions
         # μ(x) = map(_ -> NormalMeanPrecision(0, 1), 1:200) # create a vector of 200 Normal distributions
-        # μ(z) = NormalMeanPrecision(0, 1)
         # μ(x) =NormalMeanPrecision(0, 1)
         
         #q(z_prev) = NormalMeanVariance(initialized_z_mean, initialized_z_variance)
@@ -222,7 +226,7 @@ function run_inference_smoothing(obs, resp, niterations)
         initialization = hgf_init_smoothing(),
         iterations = niterations,  # More iterations
         options = (limit_stack_depth = 500,),  # Increased stack depth
-        returnvars = (x = KeepEach(), z = KeepEach(), ω=KeepEach(), κ=KeepEach(), β=KeepEach(), temp=KeepEach(),z_initial=KeepEach(), x_initial=KeepEach(),),
+        returnvars = (x = KeepEach(), z = KeepEach(), ω=KeepEach(), κ=KeepEach(), β=KeepEach(), temp=KeepEach(),z_initial=KeepEach(), x_initial=KeepEach(), z_variance=KeepEach(),),
         free_energy = compute_bethe_free_energy,  # Compute Bethe Free Energy when there are no missing values
         free_energy_diagnostics = nothing, # turns off the error for NaN or inf FE
         showprogress = true,
@@ -247,19 +251,26 @@ end
 if get(ENV, "CLUSTER", "false") == "true"
     infer_result = run_inference_smoothing(obs_data, resp_data, niterations)
 else
-    # Open a log file with w, meaning it gets overwritten each time
-    logfile = open(results_dir*"/inference_smoothing.log", "w")
-    # send all subsequent prints/errors into logfile…
-    redirect_stdout(logfile) do
-    redirect_stderr(logfile) do
-        infer_result = run_inference_smoothing(obs_data, resp_data, niterations)
+    # open the log file (it'll be closed automatically at the end of the do-block)
+    infer_result =
+    open(results_dir*"/inference_smoothing.log", "w") do io
+        redirect_stdout(io) do
+        redirect_stderr(io) do
+            try
+            run_inference_smoothing(obs_data, resp_data, niterations)
+            catch err
+            # print the error message
+            println(io, "ERROR during inference: ", err)
+            # print the backtrace
+            showerror(io, err, catch_backtrace())
+            # rethrow; to stop the julia session
+            rethrow()
+            end
+        end
+        end
     end
-    end
-    close(logfile)
-    # also run it here so you have access to the result
-    infer_result = run_inference_smoothing(obs_data, resp_data, niterations)
-
 end
+
 
 
 # If free energy was computed, find the last iteration where free energy was neither NaN or infinity

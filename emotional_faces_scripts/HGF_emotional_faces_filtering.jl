@@ -22,13 +22,17 @@ if run_setup_code
     now_time = now()
     formatted_time = "_" * Dates.format(now_time, "yyyy-mm-ddTHH_MM_SS")
 
-    # These variables should get sent in from smoothing
-    kappa_mu = 1.0
+    # These variables should get sent in from smoothing. Assign them here during debugging:
+    kappa_mu = 1
     kappa_sigma = 1
     omega_mu = 1
-    omega_sigma = 1 
-    beta_shape = 1.0
-    beta_rate = 1.0
+    omega_sigma = 1
+    beta_shape = 1
+    beta_rate = 1
+    x_mean_mu = 0
+    x_mean_sigma = 1
+    z_mean_mu = 0
+    z_mean_sigma = 1
 
     
     Pkg.instantiate()  # Reinstall missing dependencies
