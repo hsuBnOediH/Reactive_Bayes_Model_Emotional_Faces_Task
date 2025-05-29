@@ -47,12 +47,12 @@ if get(ENV, "CLUSTER", "false") == "true"
     niterations = Int(niterations) # cast as an integer
 else
     println("Running locally...")
-    Pkg.activate("L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/"); # Note that the Project and Manifest files are in the same directory as this script.
+    Pkg.activate("emotional_faces_scripts/"); # Note that the Project and Manifest files are in the same directory as this script.
     # Click Julia: Activate this Environment to run the REPL
     subject_id = "5a5ec79cacc75b00017aa095"
     predictions_or_responses = "responses" # Haven't set up infrastructure to fit predictions
-    results_dir = "L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/model_output_prolific/hgf_RxInfer_test"
-    root = "L:/"
+    results_dir = "outputs"
+    root = ""
     # get current datetime
     using Dates
     now_time = now()
@@ -77,7 +77,36 @@ else
     initial_beta_rate = 0.1
     niterations = 20
 end
+println("--------------------")
+println("Subject ID: ", subject_id)
+println("Predictions or Responses: ", predictions_or_responses)
+println("Results Directory: ", results_dir)
+println("Root Directory: ", root)
+println("Formatted Time: ", formatted_time)
+println("Prior Kappa Mean: ", prior_kappa_mean)
+println("Prior Kappa Variance: ", prior_kappa_variance)
+println("Prior Omega Mean: ", prior_omega_mean)
+println("Prior Omega Variance: ", prior_omega_variance)
+println("Prior Beta Shape: ", prior_beta_shape)
+println("Prior Beta Rate: ", prior_beta_rate)
+println("Prior Z Previous Mean: ", prior_z_prev_mean)
+println("Prior Z Previous Variance: ", prior_z_prev_variance)
+println("Prior X Previous Mean: ", prior_x_prev_mean)
+println("Prior X Previous Variance: ", prior_x_prev_variance)
+println("Initial Z Mean: ", initial_z_mean)
+println("Initial Z Variance: ", initial_z_variance)
+println("Initial Kappa Mean: ", initial_kappa_mean)
+println("Initial Kappa Variance: ", initial_kappa_variance)
+println("Initial Omega Mean: ", initial_omega_mean)
+println("Initial Omega Variance: ", initial_omega_variance)
+println("Initial Beta Shape: ", initial_beta_shape)
+println("Initial Beta Rate: ", initial_beta_rate)
+println("Number of iterations: ", niterations)
+println("--------------------")
+ENV["JULIA_PKG_SERVER"] = "https://pkg.julialang.org"
+println("Loading packages...")
 Pkg.instantiate()  # Reinstall missing dependencies
+println("Packages loaded.")
 
 
 using RxInfer
@@ -88,14 +117,15 @@ using StableRNGs
 using CSV, DataFrames
 
 # Import file containing callbacks functions and tagged logger
-include(root * "rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/callbacks.jl")
+include(root * "callbacks.jl")
 
 # Seed for reproducibility
 seed = 23
 rng = StableRNG(seed)
+## Feng: rng is not used in the code, how to affect the infer always have the same result???
 
 # Read in the task data
-file_name = root * "rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_processed_data/task_data_$(subject_id)_$(predictions_or_responses).csv"
+file_name = root * "emotional_faces_processed_data/task_data_$(subject_id)_$(predictions_or_responses).csv"
 data = CSV.read(file_name, DataFrame)
 # Create variable for observations
 obs_data = data.observed 
@@ -242,18 +272,20 @@ end
 
 
 # For ease of debugging, output to a file instead of the console
+local infer_result
 if get(ENV, "CLUSTER", "false") == "true"
     infer_result = run_inference_smoothing(obs_data, resp_data, niterations)
 else
     # Open a log file with w, meaning it gets overwritten each time
-    logfile = open(results_dir*"/inference.log", "w")
-    # send all subsequent prints/errors into logfile…
-    redirect_stdout(logfile) do
-    redirect_stderr(logfile) do
-        infer_result = run_inference_smoothing(obs_data, resp_data, niterations)
-        # you can still use infer_result here if you like…
-    end
-    end
+    println("Logging to file...")
+    logfile = open(joinpath(pwd(), "outputs", "inference.log"), "w")
+    
+    infer_result = redirect_stdout(logfile) do
+        redirect_stderr(logfile) do
+            run_inference_smoothing(obs_data, resp_data, niterations)
+        end
+    end   # infer_result now holds whatever run_inference_smoothing returned
+    
     close(logfile)
 end
 

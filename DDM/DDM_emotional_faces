@@ -1,0 +1,86 @@
+
+import Pkg; 
+
+# determine if running on cluster or locally
+if get(ENV, "CLUSTER", "false") == "true"
+    println("Running on the cluster...")
+    # println(ENV)
+    println("SUBJECT: ", get(ENV, "SUBJECT", "NOT SET"))
+    println("PREDICTIONS_OR_RESPONSES: ", get(ENV, "PREDICTIONS_OR_RESPONSES", "NOT SET"))
+    println("RESULTS: ", get(ENV, "RESULTS", "NOT SET"))
+    # TODO: culster pkg activate to be determined
+    Pkg.activate("/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/cluster_environment/")
+    subject_id = get(ENV, "SUBJECT", "SUBJECT_NOT_SET")
+    predictions_or_responses = get(ENV, "PREDICTIONS_OR_RESPONSES","PREDICTIONS_OR_RESPONSES_NOT_SET")
+    results_dir = get(ENV, "RESULTS","RESULTS_NOT_SET")
+    # TODO: culster run root to be determined
+    root = "/media/labs/"
+    formatted_time = ""
+    hyperparam_str = get(ENV, "HYPERPARAM_STR", "NOT SET")
+    println("Hyperparams String: ", hyperparam_str)
+    hyperparam_dict = Dict(
+        pair[1] => parse(Float64, pair[2]) for pair in 
+        (split(kv, "=") for kv in split(hyperparam_str, ","))
+    )
+    # define hyperparameters
+else
+    println("Running locally...")
+    Pkg.activate("DDM/"); # Note that the Project and Manifest files are in the same directory as this script.
+    # Click Julia: Activate this Environment to run the REPL
+    subject_id = "5a5ec79cacc75b00017aa095"
+    predictions_or_responses = "responses" # Haven't set up infrastructure to fit predictions
+    results_dir = "outputs"
+    root = ""
+    # get current datetime
+    using Dates
+    now_time = now()
+    formatted_time = "_" * Dates.format(now_time, "yyyy-mm-ddTHH_MM_SS")
+    # define hyperparameters
+    
+end
+
+println("--------------------")
+println("Subject ID: ", subject_id)
+println("Predictions or Responses: ", predictions_or_responses)
+println("Results Directory: ", results_dir)
+println("Root Directory: ", root)
+# display hyperparameters
+println("--------------------")
+ENV["JULIA_PKG_SERVER"] = "https://pkg.julialang.org"
+println("Loading packages...")
+Pkg.instantiate()  # Reinstall missing dependencies
+
+println("Packages loaded.")
+
+using RxInfer
+using Distributions
+using ForwardDiff
+include("wiener_factor.jl")
+import .WienerFactor: Wiener 
+struct RTC
+    rt :: Float64   # reaction time
+    c  :: Int       # choice (0 or 1)
+end
+# ---------------- data ----------------
+rt  = rand(200) .+ 0.3                  # fake RTs
+c   = rand(Bernoulli(), 200)            # fake choices
+obs = RTC.(rt, c)                       # <-- step 1
+
+@model function ddm(obs)
+    a  ~ truncate(Normal(mean = 1.5, var = 0.3), 0.1, 3.0)
+
+    v  ~ Normal(mean = 0.5, var = 1.0)
+
+    z  ~ Beta(2, 2)
+
+    t0 ~ truncate(Normal(mean = 0.3, var = 0.1), 0.05, 1.0)
+
+    for i in eachindex(obs)
+        obs[i] ~ Wiener(a = a, v = v, z = z, t0 = t0)
+    end
+end
+results = infer(model = ddm(), data = (obs = obs,), iterations = 50,
+                returnvars = (a = KeepLast(), v = KeepLast(),
+                              z = KeepLast(), t0 = KeepLast()))
+println("posterior means:",
+        map(x -> mean(results.posteriors[x][end]), (:a,:v,:z,:t0)))
