@@ -81,7 +81,7 @@ else
     initialized_omega_variance = 0.01
     initialized_beta_shape = 0.1
     initialized_beta_rate = 0.1
-    niterations = 4
+    niterations = 3
 end
 Pkg.instantiate()  # Reinstall missing dependencies
 
@@ -162,10 +162,8 @@ end
         # Lower layer update
         x[i] ~ GCV(x_prev, z[i], κ, ω) where { pipeline = TaggedLogger("x[$(i)]") }
 
-        # Noisy binary observations (Bernoulli likelihood)
         obs[i] ~ Probit(x[i]) where { pipeline = TaggedLogger("obs[$(i)]") }
  
-        # Noisy binary response (Bernoulli likelihood)
         temp[i] ~ softdot(β, x[i], 1.0) where { pipeline = TaggedLogger("temp[$(i)]") }
         resp[i] ~ Probit(temp[i]) where { pipeline = TaggedLogger("resp[$(i)]") }
 
@@ -185,7 +183,6 @@ end
 @constraints function hgfconstraints_smoothing() 
     #Structured mean-field factorization constraints
     q(x, z, temp, κ, ω, β, x_initial,z_precision,z_initial) = q(x, temp, x_initial)q(z_precision)q(z, z_initial)q(κ)q(ω)q(β)
-    #q(x, z, temp, κ, ω, β, x_initial,z_initial) = q(x, temp, x_initial)q(z, z_initial)q(κ)q(ω)q(β)
     q(β) :: ProjectedTo(Gamma)
 end
 
@@ -208,7 +205,6 @@ function run_inference_smoothing(obs, resp, niterations)
         q(ω) = NormalMeanVariance(initialized_omega_mean, initialized_omega_variance)
         q(β) = GammaShapeRate(initialized_beta_shape, initialized_beta_rate)
         q(z_precision) = GammaShapeRate(initialized_z_precision_shape, initialized_z_precision_rate)
-        q(z_initial) = vague(NormalMeanVariance)
     end
 
     return infer(

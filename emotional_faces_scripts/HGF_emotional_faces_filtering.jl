@@ -130,10 +130,8 @@ end
     # Lower layer update
     x ~ GCV(x_mean, z, κ, ω) where { pipeline = TaggedLogger("x") }
 
-    # Noisy binary observations (Bernoulli likelihood)
     obs ~ Probit(x) where { pipeline = TaggedLogger("obs") }
 
-    # Noisy binary response (Bernoulli likelihood)
     temp ~ softdot(β, x, 1.0) where { pipeline = TaggedLogger("temp") }
     resp ~ Probit(temp) where { pipeline = TaggedLogger("resp") }
      
