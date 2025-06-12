@@ -6,11 +6,29 @@ using RxInfer
 using BenchmarkTools, Plots
 
 root = "L:/"
-subject_id = "5a5ec79cacc75b00017aa095"
-predictions_or_responses = "responses" # Haven't set up infrastructure to fit predictions
-file_name = root * "rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_processed_data/task_data_$(subject_id)_$(predictions_or_responses).csv"
+subject_id = "AA003" # Use a prolific or local subject id e.g., 5a5ec79cacc75b00017aa095
+# Local subject IDs will always be 5 characters, while prolific IDs will always be 24
+if length(subject_id) == 5
+    study = "local"
+elseif length(subject_id) == 24
+    study = "prolific"
+else
+    error("Invalid subject ID length. Must be 5 (local) or 24 (prolific).")
+end
+if study == "local"
+    file_name = root * "rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/model_output_local/local_emotional_faces_processed_data_06-11-25-18_21_28/task_data_$(subject_id)_processed_data.csv"
+elseif study == "prolific"
+    file_name = root * "rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/model_output_prolific/prolific_emotional_faces_processed_data_06-11-25-18_23_16/task_data_$(subject_id)_processed_data.csv"
+end
+
 data = CSV.read(file_name, DataFrame)
-obs = data.observed
+# Create variable for observations which is equal to 1 (congruent, high intensity), .75 (congruent, low intensity), .25 (incongruent, low intensity), 0 (incongruent, high intensity)
+#obs_data = data.observed 
+obs_data = data.face_intensity
+obs_data = Float64.(obs_data)
+# Create variable for responses
+resp_data = data.resp_sad_high_or_angry_low
+resp_data = Float64.(resp_data)
 
 # Participants observe (obs) a high intensity positive signal (1), high intensity negative signal (0), 
 # low intensity positive signal (0.75), or a low intensity negative signal (0.25).
@@ -152,7 +170,7 @@ function simulate_responses_mathys(obs, beta, mu0, sa0, kappa, omega, z_variance
 
 
 
-    return y_sim, p
+    return resp, p
 end
 
 
@@ -172,20 +190,9 @@ kappa     = [kappa_param, kappa_param]
 omega     = [NaN, omega_param]
 
 
-obs = [0.75, 1.0, 0.75, 1.0, 1.0, 0.75, 0.75, 0.75, 1.0, 0.75, 0.75, 0.0, 1.0, 0.75, 0.25, 
-1.0, 0.75, 0.0, 0.75, 1.0, 0.75, 0.0, 0.25, 1.0, 1.0, 0.75, 1.0, 0.75, 0.75, 0.0, 0.75, 1.0, 0.75,
- 1.0, 0.75, 1.0, 0.25, 1.0, 1.0, 1.0, 0.25, 0.75, 1.0, 0.75, 0.25, 0.75, 1.0, 0.75, 0.0, 0.75, 0.0,
-  0.25, 0.0, 0.0, 0.25, 0.0, 0.25, 0.0, 0.0, 0.0, 0.75, 0.25, 0.0, 0.0, 0.75, 0.25, 0.0, 0.75, 0.0,
-   0.25, 1.0, 0.0, 0.75, 0.0, 0.0, 0.75, 0.0, 0.0, 0.0, 0.25, 1.0, 0.25, 0.25, 0.0, 0.0, 0.75, 0.0,
-    0.25, 0.0, 0.25, 0.25, 0.0, 1.0, 0.25, 1.0, 0.25, 0.25, 0.0, 0.0, 0.0, 0.75, 0.0, 0.25, 1.0, 0.25,
-     0.0, 1.0, 0.0, 0.75, 0.25, 1.0, 0.75, 1.0, 0.75, 1.0, 0.75, 1.0, 0.75, 1.0, 0.75, 0.75, 1.0, 0.75,
-      1.0, 0.25, 1.0, 1.0, 0.75, 0.25, 1.0, 1.0, 0.75, 0.0, 0.75, 1.0, 0.75, 1.0, 1.0, 1.0, 0.75, 0.25,
-       0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.0, 0.25, 0.25, 0.0, 1.0, 0.25, 0.75, 0.0, 0.25, 0.0, 0.25,
-        0.25, 0.25, 0.25, 0.0, 0.25, 0.0, 0.25, 0.75, 0.0, 0.0, 0.25, 1.0, 0.75, 0.75, 1.0, 0.75, 1.0, 0.75,
-         1.0, 0.75, 0.75, 1.0, 0.0, 1.0, 0.75, 1.0, 0.25, 1.0, 0.75, 0.75, 1.0, 0.75, 0.0, 1.0, 0.75, 1.0,
-          0.75, 0.75, 1.0, 0.75, 1.0]
 
-obs = data.observed
+
+obs = obs_data
 
 
 y_sim, p_sim = simulate_responses_mathys(obs, beta, mu0, sa0, kappa, omega, z_variance)

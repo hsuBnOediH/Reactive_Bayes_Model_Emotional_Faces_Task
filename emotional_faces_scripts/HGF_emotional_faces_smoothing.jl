@@ -15,6 +15,13 @@ if get(ENV, "CLUSTER", "false") == "true"
 
     Pkg.activate("/media/labs/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/cluster_environment/")
     subject_id = get(ENV, "SUBJECT", "SUBJECT_NOT_SET")
+    if length(subject_id) == 5
+        study = "local"
+    elseif length(subject_id) == 24
+        study = "prolific"
+    else
+        error("Invalid subject ID length. Must be 5 (local) or 24 (prolific).")
+    end
     predictions_or_responses = get(ENV, "PREDICTIONS_OR_RESPONSES","PREDICTIONS_OR_RESPONSES_NOT_SET")
     results_dir = get(ENV, "RESULTS","RESULTS_NOT_SET")
     root = "/media/labs/"
@@ -50,7 +57,16 @@ else
     println("Running locally...")
     Pkg.activate("L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_scripts/"); # Note that the Project and Manifest files are in the same directory as this script.
     # Click Julia: Activate this Environment to run the REPL
-    subject_id = "5a5ec79cacc75b00017aa095"
+    subject_id = "AA003" # Use a prolific or local subject id e.g., 5a5ec79cacc75b00017aa095
+    # Local subject IDs will always be 5 characters, while prolific IDs will always be 24
+    if length(subject_id) == 5
+        study = "local"
+    elseif length(subject_id) == 24
+        study = "prolific"
+    else
+        error("Invalid subject ID length. Must be 5 (local) or 24 (prolific).")
+    end
+
     predictions_or_responses = "responses" # Haven't set up infrastructure to fit predictions
     results_dir = "L:/rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/model_output_prolific/hgf_RxInfer_test"
     root = "L:/"
@@ -101,14 +117,19 @@ seed = 23
 rng = StableRNG(seed)
 
 # Read in the task data
-file_name = root * "rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/RxInfer_scripts/emotional_faces_processed_data/task_data_$(subject_id)_$(predictions_or_responses).csv"
+if study == "local"
+    file_name = root * "rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/model_output_local/local_emotional_faces_processed_data_06-11-25-18_21_28/task_data_$(subject_id)_processed_data.csv"
+elseif study == "prolific"
+    file_name = root * "rsmith/lab-members/cgoldman/Wellbeing/emotional_faces/model_output_prolific/prolific_emotional_faces_processed_data_06-11-25-18_23_16/task_data_$(subject_id)_processed_data.csv"
+end
+
 data = CSV.read(file_name, DataFrame)
 # Create variable for observations which is equal to 1 (congruent, high intensity), .75 (congruent, low intensity), .25 (incongruent, low intensity), 0 (incongruent, high intensity)
 #obs_data = data.observed 
-obs_data = data.intensity
+obs_data = data.face_intensity
 obs_data = Float64.(obs_data)
 # Create variable for responses
-resp_data = data.response
+resp_data = data.resp_sad_high_or_angry_low
 resp_data = Float64.(resp_data)
 
 # For debugging, let's just use two observations and responses
@@ -156,14 +177,14 @@ end
     β ~ Gamma(shape = prior_beta_shape, rate = prior_beta_rate)  where { pipeline = TaggedLogger("β") } # Less constrained
 
     for i in eachindex(obs)
-        # Higher layer update (Gaussian random walk)
+        # Third layer
         z[i] ~ Normal(mean = z_prev, precision = z_precision)  where { pipeline = TaggedLogger("z[$(i)]") }
  
-        # Lower layer update
+        # Second layer
         x[i] ~ GCV(x_prev, z[i], κ, ω) where { pipeline = TaggedLogger("x[$(i)]") }
 
+        # First layer
         obs[i] ~ Probit(x[i]) where { pipeline = TaggedLogger("obs[$(i)]") }
- 
         temp[i] ~ softdot(β, x[i], 1.0) where { pipeline = TaggedLogger("temp[$(i)]") }
         resp[i] ~ Probit(temp[i]) where { pipeline = TaggedLogger("resp[$(i)]") }
 
