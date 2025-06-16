@@ -1,5 +1,17 @@
+using Pkg
+println(pwd())
 
-import Pkg; 
+if isfile("Manifest.toml")
+    println("Environment already initialized.")
+else
+    Pkg.instantiate()
+end
+using RxInfer
+using Distributions
+using ForwardDiff
+# println("Loading packages...")
+# Pkg.instantiate(verbose=true)  # Reinstall missing dependencies
+# println("Packages loaded.")
 
 # determine if running on cluster or locally
 if get(ENV, "CLUSTER", "false") == "true"
@@ -25,7 +37,6 @@ if get(ENV, "CLUSTER", "false") == "true"
     # define hyperparameters
 else
     println("Running locally...")
-    Pkg.activate("DDM/"); # Note that the Project and Manifest files are in the same directory as this script.
     # Click Julia: Activate this Environment to run the REPL
     subject_id = "5a5ec79cacc75b00017aa095"
     predictions_or_responses = "responses" # Haven't set up infrastructure to fit predictions
@@ -46,41 +57,137 @@ println("Results Directory: ", results_dir)
 println("Root Directory: ", root)
 # display hyperparameters
 println("--------------------")
-ENV["JULIA_PKG_SERVER"] = "https://pkg.julialang.org"
-println("Loading packages...")
-Pkg.instantiate()  # Reinstall missing dependencies
 
-println("Packages loaded.")
-
-using RxInfer
-using Distributions
-using ForwardDiff
-include("wiener_factor.jl")
-import .WienerFactor: Wiener 
-struct RTC
-    rt :: Float64   # reaction time
-    c  :: Int       # choice (0 or 1)
+# 1) Define RL update rule
+function rl_update!(Q::Vector{Float64}, choice::Int, reward::Float64, α::Float64)
+    δ = reward - Q[choice]
+    Q[choice] += α * δ
+    return Q
 end
-# ---------------- data ----------------
-rt  = rand(200) .+ 0.3                  # fake RTs
-c   = rand(Bernoulli(), 200)            # fake choices
-obs = RTC.(rt, c)                       # <-- step 1
 
-@model function ddm(obs)
-    a  ~ truncate(Normal(mean = 1.5, var = 0.3), 0.1, 3.0)
+# 2) Link RL values to DDM parameters
+# Here we map Q-difference to drift rate and overall uncertainty to threshold
+function compute_drift_rate(Q::Vector{Float64}, inv_temp::Float64)
+    # Softmax-weighted difference as raw evidence
+    return inv_temp * (Q[2] - Q[1])
+end
 
-    v  ~ Normal(mean = 0.5, var = 1.0)
+function compute_threshold(Q::Vector{Float64}, γ::Float64, base_thr::Float64)
+    # Example: threshold increases with uncertainty (sum of Q-values variance)
+    uncert = abs(Q[2] - Q[1])
+    return base_thr + γ * uncert
+end
 
-    z  ~ Beta(2, 2)
+"""
+Series-based first-passage time density for 2AFC DDM.
+"""
+function fpt_pdf(t::Real, v::Real, a::Real, z::Real; tol::Float64 = 1e-8, max_iter::Int = 1000)
+    # t: decision time after subtracting t0
+    dt = t
+    if dt <= 0
+        return zero(dt)
+    end
+    # scaling constant
+    scale = a / sqrt(2π * dt^3)
+    # start series with k = 0 term
+    sum_series = z * exp(-((z*a - v*dt)^2) / (2*dt))
+    k = 1
+    while k <= max_iter
+        # positive image
+        zk1 = z + 2*k
+        term1 = zk1 * exp(-((zk1*a - v*dt)^2) / (2*dt))
+        # negative image
+        zk2 = z - 2*k
+        term2 = zk2 * exp(-((zk2*a - v*dt)^2) / (2*dt))
+        # break when both contributions are below tolerance
+        if abs(term1) < tol && abs(term2) < tol
+            break
+        end
+        sum_series += term1 + term2
+        k += 1
+    end
+    return scale * sum_series
+end
 
-    t0 ~ truncate(Normal(mean = 0.3, var = 0.1), 0.05, 1.0)
-
-    for i in eachindex(obs)
-        obs[i] ~ Wiener(a = a, v = v, z = z, t0 = t0)
+"""
+Joint likelihood of RT and choice under the DDM.
+"""
+function ddm_likelihood(rt::Real, choice::Int, v::Real, a::Real, t0::Real; z::Real = 0.5)
+    t = rt - t0
+    if t <= 0
+        return eps(Float64)  # negligible density before t0
+    end
+    if choice == 1
+        return fpt_pdf(t, v, a, z)
+    else
+        # lower boundary: drift flips, start point flips
+        return fpt_pdf(t, -v, a, 1 - z)
     end
 end
-results = infer(model = ddm(), data = (obs = obs,), iterations = 50,
-                returnvars = (a = KeepLast(), v = KeepLast(),
-                              z = KeepLast(), t0 = KeepLast()))
-println("posterior means:",
-        map(x -> mean(results.posteriors[x][end]), (:a,:v,:z,:t0)))
+
+# 3) Define the hierarchical model in RxInfer
+#    obs: vector of observed stimuli (0 or 1)
+#    resp: vector of choices (0 or 1)
+#    rt: vector of response times
+@model function rl_ddm(obs, resp, rt)
+    # Priors for RL parameters
+    α ~ Beta(1, 1)
+    γ ~ Gamma(2, 1)
+    inv_temp ~ Gamma(2, 1)
+
+    # Priors for DDM-specific parameters
+    base_thr ~ Truncated(Normal(1.0, 0.5), 0, Inf)
+    v0 ~ Normal(0.0, 1.0)      # drift bias
+    tnd ~ Truncated(Normal(0.3, 0.1), 0, Inf)  # non-decision time
+
+    # Initialize Q-values
+    Q = zeros(2)
+
+    for t in eachindex(obs)
+        # Compute DDM parameters from RL
+        v = compute_drift_rate(Q, inv_temp) + v0
+        a = compute_threshold(Q, γ, base_thr)
+
+
+        # Define reward: 1 if correct, 0 otherwise
+        reward = resp[t] == obs[t] ? 1.0 : 0.0
+
+        # Update RL values
+        rl_update!(Q, resp[t] + 1, reward, α)  # +1 for 1-based indexing
+    end
+end
+
+# Usage example (fill in your data)
+# data = (obs = obs_vec, resp = resp_vec, rt = rt_vec)
+# chain = sample(rl_ddm(data.obs, data.resp, data.rt), NUTS(), 1000)
+
+
+
+
+# struct RTC
+#     rt :: Float64   # reaction time
+#     c  :: Int       # choice (0 or 1)
+# end
+# # ---------------- data ----------------
+# rt  = rand(200) .+ 0.3                  # fake RTs
+# c   = rand(Bernoulli(), 200)            # fake choices
+# obs = RTC.(rt, c)                       # <-- step 1
+
+# @model function ddm(obs)
+#     a  ~ truncate(Normal(mean = 1.5, var = 0.3), 0.1, 3.0)
+
+#     v  ~ Normal(mean = 0.5, var = 1.0)
+
+#     z  ~ Beta(2, 2)
+
+#     t0 ~ truncate(Normal(mean = 0.3, var = 0.1), 0.05, 1.0)
+
+#     for i in eachindex(obs)
+#         obs[i] ~ Wiener(a = a, v = v, z = z, t0 = t0)
+#     end
+# end
+# results = infer(model = ddm(), data = (obs = obs,), iterations = 50,
+#                 returnvars = (a = KeepLast(), v = KeepLast(),
+#                               z = KeepLast(), t0 = KeepLast()))
+# println("posterior means:",
+#         map(x -> mean(results.posteriors[x][end]), (:a,:v,:z,:t0)))

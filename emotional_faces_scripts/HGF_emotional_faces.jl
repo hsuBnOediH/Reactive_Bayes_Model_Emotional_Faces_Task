@@ -4,6 +4,7 @@
 # "ReactiveMP", "Cairo", "GraphPlot", "Random"])
 # Activate local environment, see `Project.toml`
 import Pkg; 
+Pkg.build("MATLAB") 
 
 # determine if running on cluster or locally
 if get(ENV, "CLUSTER", "false") == "true"

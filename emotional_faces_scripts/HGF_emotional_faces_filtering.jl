@@ -12,7 +12,6 @@ if abspath(PROGRAM_FILE) == @__FILE__
 
     # determine if running on cluster or locally
     if get(ENV, "CLUSTER", "false") == "true"
-        println("Running on the cluster...")
         # println(ENV)
         println("SUBJECT: ", get(ENV, "SUBJECT", "NOT SET"))
         println("PREDICTIONS_OR_RESPONSES: ", get(ENV, "PREDICTIONS_OR_RESPONSES", "NOT SET"))

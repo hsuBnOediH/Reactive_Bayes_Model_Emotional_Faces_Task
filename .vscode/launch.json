@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "julia",
+      "request": "launch",
+      "name": "Run DDM Script",
+      "program": "${file}",
+      "cwd": "${fileDirname}",
+      "juliaEnv": "${workspaceFolder}/DDM"
+    },
+    {
+      "type": "julia",
+      "request": "launch",
+      "name": "Run sim Script",
+      "program": "${file}",
+      "cwd": "${workspaceFolder}/githubexample"
+    }
+  ]
+}
