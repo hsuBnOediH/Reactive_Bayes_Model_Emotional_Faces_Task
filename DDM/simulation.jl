@@ -24,24 +24,29 @@ over time.
 
 =#
 
-using Random                              
-using RxInfer        
-using SequentialSamplingModels   
-using StatsBase: countmap
+using Random
+using RxInfer
+using SequentialSamplingModels
 using Plots
+using Distributions
 
 # fix random seed for reproducibility
 rng = MersenneTwister(1234)              
+# TODO: Now using /100 of the actual reward, should we change?
+max_allowed_rt =0.8
+missing_response_reward = -2.00  # reward for missing response, can be set to 0 or a small negative value
+incorrect_response_reward = -0.50  # fixed reward for incorrect response, can be set to a negative value
+max_correct_response_reward = 0.75  # maximum reward for correct response, can be set to a positive value
+min_correct_response_reward = -0.25  # minimum reward for correct response, can be set to a negative value
 
 #=
 Example of Data
 +--------------+----------+------+---------+
 | Trial Number | Observed | Tone |Intensity|
 +--------------+----------+------+---------+
-|      1       |    1     |  1   |   0.75  |
-|      2       |    2     |  2   |   0.25  |
+|      1       |    1     |  1   |   0.25  |
+|      2       |    2     |  2   |   0.75  |
 +--------------+----------+------+---------+
-
 Trial Number: the index of the trial, from 1 to 200, the sequence matters
 
 INPUT:
@@ -57,8 +62,8 @@ Tone:
 Intensity:
     1: the face is clealy a high-sad, low-angry setting face
     0.75: the face is ambiguous a high-sad, low-angry setting face
-    0.25:the face is ambiguous a high-angry, low-sadsetting face
-    0:  the face is clealy a high-angry, low-sadsetting face
+    -0.75:the face is ambiguous a high-angry, low-sads etting face
+    -1:  the face is clealy a high-angry, low-sad setting face
 
 OUTPUT:
 ----------
@@ -69,174 +74,251 @@ Response:
 Response Time:
     time in second of the whole action
 =# 
-n_trials       = 200 
-intensity_data = rand(rng, [0.0, 0.25, 0.75, 1.0], n_trials) 
-observed_data  = rand(rng, Bernoulli(0.5), n_trials) 
+n_trials = 200  # number of trials
+observed_data  = rand(rng, Bernoulli(0.5), n_trials) .+ 1
+intensity_data = Vector{Float16}(undef, n_trials)
+for i in 1:n_trials
+    if observed_data[i] == 1  # high-angry, low-sad association
+        # pick one of the two discrete intensities -1.0 or -0.75
+        intensity_data[i] = Float16(rand(rng, (-1.0, -0.75)))
+    else  # high-sad, low-angry association
+        # pick one of the two discrete intensities 0.75 or 1.0
+        intensity_data[i] = Float16(rand(rng, (0.75, 1.0)))
+    end
+end
 tone_data     = rand(rng, Bernoulli(0.5), n_trials)  # tone data, not used in this simulation 
 
 #=
 RL-DDM model struct
-
 RL Model:
-    - eta: learning rate
+    - eta_win: learning rate for winning trials
+    - eta_loss: learning rate for losing trials
     - inv_temp: inverse temperature
     - V0: initial belief
-    - omega: forgetting rate
+    - omega: forgetting factor
 DDM Model:
     - T: non-decision time
     - w: starting bias
-    - a: boundary separation
-    
+    - a: base boundary separation
+    - v: base drift rate
 Connection between RL and DDM:
     - drift_rate_scaler_low: drift  rate scaler when tone is low
     - drift_rate_scaler_high: drift rate scaler when tone is high
-    - boundary_scaler_low: boundary scaler when tone is low
-    - boundary_scaler_high: boundary scaler when tone is high
+    - boundary_scale：r: boundary separation scaler based on the belief difference
 =# 
 
 # RL parameters
-eta  = 0.2   
+eta_win = 0.05  # learning rate for winning trials
+eta_loss = 0.2  # learning rate for losing trials
 inv_temp  = 2.0   
 V0 = 0.5    
 omega  = 0.1    
 # DDM parameters 
-T = 0.3   
+T = 0.3 
 w   = 0.5  
 v = 0.2 
 a = 1.0 
 
 # Connection parameters
-
 drift_rate_scaler_low  = -0.5 
 drift_rate_scaler_high = 0.5  
-boundary_scaler_low    = 0.3 
-boundary_scaler_high  = -0.2
+boundary_scaler    = 0.3 
+
 # zero-initialized vectors for simulation results
 choice_sim = Vector{Int}(undef, n_trials)
 rt_sim     = Vector{Float64}(undef, n_trials)
 choice_association = Vector{Int}(undef, n_trials)
 
 # q is two value vector, each respresenting the belief for each choice, initialized to V0
-# where q[1] is for high-angry, low-sad association, q[2] is for high-sad, low-angry association   
-q = fill(V0, 2)  # belief vector for two choices (0 and 1)
+# where q[1] is for high-angry, low-sad association, 
+# q[2] is for high-sad, low-angry association   
+q = fill(V0, 2)
 # record belief and accuracy histories
 q1_hist = zeros(Float64, n_trials)
 q2_hist = zeros(Float64, n_trials)
 accuracy = falses(n_trials)
+# record additional histories for visualization
+sad_face_prob_hist = zeros(Float64, n_trials)
+angry_face_prob_hist = zeros(Float64, n_trials)
+v_t_hist = zeros(Float64, n_trials)
+a_t_hist = zeros(Float64, n_trials)
+
 for t in 1:n_trials
+    println("q at trial $t: $(q)")
     # softmax the q value 
-    association_prob = exp.(inv_temp .* q) ./ sum(exp.(inv_temp .* q))
+    z = inv_temp .* q
+    z .-= maximum(z)                          # shift so max(z)==0
+    exp_z = exp.(z)                           # now no overflow
+    association_prob = exp_z ./ sum(exp_z)
     # given the tone, either high or low, two of the association choices will collpase to one
     tone_at_t = tone_data[t]  
     if tone_at_t == 1  # low tone
-        sad_face_prob = association_prob[1]  # high-angry, low-sad association
-        angry_face_prob = association_prob[2]  # high-sad, low-angry association
+        # [1]: high-angry, low-sad association --> low_sad
+        # [2]: high-sad, low-angry association --> low_angry
+        sad_face_prob = association_prob[1]  
+        angry_face_prob = association_prob[2]  
     else  # high tone
-        sad_face_prob = association_prob[2]  # high-sad, low-angry association
-        angry_face_prob = association_prob[1]  # high-angry, low-sad association
+        # [1]: high-angry, low-sad association --> high_angry
+        # [2]: high-sad, low-angry association --> high_sad
+        sad_face_prob = association_prob[2]  
+        angry_face_prob = association_prob[1]
     end
-
+    println("sad_face_prob: $sad_face_prob, angry_face_prob: $angry_face_prob")
+    # record collapse probabilities
+    sad_face_prob_hist[t] = sad_face_prob
+    angry_face_prob_hist[t] = angry_face_prob
     # 1) Compute trial-specific drift rate base on the tone and intensity
+    # assuming high-angry, low-sad is lower bound and high-sad, low-angry is upper bound
+    # intensities is already negative for high-angry, low-sad association and positive for high-sad, low-angry association
+    
+    # if intensity < 0,  high-angry, low-sad
+        # if tone is low, using drift_rate_scaler_low < 0
+        # the drift rate will be positive, drift towards the upper bound angry
+
+        # if tone is high, using drift_rate_scaler_high > 0
+        # the drift rate will be negative, drift towards the lower bound sad
+    # if intensity > 0,  high-sad, low-angry
+        # if tone is low, using drift_rate_scaler_low < 0
+        # the drift rate will be negative, drift towards the lower bound sad
+
+        # if tone is high, using drift_rate_scaler_high > 0
+        # the drift rate will be positive, drift towards the upper bound angry
+    
     k = tone_at_t == 1 ? drift_rate_scaler_low : drift_rate_scaler_high
     v_t = v + k * intensity_data[t]            
 
     # 2) Compute belief-modulated boundary
-    choice_prob_diff = sad_face_prob - angry_face_prob  # difference in choice probabilities
-    choice_prob_diff = clamp(choice_prob_diff, -1.0, 1.0)  # clamp to avoid extreme values                 
-    if tone_at_t == 1  # low tone
-        bs = boundary_scaler_low * choice_prob_diff  # boundary modulator for high-angry, low-sad
-    else  # high tone
-        bs = boundary_scaler_high * choice_prob_diff  # boundary modulator for high-sad, low-angry
-    end
-    a_t = a * (1 + bs)  # boundary separation modulated by belief difference        
+    # use the Q values difference to determine the boundary separation, lower bounary - upper boundary
+    choice_prob_diff =  angry_face_prob -sad_face_prob
+    println("a before modulation: $a, choice_prob_diff: $choice_prob_diff, tone_at_t: $tone_at_t, boundary_scaler: $boundary_scaler")
+    a_t = a + boundary_scaler * choice_prob_diff  # boundary separation modulated by belief difference     
+    
+    # record trial-specific DDM parameters
+    v_t_hist[t] = v_t
+    a_t_hist[t] = a_t
+    
+    # TODO: using the sad_face_prob and angry_face_prob to determine the starting bias w?
+    # check if the them add up to 1, if not, normalize them
+    # if sad_face_prob + angry_face_prob != 1.0
+    #     sad_face_prob /= (sad_face_prob + angry_face_prob)
+    #     angry_face_prob /= (sad_face_prob + angry_face_prob)
+    # end
+    # # the upper bound is the angry face, lower bound is the sad face, w = 0.5 means no bias, 
+    # # w = 0.0 means bias towards sad face, w = 1.0 means bias towards angry face
+    # w = angry_face_prob
+    # or using a linear function to determine the starting bias w base on w_base?
 
     # 3) Sample from the DDM via SSM.jl
-    dist = DDM(v_t, a_t, w, T)              
+    # println("Trial $t: Tone = $(tone_at_t), Intensity = $(intensity_data[t]), Drift Rate = $(v_t), Boundary Separation = $(a_t)")
+    dist = DDM(v_t, a_t, w, T)          
+        
     rnd  = rand(rng, dist)                  
     choice_sim[t], rt_sim[t] = rnd.choice, rnd.rt
+    # println("Trial $t: Tone = $(tone_at_t), Intensity = $(intensity_data[t]), Choice = $(choice_sim[t]), RT = $(rt_sim[t])")
 
     # 4) reward computation
-    # give the choice is 1 or 2 combine with tone, compute which association the subject is responding to
-    if tone_at_t == 1  # low tone
-        choice_association[t] = (choice_sim[t] == 1) ? 1 : 2  # high-angry, low-sad association
-    else  # high tone
-        choice_association[t] = (choice_sim[t] == 1) ? 2 : 1  # high-sad, low-angry association
+    # check if the sample response time exceeds the maximum allowed response time
+    # if it does, mark the choice_association as 0 (no association chosen), this trail will be considered as a missing response
+    # otherwise, determine the association based on the tone and choice, determine the correctness of the choice, and compute the reward
+    # the reward is based on the response time and correctness of the choice
+    if rt_sim[t] > max_allowed_rt
+        choice_association[t] = 0  # no association chosen, mark as 0
+        accuracy[t] = false  # if response time exceeds the maximum allowed, mark as incorrect
+        reward = missing_response_reward
+        # println("Trial $t: Response time exceeds maximum allowed, marking as no association chosen.")
+    else
+        if tone_at_t == 1  # low tone
+            choice_association[t] = (choice_sim[t] == 1) ? 1 : 2  # high-angry, low-sad association
+        else  # high tone
+            choice_association[t] = (choice_sim[t] == 1) ? 2 : 1  # high-sad, low-angry association
+        end
+        correctness =  observed_data[t] == choice_association[t] ? 1.0 : 0.0 
+        if correctness == 1.0
+            # if the choice is correct, reward is based on the response time
+            accuracy[t] = true
+            reward = ((( min_correct_response_reward- max_correct_response_reward) / (max_allowed_rt - 0)) * rt_sim[t])+ max_correct_response_reward
+        else
+            # if the choice is incorrect, use the fixed reward for incorrect response
+            accuracy[t] = false
+            reward = incorrect_response_reward
+        end
     end
-
-    # TODO: Reward computation add time factor?
-    # compare the choice_association with the observed data to determine reward
-    reward = observed_data[t] == choice_association[t] ? 1.0 : 0.0 
-    # record whether this trial was correct and the pre-update beliefs
-    accuracy[t] = (reward == 1.0)
+   
     q1_hist[t] = q[1]
     q2_hist[t] = q[2]
-    println("Trial $t: Choice = $(choice_sim[t]), RT = $(rt_sim[t]), Reward = $reward, Association = $(choice_association[t])")
+    # println("Trial $t: Choice = $(choice_sim[t]), RT = $(rt_sim[t]), Reward = $reward, Association = $(choice_association[t])")
+
     # 5) Belief update (Rescorla–Wagner + forgetting)             
-    # if win, update belief towards the choice, else update away from the choice
-    q = q .+ eta * (reward .- q)  # update belief based on reward
-    q = (1 - omega) .* q .+ omega .* V0  # apply forgetting
-    # ensure q stays within bounds
-    q = clamp.(q, 0.0, 1.0)  # ensure belief stays within [0, 1]
-
-
-    # if lose update belief away from the choice
-    q = q .- eta * (reward .- q)  # update belief based on reward
-    q = (1 - omega) .* q .+ omega .* V0  # apply forgetting
-    # ensure q stays within bounds
-    q = clamp.(q, 0.0, 1.0)  # ensure belief stays within [0, 1]
+    # update the beliefs based on the association chosen --> which q to update
+    # based on if winning or losing ---> which learning rate to use
+    # for the unchosen association, forget to V0 for both associations q values
+    if choice_association[t] == 1  # high-angry, low-sad association
+        # println("chosen association: high-angry, low-sad association, 1")
+        if observed_data[t] == 1  # high-angry, low-sad association
+            # println("observed data: high-angry, low-sad association, correct choice")
+            # update belief towards the choice high-angry, low-sad association, 1
+            q[1] = q[1] + eta_win * (reward - q[1])  # update belief based on reward
+        else
+            # println("observed data: high-sad, low-angry association, incorrect choice")
+            # update belief away from the choice high-angry, low-sad association, 1
+            q[1] = q[1] + eta_loss * (reward - q[1])  # update belief based on reward
+        end
+    elseif choice_association[t] == 2  # high-sad, low-angry association
+        # println("chosen association: high-sad, low-angry association, 2")
+        if observed_data[t] == 2  # high-sad, low-angry association
+            # println("observed data: high-sad, low-angry association, correct choice")
+            q[2] = q[2] + eta_win * (reward - q[2]) 
+        else
+            # println("observed data: high-angry, low-sad association, incorrect choice")
+            # update belief away from the choice high-sad, low-angry association, 2
+            q[2] = q[2] + eta_loss * (reward - q[2])
+        end
+    else
+        # println("No association chosen, no update")
+        # for unchose association, forget to V0
+        q[1] = (1 - omega) * q[1] + omega * V0  # forgetting for high-angry, low-sad association
+        q[2] = (1 - omega) * q[2] + omega * V0  # forgetting for high-sad, low-angry association
+    end
+    println("Updated beliefs: q1 = $(q[1]), q2 = $(q[2])")
+    println("--------------------------------------------------")
 end
 
 
-##### Visualization of Simulation Results #####
+
 using Plots
 
-# 1) Response time distribution
-histogram(rt_sim;
-    bins=30,
-    xlabel="Response time (seconds)",
-    ylabel="Count",
-    title="Distribution of Response Times",
-    legend=false)
-savefig("rt_distribution.png")
+trials = 1:n_trials
 
-# 2) Choice (association) frequencies
-counts = countmap(choice_association)
-bar(
-    collect(keys(counts)),
-    collect(values(counts));
-    xlabel="Chosen Association (1=high-angry/low-sad, 2=high-sad/low-angry)",
-    ylabel="Frequency",
-    title="Choice Frequencies",
-    xticks=[1,2]
-)
-savefig("choice_frequencies.png")
+# 1. Q-value histories
+p1 = plot(trials, q1_hist, label="q₁ (high-angry)", xlabel="Trial", ylabel="Q value", title="Belief Histories")
+plot!(p1, trials, q2_hist, label="q₂ (high-sad)")
 
-# 3) Learning curve (cumulative accuracy over trials)
-learning_curve = cumsum(accuracy) ./ (1:n_trials)
-plot(
-    1:n_trials,
-    learning_curve;
-    xlabel="Trial Number",
-    ylabel="Cumulative Accuracy",
-    title="Learning Curve Over Trials",
-    legend=false
-)
-savefig("learning_curve.png")
+# 2. Collapse probabilities
+p2 = plot(trials, sad_face_prob_hist, label="P(sad)", xlabel="Trial", ylabel="Probability", title="Collapsed Probabilities")
+plot!(p2, trials, angry_face_prob_hist, label="P(angry)")
 
-# 4) Belief trajectories over trials
-plt1 = plot(
-    1:n_trials,
-    q1_hist;
-    label="Belief: high-angry/low-sad",
-    xlabel="Trial Number",
-    ylabel="Belief Value",
-    title="Belief Trajectories"
-)
-plot!(
-    1:n_trials,
-    q2_hist;
-    label="Belief: high-sad/low-angry"
-)
-savefig("belief_trajectories.png")
+# 3. DDM parameters over trials
+p3 = plot(trials, v_t_hist, label="Drift rate vₜ", xlabel="Trial", ylabel="Value", title="Drift Rate Over Trials")
+p4 = plot(trials, a_t_hist, label="Boundary aₜ", xlabel="Trial", ylabel="Value", title="Boundary Separation Over Trials")
 
-println("Saved plots: rt_distribution.png, choice_frequencies.png, learning_curve.png, belief_trajectories.png")
+# 4. Response times
+p5 = scatter(trials, rt_sim, label="RT", xlabel="Trial", ylabel="Response time (s)", title="Response Times")
+
+# 5. Observed vs. Simulated Choices
+p6 = scatter(trials, observed_data, label="Observed", marker=:circle, xlabel="Trial", ylabel="Choice (1=angry,2=sad)", title="Choices Comparison")
+# plot simulated choices with dots in a different color
+scatter!(p6, trials, choice_association, label="Simulated", marker=:dot, color=:red, markersize=3)
+
+# 6. Intensity and Tone
+p7 = scatter(trials, intensity_data, label="Intensity", xlabel="Trial", ylabel="Intensity", title="Stimulus Intensity")
+p8 = scatter(trials, tone_data, label="Tone (0=low,1=high)", xlabel="Trial", ylabel="Tone", title="Tone Over Trials")
+
+# display all plots
+display(p1)
+display(p2)
+display(p3)
+display(p4)
+display(p5)
+display(p6)
+display(p7)
+display(p8)
