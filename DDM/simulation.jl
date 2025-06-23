@@ -21,7 +21,6 @@ over time.
 •	The rl will effect the attribute of the DDM model, such as the drift rate and boundary separation.
 •	The model samples from a drift-diffusion model (DDM) to simulate the decision-making process.
 •	The generated response is either “angry face” or “sad face,” along with a response time will then be use to feedback the reward by compare with the observed data(ground truth).
-
 =#
 
 using Random
