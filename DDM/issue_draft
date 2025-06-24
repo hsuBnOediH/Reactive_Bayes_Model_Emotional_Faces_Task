@@ -23,7 +23,6 @@ Model structure and code (in Julia):
  • Simulation code attaches these pieces, samples via DDM(vₜ, aₜ, w, T) from SequentialSamplingModels.jl, and updates the Q-values with a Rescorla–Wagner rule. See full code here:GitHub code of the simulation
 
 
-
 My questions:
  1. Model specification
  • How do I declare a custom joint model that combines an RL update with a DDM observation model in RxInfer’s GraphPPL syntax?
