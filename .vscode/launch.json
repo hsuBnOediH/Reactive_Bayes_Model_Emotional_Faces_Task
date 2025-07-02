@@ -15,6 +15,13 @@
       "name": "Run sim Script",
       "program": "${file}",
       "cwd": "${workspaceFolder}/githubexample"
+    },
+    {
+      "type": "matlab",
+      "request": "launch",
+      "name": "Run HMM MATLAB Script",
+      "program": "${workspaceFolder}/HMM/main.m",
+      "cwd": "${workspaceFolder}/HMM"
     }
   ]
 }
