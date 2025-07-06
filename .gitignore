@@ -1,3 +1,10 @@
+# keep credentials out of Git
 emotional_faces_scripts/carter_neptune_token.txt
 emotional_faces_scripts/.neptune/
+
+# drop intermediate or IDE files
 SSM/
+.DS_Store
+.idea/
+outputs/processed_data/debug/
+.DS_Store

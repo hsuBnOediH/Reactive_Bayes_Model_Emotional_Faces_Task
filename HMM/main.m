@@ -1,7 +1,33 @@
 % Authors: Feng, July 2024
 % 
 % Main Script for HMM model for the Emotional Face Task
-% 
+
+%{
+Task overview:
+two-hundred-trial “emotional face” experiment in which a participant hears a low or high tone, 
+then sees a face whose expression varies from clearly sad to clearly angry. 
+They must decide “sad” or “angry” as quickly as possible; correct, fast responses yield higher reward, 
+while incorrect or too-slow responses incur minimal reward. The tone–face association changes unpredictably during the session, 
+so the model must continuously relearn which tone maps to which emotion.
+
+
+o(observations): participants' responses to the emotional faces is sad or angry.
+s(hiden states): the hidden states of which tone-face mapping is currently active.
+
+
+
+
+A(likelihood): P(observation | hidden state)-> P(o)
+    How likely each observation (o) is under each hidden state (s).
+B(transition): P(hidden state | previous hidden state) -> P(s|s_prev)
+    How likely the hidden state is to transition from one to another.
+C(preferences): Log-preference over observation, however in this case, we do not have preferences, so it is empty.
+D(priors over initial hidden state): P(hidden state) -> P(s)
+    The prior over the initial hidden state. In other words, in the first trial, which association is more likely to be active in subjects' mind.
+%}
+
+
+
 dbstop if error
 rng('default');
 clear all;
@@ -124,6 +150,13 @@ addpath(spmPath);
 addpath(spmDemPath);
 addpath(tutorialPath);
 
+bounded01_fields = { ...
+    'p_hs_la' ...
+};
+
+logspace_fields = { ...
+    'inv_temp'...
+};
 
 
 if SIM
@@ -132,9 +165,12 @@ if SIM
 end
 
 if FIT
+    params.fields_normal_range.bounded01_fields = bounded01_fields;
+    params.fields_normal_range.logspace_fields = logspace_fields;
     params.mode = 'response'; %could be 'response' or 'predictions'
+    params.p_hs_la = 0.5; % probability of high tone given sad face and low tone given angry face
     % implement the field part later
-    field = 'none'; 
+    field = {'p_hs_la'};
     [fit_results, DCM] = emotional_face_fit_prolific(FIT_SUBJECT, INPUT_DIRECTORY, params, field, plot, MODEL_IDX);
     model_free_results = advise_mf_uni(fit_results.file);
     mf_fields = fieldnames(model_free_results);
