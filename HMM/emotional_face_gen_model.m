@@ -1,45 +1,5 @@
 function mdp = emotional_face_gen_model(trialinfo,priors)
-    % feng: copy from new version of active inference model code
-    single_omega = 0;
-    single_eta = 0;
-    field = fieldnames(priors);
-    for i = 1:length(field)
-        if strcmp(field{i},'omega')
-            priors.omega_d_win = priors.omega;
-            priors.omega_d_loss = priors.omega;
-            priors.omega_a_win = priors.omega;
-            priors.omega_a_loss = priors.omega;
-            priors.omega_d = priors.omega;
-            priors.omega_a = priors.omega;
-            single_omega = 1;
-        elseif strcmp(field{i},'eta')
-            priors.eta_d_win = priors.eta;
-            priors.eta_d_loss = priors.eta;
-            priors.eta_a_win = priors.eta;
-            priors.eta_a_loss = priors.eta;
-            priors.eta_d = priors.eta;
-            priors.eta_a = priors.eta;
-            single_eta = 1;
-        end
-    end
-    for i = 1:length(field)
-        if strcmp(field{i},'omega_d') & single_omega ~= 1
-            priors.omega_d_win = priors.omega_d;
-            priors.omega_d_loss = priors.omega_d;
-        elseif strcmp(field{i},'eta_d') & single_eta ~= 1
-            priors.eta_d_win = priors.eta_d;
-            priors.eta_d_loss = priors.eta_d;
-        elseif strcmp(field{i},'omega_a') & single_omega ~= 1
-            priors.omega_a_win = priors.omega_a;
-            priors.omega_a_loss = priors.omega_a;
-        elseif strcmp(field{i},'eta_a') & single_eta ~= 1
-            priors.eta_a_win = priors.eta_a;
-            priors.eta_a_loss = priors.eta_a;
-        end
-    end
-
-
-
+  
     % priors that we are fixing
     % Feng: this value is the same as "p_right" in the new version of the code
     p_lb = .5; % left better prob in d
@@ -62,31 +22,6 @@ function mdp = emotional_face_gen_model(trialinfo,priors)
 
     times_counts=200; % orignal version 200
 
-    omega_d_win = priors.omega_d_win;
-    omega_d_loss = priors.omega_d_loss;
-    omega_a_win = priors.omega_a_win;
-    omega_a_loss = priors.omega_a_loss;
-    eta_d_win = priors.eta_d_win;
-    eta_d_loss = priors.eta_d_loss;
-    eta_a_win = priors.eta_a_win;
-    eta_a_loss = priors.eta_a_loss;
-
-    % feng: all the omega and eta are the same for all the states will be replaced by the split values above
-    % omega_eta_context = priors.omega_eta_context;
-    % omega_eta_advisor_win = priors.omega_eta_advisor_win;
-    % omega_eta_advisor_loss = priors.omega_eta_advisor_loss;
-    %eta = priors.eta;
-    %eta_win = priors.eta_win;
-    %eta_loss = priors.eta_loss;
-
-    % Feng: what is this novelty_scalar? how get this value?
-    % in the new version of the code, this value is called "novelty_value", it been comcpute as below
-    %                 novelty_for_each_observation = info_gain(:,1)*p_context(1,:,trial) + info_gain(:,2)*p_context(2,:,trial);
-    %                 novelty_value(option,tp,trial) = sum(novelty_for_each_observation);
-    % also, it is not been used in this code, assgin 0.3000 to it for now
-    % novelty_scalar = priors.novelty_scalar; 
-    % TODO: comment out the novelty_scalar for now, 
-    % novelty_scalar = 0.3000;
 
 
     for t = 1:size(trialinfo,1)

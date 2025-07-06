@@ -69,7 +69,7 @@ end
 
 % SETTINGS
 % Subject identifier for the test or experiment, if on cluster read from ENV var
-FIT_SUBJECT = '5a5ec79cacc75b00017aa095';
+FIT_SUBJECT = '5db4ef4a2986a3000be1f886';
 if ON_CLUSTER
     FIT_SUBJECT = getenv('FIT_SUBJECT');
 end
@@ -95,7 +95,7 @@ end
 % INPUT_PATH:
 % The folder path where the subject file is located. If INPUT_PATH is a relative path,
 % it will be appended to the ROOT path.
-INPUT_PATH = '../emotional_faces_processed_data';
+INPUT_PATH = '../outputs/processed_data/debug/';
 if ON_CLUSTER
     INPUT_PATH = getenv('INPUT_PATH');
 end
@@ -167,7 +167,7 @@ end
 if FIT
     params.fields_normal_range.bounded01_fields = bounded01_fields;
     params.fields_normal_range.logspace_fields = logspace_fields;
-    params.mode = 'response'; %could be 'response' or 'predictions'
+    params.mode = 'response'; %could be 'response' or 'prediction'
     params.p_hs_la = 0.5; % probability of high tone given sad face and low tone given angry face
     % implement the field part later
     field = {'p_hs_la'};

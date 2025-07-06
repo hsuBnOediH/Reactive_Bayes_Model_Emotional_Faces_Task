@@ -5,21 +5,9 @@ function [fit_results, DCM] = emotional_face_fit_prolific(subject,folder,params,
     sortedDirectory = directory(sortedIndices);
     
     % mask1: matches the subject base name
-    base_mask = contains({sortedDirectory.name}, ['task_data_' subject]);
-
-    % mask2: matches the desired suffix based on params.mode
-    switch params.mode
-        case "response"
-            suffix_mask = endsWith({sortedDirectory.name}, '_responses.csv');
-        case "predictions"
-            suffix_mask = endsWith({sortedDirectory.name}, '_predictions.csv');
-        otherwise
-            % if you ever want all .csv
-            suffix_mask = endsWith({sortedDirectory.name}, '.csv');
-    end
-
+    base_mask = contains({sortedDirectory.name}, [subject]);
     % combine masks
-    index_array = find(base_mask & suffix_mask);
+    index_array = find(base_mask);
 
     if isempty(index_array)
         error('No matching files found for subject %s in %s mode.', subject, params.mode);
@@ -33,26 +21,84 @@ function [fit_results, DCM] = emotional_face_fit_prolific(subject,folder,params,
     file = [folder '/' sortedDirectory(file_index).name];
 
     subdat = readtable(file);
-    data.trial     = subdat.trial_number;
-    data.response  = subdat.response;
-    data.observed  = subdat.observed;
-    data.intensity = subdat.intensity;
-
-    % win lose result?
-    % reward?
-    % RT? 
-
-
-    for n = 1:size(data.observed,1)
-        DCM.field  = field;            % Parameter field
-        DCM.U      =  data;              % trial specification (stimuli)
-        DCM.Y      =  data;              % responses (action)
-        % DCM.reaction_times = reaction_times;
-        DCM.params = params;
-        DCM.mode = 'fit';
-        DCM        = emotional_face_inversion(DCM, model);   % Invert the model
-        break;
+    switch params.mode
+        case 'response'
+            timeVar   = 'response_response_time';
+            choiceVar = 'response_response';
+            resultVar = 'response_result';
+        case 'prediction'
+            timeVar   = 'predict_response_time';
+            choiceVar = 'predict_response';
+            resultVar = 'predict_result';
+        otherwise
+            error('Unknown mode "%s" – must be ''response'' or ''prediction''.', params.mode);
     end
+    % 1 based indexing, 200 trials in total
+    trial_num = subdat.trial_number;
+    % face stimulus type, could be sad or angry, converted to numeric, angry is 0 and sad is 1
+    face_type = string(subdat.stim_type);
+    face_type = double( face_type == "sad" );
+    % observed tone type, could be high or low, converted to numeric, high is 1 and low is 0
+    tone_type = string(subdat.tone);
+    tone_type = double( tone_type == "high" );
+    % association type, subject's belief about the association between face and tone
+    % could either be sad_high-angry_low or sad_low-angry_high, 
+    % in numeric, sad_high-angry_low is 1 and sad_low-angry_high is 0
+    association = double( face_type == tone_type );
+
+    % observed tone intensity, high or low, converted to numeric, high is 1 and low is 0.5
+    intensity = string(subdat.intensity);
+    intensity = double( intensity == "high" ) + 0.5 * double( intensity == "low" );
+    % unclear what this is, but it is a numeric value 1 or 0
+    expectation = subdat.expectation;
+    % ground truth of the association, could be sad_high-angry_low
+    prob_hightone_sad = subdat.prob_hightone_sad;
+    % the gender of face stimulus, could F or M, converted to numeric, M is 1 and F is 0
+    gender = string(subdat.gender);
+    gender = double(gender == "M");
+    % the block index, 1 to 6, each block size is dynamic, could from 10 to 50
+    block_index = subdat.block_index;
+    % the maximun seconds for answering the question, exceeding this time will be considered as no response
+    response_duration = subdat.response_duration;
+    % the actual response time, in seconds, if for the trail the subject did not respond, it will be NaN
+    response_time = subdat.(timeVar);
+    % the actual response, angry or sad indicated the face type, converted to numeric, angry is 0 and sad is 1
+    % no response will be NaN
+    resp_str = string(subdat.(choiceVar));  
+    response = nan(size(resp_str));           
+    response( resp_str=="angry" ) = 0;        
+    response( resp_str=="sad"   ) = 1;    
+    % the actual result of the response, 1 for correct and 0 for incorrect, NaN for no response
+    result = subdat.(resultVar);
+    % the actual reward, correct response will get reward between 75 and -25, depending on the rt
+    % incorrect response will get -50, and no response will get -200
+    reward = subdat.reward;
+
+    trial_info = {
+        trial_num, ...
+        face_type, ...
+        tone_type, ...
+        association, ...
+        intensity, ...
+        expectation, ...
+        prob_hightone_sad, ...
+        gender, ...
+        block_index, ...
+    }
+
+    for n = 1:size(trial_num)
+        o{n} = [face_type(n) tone_type(n) intensity(n) gender(n) response(n) response_time(n) reward(n)];
+        u{n} = [response(n)];
+    end
+
+    DCM.field  = field;            % Parameter field
+    DCM.trial_info = trial_info; % Trial information
+    DCM.U      =  o;                % observed outcomes (stimulus)
+    DCM.Y      =  u;                % responses (actions)
+    % DCM.reaction_times = reaction_times;
+    DCM.params = params;
+    DCM.mode = 'fit';
+    DCM        = emotional_face_inversion(DCM, model);   % Invert the model
 
     fields = fieldnames(DCM.M.pE);
 

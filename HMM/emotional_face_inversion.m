@@ -42,7 +42,7 @@ function [DCM] = emotional_face_inversion(DCM, model)
     M.pC    = pC;                            % prior variance (parameters)
     M.mode  = DCM.mode;
     M.params = DCM.params;
-
+    M.trial_info = DCM.trial_info;           % trial information
     % Variational Laplace
     %--------------------------------------------------------------------------
     [Ep,Cp,F] = spm_nlsi_Newton(M,DCM.U,DCM.Y);
@@ -89,12 +89,10 @@ function L = spm_mdp_L(P,M,U,Y)
             params.(field) = P.(field);
         end
     end
-
-
-    num_trials = 200;
     L = 0;
-    if M.model == 4
-        MDP     = emotional_face_gen_model(trialinfo(30*idx_block-29:30*idx_block,:),params);
+    
+    if M.model == 1
+        MDP     = emotional_face_gen_model(M.trial_info,params);
     end
     
    
