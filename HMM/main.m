@@ -151,7 +151,7 @@ addpath(spmDemPath);
 addpath(tutorialPath);
 
 bounded01_fields = { ...
-    'p_hs_la' ...
+    'p_hs_la','p_correct','p_stay'...
 };
 
 logspace_fields = { ...
@@ -169,8 +169,10 @@ if FIT
     params.fields_normal_range.logspace_fields = logspace_fields;
     params.mode = 'response'; %could be 'response' or 'prediction'
     params.p_hs_la = 0.5; % probability of high tone given sad face and low tone given angry face
+    params.p_correct = 0.75; % probability of correct response given the correct association
+    params.p_stay = 0.98; % probability of staying in the same state
     % implement the field part later
-    field = {'p_hs_la'};
+    field = {'p_hs_la','p_correct','p_stay'};
     [fit_results, DCM] = emotional_face_fit_prolific(FIT_SUBJECT, INPUT_DIRECTORY, params, field, plot, MODEL_IDX);
     model_free_results = advise_mf_uni(fit_results.file);
     mf_fields = fieldnames(model_free_results);
