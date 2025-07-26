@@ -89,7 +89,7 @@ function [fit_results, DCM] = emotional_face_fit_prolific(subject,folder,params,
     % observation should include face_type, tone_type, intensity, result, response, reward
     % action should include response
 
-    for n = 1:size(trial_num)
+    for n = 1:size(trial_num, 1)
         o{n} = [face_type(n) tone_type(n) intensity(n) gender(n) response(n) response_time(n) reward(n)];
         u{n} = [response(n)];
     end

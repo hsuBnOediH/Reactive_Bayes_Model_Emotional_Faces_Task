@@ -47,8 +47,7 @@ function [MDP] = active_inference_model_mp(task, MDP, params, sim)
             
             % solve this trial (for all models synchronously)
             %------------------------------------------------------------------
-            % OUT(:,i) = active_inference_model_mp_uni(task,MDP(:,i),OPTIONS);
-            OUT(:,i) = active_inference_model_mp_uni(task,MDP(:,i),params,sim);
+            OUT(:,i) = active_inference_model_mp(task,MDP(:,i),params,sim);
             
             % Bayesian model reduction
             %------------------------------------------------------------------
@@ -311,15 +310,6 @@ function [MDP] = active_inference_model_mp(task, MDP, params, sim)
     % p: posterior expectations of hidden states
     % un: posterior expectations of hidden states
     % u: posterior expectations of hidden states
-
-
-    % read out form the MDP structure
-    % s:
-    % o:
-    % p:
-    % qb:
-    % w:
-
 
 
 

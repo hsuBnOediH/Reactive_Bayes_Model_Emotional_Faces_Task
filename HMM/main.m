@@ -142,7 +142,6 @@ elseif strcmp(env_sys, 'cluster')
     spmPath = '/mnt/dell_storage/labs/rsmith/all-studies/util/spm12';
     spmDemPath = '/mnt/dell_storage/labs/rsmith/all-studies/util/spm12/toolbox/DEM';
     tutorialPath = '/mnt/dell_storage/labs/rsmith/lab-members/cgoldman/Active-Inference-Tutorial-Scripts-main';
-    addpath('/media/labs/rsmith/lab-members/fli/advise_task/RL-Model-for-Advise-Task/feng/model_free/')
     INPUT_DIRECTORY = [ROOT '/' INPUT_PATH];
 end
 
@@ -169,12 +168,12 @@ if FIT
     params.fields_normal_range.logspace_fields = logspace_fields;
     params.mode = 'response'; %could be 'response' or 'prediction'
     params.p_hs_la = 0.5; % probability of high tone given sad face and low tone given angry face
-    params.p_correct = 0.75; % probability of correct response given the correct association
-    params.p_stay = 0.98; % probability of staying in the same state
+    params.p_high_intensity = 0.75; % probability of correct response given the correct association
+    params.p_low_intensity = 0.98; % probability of staying in the same state
     % implement the field part later
-    field = {'p_hs_la','p_correct','p_stay'};
+    field = {'p_hs_la','p_high_intensity','p_low_intensity'};
     [fit_results, DCM] = emotional_face_fit_prolific(FIT_SUBJECT, INPUT_DIRECTORY, params, field, plot, MODEL_IDX);
-    model_free_results = advise_mf_uni(fit_results.file);
+    model_free_results = emotional_face_mf_uni(fit_results.file);
     mf_fields = fieldnames(model_free_results);
     for i=1:length(mf_fields)
         fit_results.(mf_fields{i}) = model_free_results.(mf_fields{i});      
@@ -192,13 +191,13 @@ if FIT
         end
         % Save the table to the folder
         writetable(struct2table(fit_results), ...
-            fullfile(folder_name, ['advise_task-' FIT_SUBJECT  '_fits.csv']));
+            fullfile(folder_name, ['emo_face-' FIT_SUBJECT  '_fits.csv']));
         % Save the plot to the folder
         saveas(gcf, fullfile(folder_name, [FIT_SUBJECT  '_fit_plot.png']));
         % Save the .mat file to the folder
         save(fullfile(folder_name, ['fit_results_' FIT_SUBJECT  '.mat']), 'DCM');
     else
-        writetable(struct2table(fit_results), [results_dir '/advise_task-' FIT_SUBJECT '_fits.csv']); 
+        writetable(struct2table(fit_results), [results_dir '/emo_face-' FIT_SUBJECT '_fits.csv']); 
         saveas(gcf,[results_dir '/' FIT_SUBJECT '_fit_plot.png']);
         save(fullfile([results_dir '/fit_results_' FIT_SUBJECT '.mat']), 'DCM');
     end

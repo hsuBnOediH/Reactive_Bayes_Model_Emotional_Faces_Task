@@ -95,16 +95,12 @@ function L = spm_mdp_L(P,M,U,Y)
         MDP     = emotional_face_gen_model(M.trial_info,params);
     end
     
-   
-    % outcomes = U(30*idx_block-29:30*idx_block);
-
-    % actions  = Y(30*idx_block-29:30*idx_block);
-
-    % actualreward = M.actualrewards(30*idx_block-29:30*idx_block);
-    % task.true_p_right = nan(1,30);
-    for idx_trial = 1:30
-        MDP(idx_trial).o = U.observed(idx_trial);
-        MDP(idx_trial).u = U.response(idx_trial);
+    % MDP structure
+    %--------------------------------------------------------------------------
+    % observation should include: face_type, tone_type, intensity, result, response, reward
+    for idx_trial = 1:200
+        MDP(idx_trial).o = U(idx_trial);
+        MDP(idx_trial).u = Y;
     end
     
     task.field = fields;
