@@ -136,6 +136,7 @@ Returns `(y_sim, p)` where `y_sim` is Vector{Int} and `p` the choice probabiliti
 """
 function simulate_responses_mathys(obs, beta, mu0, sa0, kappa, omega, z_variance)
     mu, pi, muhat, pihat, da, v, w = simulate_hgf_mathys(obs, mu0, sa0, kappa, omega, z_variance)
+    n = length(mu[:,1])
     sa = 1 ./ pi
     sahat = 1 ./ pihat
     prediction      = muhat[:,1]
