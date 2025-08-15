@@ -17,6 +17,9 @@ function mdp = emotional_face_gen_model(trialinfo, priors)
         intensity       = trialinfo.intensity(t);        % Tone intensity (1 or 0.5)
         tone_type       = trialinfo.tone_type(t);        % 1 = high tone presented, 0 = low tone presented
         
+
+
+
         % if facetype is angry, then context1 of D{1} is 1, otherwise context2 is 1
         % Prior belief distribution over context states [context1; context2]
         % TODO: Time count here or not???
@@ -91,14 +94,75 @@ function mdp = emotional_face_gen_model(trialinfo, priors)
         Np = 2;  % number of policies
         V = [1,1];  % both policies are active
 
+
+        %% Observations (O matrices)
+        % If you have Ng modalities and T time‐points, each
+        % MDP(m).O{g} is an No(g)×T matrix, where No(g) is
+        % the number of possible outcomes in modality g.
+        Ng = 2;  % number of modalities (tone and face)
+        O = cell(1, Ng);
+        for g = 1:Ng
+            O{g} = zeros(No(g), T);
+        end
+        % At time step 1, nothing is observed yet, so all zero
+        O{1}(:, 1) = 0;  % Tone modality (no tone observed yet)
+        O{2}(:, 1) = 0;  % Face modality (no face observed yet)
+        % At time step 2, the tone is observed, init according to the
+        % tone_type
+        if tone_type == 0
+            % if low tone observed 
+            O{1}(1, 2) = 1;
+        else
+            % if high tone observed 
+            O{1}(2, 2) = 1;
+        end
+
+        % At time step 3, the the tone is observed, init according to the
+        % tone_type
+        % face type is observed also, sampling posteriors over states
+        if tone_type == 0
+            % if low tone observed 
+            O{1}(1, 3) = 1;
+        else
+            % if high tone observed 
+            O{1}(2, 3) = 1;
+        end
+
+        % Sample the observed face type from prob
+        
+        % compute the prob of face
+        p_hidden = D{1};          % 1×2 vector of hidden-state probabilities
+        likelihood_matrix = A{2};          % 2×2 likelihood matrix
+
+        % 1) sample hidden state index h ∈ {1,2}
+        r = rand();
+        hidden_state_index = find(r <= cumsum(p_hidden), 1);
+        ob_face_given_hidden_state = likelihood_matrix(hidden_state_index,:);
+
+        % 2) sample observed face index o ∈ {1,2} given hidden = h
+        r = rand();
+        ob_face_type_index = find(r <= cumsum(ob_face_given_hidden_state), 1);
+        
+        
+        if ob_face_type_index == 1
+            % angry face
+            O{2}(1, 3) = 1;
+        else
+            % sad face
+            O{2}(2, 3) = 1;
+        end
+
         %% Populate mdp structure for this trial
         mdp(t).A = A;
         mdp(t).B = B;
         mdp(t).C = C;
         mdp(t).D = D;
         mdp(t).T = T;
-        mdp(t).V = V;
-        
+        mdp(t).U = V;
+
+
+        mdp(t).O = O;
+
         % Save some parameters for reference (not used by spm_MDP_VB, but can be useful for analysis)
         mdp(t).prior_d   = prior_d;
         mdp(t).p_hs_la   = p_hs_la;

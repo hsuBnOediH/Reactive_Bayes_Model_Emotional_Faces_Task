@@ -112,7 +112,7 @@ function L = spm_mdp_L(P,M,U,Y)
     end
 
 
-    for j = 1:block_size
+    for j = 1:200
         if actions{j}(2,1) ~= 2
             % TODO: still use the old model? to compute the log likelihood?
             if M.model == 4

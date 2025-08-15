@@ -80,174 +80,38 @@ function [MDP] = active_inference_model_mp(task, MDP, params, sim)
     %--------------------------------------------------------------------------
     %  Read out all the parameters from the MDP structure, if missing, set to default values
     try, 
-        alpha = MDP(1).alpha; 
+        erp   = MDP(1).erp; 
     catch, 
-        alpha = 4; 
-        disp('alpha is missing, set to default value ');
+        erp   = 4;    
+        % disp('erp is missing, set to default value ');
     end
     try, 
         beta  = MDP(1).beta;  
     catch, 
         beta  = 1;   
-        disp('beta is missing, set to default value '); 
+        % disp('beta is missing, set to default value '); 
     end
+
     try, 
-        zeta  = MDP(1).zeta;  
+        p_hs_la  = MDP(1).p_hs_la;  
     catch, 
-        % controls how strictly the model evaluates potential policies (or actions)
-        zeta  = 3;
-        % disp('zeta is missing, set to default value ');
-    end
-    % feng: instead of using eta_win or eta_loss, we use four separate eta values
-    % try, 
-    %     eta_win   = MDP(1).eta_win;   
-    % catch, 
-    %     eta_win   = 1;
-    %     disp('eta_win is missing, set to default value ');
-    % end
-    % try, 
-    %     eta_loss   = MDP(1).eta_loss;   
-    % catch, 
-    %     eta_loss   = 1;
-    %     disp('eta_loss is missing, set to default value ');
-    % end
-    % try, 
-    %     eta   = MDP(1).eta;   
-    % catch, 
-    %     eta   = .5;
-    %     disp('eta is missing, set to default value ');
-    % end
-    try,
-        eta_d_win = MDP(1).eta_d_win;
-    catch,
-        eta_d_win = .5;
-        disp('eta_d_win is missing, set to default value ');
-    end
-    try,
-        eta_d_loss = MDP(1).eta_d_loss;
-    catch,
-        eta_d_loss = .5;
-        disp('eta_d_loss is missing, set to default value ');
-    end
-    try,
-        eta_a_win = MDP(1).eta_a_win;
-    catch,
-        eta_a_win = .5;
-        disp('eta_a_win is missing, set to default value ');
-    end
-    try,
-        eta_a_loss = MDP(1).eta_a_loss;
-    catch,
-        eta_a_loss = .5;
-        disp('eta_a_loss is missing, set to default value ');
+        MDP(1).p_hs_la  = 0.5;  
+        disp('p_hs_la is missing, set to default value ');
     end
     try, 
-        tau   = MDP(1).tau;   
+        p_high_intensity  = MDP(1).p_high_intensity;  
     catch, 
-        tau   = 4;  
-        disp('tau is missing, set to default value ');
-    end 
+        MDP(1).p_high_intensity  = 0.7;  
+        disp('p_high_intensity is missing, set to default value ');
+    end
     try, 
-        chi   = MDP(1).chi;   
+        p_low_intensity  = MDP(1).p_low_intensity;  
     catch, 
-        % feng: missing, should it be definded somewhere, should it be fixed?
-        % determine when the model has resolved enough uncertainty about the system. 
-        % If the sum of uncertainties (denoted as H) is smaller than the chi value, 
-        % the model stops updating its beliefs and considers the evidence accumulation 
-        % process to be complete.
-        chi   = 1/64;
-        % disp('chi is missing, set to default value '); 
+        MDP(1).p_low_intensity  = 0.3;  
+        disp('p_low_intensity is missing, set to default value ');
     end
-    try, 
-        erp   = MDP(1).erp; 
-    catch, 
-        erp   = 4;    
-        disp('erp is missing, set to default value ');
-    end
-    try, 
-        p_ha  = MDP(1).p_ha;  
-    catch, 
-        p_ha  = .75;  
-        disp('p_ha is missing, set to default value ');
-    end
-    %try, rs    = MDP(1).rs;    catch, rs    = .4;    end
-    % feng: same as the eta, for omega, we use four separate values
-    % try, 
-    %     omega = MDP(1).omega; 
-    % catch, 
-    %     omega = 1;    
-    %     disp('omega is missing, set to default value ');
-    % end % forgetting rate
-    % try, 
-    %     omega_eta_advisor_win = MDP(1).omega_eta_advisor_win; 
-    % catch, 
-    %     omega_eta_advisor_win = .5;
-    %     disp('omega_eta_advisor_win is missing, set to default value ');
-    % end
-    % try, 
-    %     omega_eta_advisor_loss = MDP(1).omega_eta_advisor_loss; 
-    % catch, 
-    %     omega_eta_advisor_loss = .5;
-    %     disp('omega_eta_advisor_loss is missing, set to default value ');
-    % end
-    % try, 
-    %     omega_eta_context = MDP(1).omega_eta_context; 
-    % catch, 
-    %     omega_eta_context = .5;
-    %     disp('omega_eta_context is missing, set to default value ');
-    % end
-    try, 
-        omega_d_win = MDP(1).omega_d_win;
-    catch,
-        omega_d_win = .2;
-        disp('omega_d_win is missing, set to default value ');
-    end
-    try, 
-        omega_d_loss = MDP(1).omega_d_loss;
-    catch,
-        omega_d_loss = .2;
-        disp('omega_d_loss is missing, set to default value ');
-    end
-    try, 
-        omega_a_win = MDP(1).omega_a_win;
-    catch,
-        omega_a_win = .2;
-        disp('omega_a_win is missing, set to default value ');
-    end
-    try, 
-        omega_a_loss = MDP(1).omega_a_loss;
-    catch,
-        omega_a_loss = .2;
-        disp('omega_a_loss is missing, set to default value ');
-    end
-    % feng: not used in the current version why?
-    try, 
-        prior_a = MDP(1).prior_a; 
-    catch, 
-        prior_a = 1;
-        disp('prior_a is missing, set to default value ');
-    end
-    try, 
-        prior_d = MDP(1).prior_d; 
-    catch, 
-        prior_d = 1;
-        disp('prior_d is missing, set to default value ');
-    end
-    % feng: not used in the current version why?
-    % should it be l_loss_value and use in some where?
-    try, 
-        la = MDP(1).la;           
-    catch, 
-        la = .1;
-        % disp('la is missing, set to default value ');
-    end
-    try, 
-        novelty_scalar = MDP(1).novelty_scalar;           
-    catch, 
-        novelty_scalar = .25;
-        % disp('novelty_scalar is missing, set to default value ');
-    end
-    %try, eff = MDP(1).eff;         catch, eff = 1;end
+
+
     % preclude precision updates for moving policies
     %--------------------------------------------------------------------------
     if isfield(MDP,'U'), OPTIONS.gamma = 1;end
@@ -631,102 +495,6 @@ function [MDP] = active_inference_model_mp(task, MDP, params, sim)
                 end
             end
             
-            % generate outcomes from a subordinate MDP, unless for the current model
-            %==================================================================
-            % if isfield(MDP,'link')
-    
-            %     % use previous inversions (if available) to reproduce outcomes
-            %     %--------------------------------------------------------------
-            %     try
-            %         mdp = MDP(m).mdp(t);
-            %     catch
-            %         mdp = MDP(m).MDP;
-            %     end
-    
-            %     % priors over states (of subordinate level)
-            %     %--------------------------------------------------------------
-            %     mdp.factor = [];
-            %     for f = 1:size(MDP(m).link,1)
-            %         for g = 1:size(MDP(m).link,2)
-            %             if ~isempty(MDP(m).link{f,g})
-                            
-            %                 % subiordinate state has hierarchical constraints
-            %                 %--------------------------------------------------
-            %                 mdp.factor(end + 1) = f;
-                                                    
-            %                 % empirical priors
-            %                 %--------------------------------------------------
-            %                 O{m}{g,t} = spm_dot(A{m,g},xq(m,:));
-            %                 mdp.D{f}  = MDP(m).link{f,g}*O{m}{g,t};
-                            
-            %                 % outcomes (i.e., states) are generated by model n
-            %                 %--------------------------------------------------
-            %                 if isfield(MDP(m),'n')
-            %                     n    = MDP(m).n(g,t);
-            %                     if m == n
-            %                         ps         = MDP(m).link{f,g}(:,MDP(m).o(g,t));
-            %                         mdp.s(f,1) = find(ps);
-            %                     else
-            %                         mdp.s(f,1) = MDP(n).mdp(t).s(f,1);
-            %                     end
-            %                 end
-                            
-            %                 % hidden state for lower level is the outcome
-            %                 %--------------------------------------------------
-            %                 try
-            %                     mdp.s(f,1) = mdp.s(f,1);
-            %                 catch
-            %                     ps         = MDP(m).link{f,g}(:,MDP(m).o(g,t));
-            %                     mdp.s(f,1) = find(ps);
-            %                 end
-    
-            %             end
-            %         end
-            %     end
-                
-            %     % infer hidden states at lower level (outcomes at this level)
-            %     %==============================================================
-            %     MDP(m).mdp(t) = spm_MDP_VB_X_advice_no_message_passing_faster(mdp);
-                
-            %     % get inferred outcomes from subordinate MDP
-            %     %--------------------------------------------------------------
-            %     for f = 1:size(MDP(m).link,1)
-            %         for g = 1:size(MDP(m).link,2)
-            %             if ~isempty(MDP(m).link{f,g})
-            %                 O{m}{g,t} = MDP(m).link{f,g}'*MDP(m).mdp(t).X{f}(:,1);
-            %             end
-            %         end
-            %     end
-                
-            % end % end of hierarchical mode
-            
-            
-            % generate outcomes from a generalised Bayesian filter
-            %==================================================================
-            % if isfield(MDP,'demi')
-                
-            %     % use previous inversions (if available)
-            %     %--------------------------------------------------------------
-            %     try
-            %         MDP(m).dem(t) = spm_ADEM_update(MDP(m).dem(t - 1));
-            %     catch
-            %         MDP(m).dem(t) = MDP(m).DEM;
-            %     end
-                
-            %     % get prior over outcomes
-            %     %--------------------------------------------------------------
-            %     for g = 1:Ng(m)
-            %         O{m}{g,t} = spm_dot(A{m,g},xqq(m,:));
-            %     end
-                
-            %     % get posterior outcome from Bayesian filtering
-            %     %--------------------------------------------------------------
-            %     MDP(m).dem(t) = spm_MDP_DEM(MDP(m).dem(t),MDP(m).demi,O{m}(:,t),MDP(m).o(:,t));
-            %     for g = 1:Ng(m)
-            %         O{m}{g,t} = MDP(m).dem(t).X{g}(:,end);
-            %     end
-            % end
-            
             % 2.5 likelihood (for multiple modalities)
             %==================================================================
             L{m,t} = 1;
@@ -856,7 +624,7 @@ function [MDP] = active_inference_model_mp(task, MDP, params, sim)
                                     if t > 1 && MP == 0
                                         %spm_backwards(O,Q,A,B,u,t,T)
                                         
-                                        full_posterior = spm_backwards(O,sx,LLH(f,:),sB{m,f},V{m}(:,k,f),1,t);
+                                        full_posterior = spm_backwards(O,sx,L(f,:),sB{m,f},V{m}(:,k,f),1,t);
                                         
                                     else
                                         full_posterior = sx;

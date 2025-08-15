@@ -168,8 +168,8 @@ if FIT
     params.fields_normal_range.logspace_fields = logspace_fields;
     params.mode = 'response'; %could be 'response' or 'prediction'
     params.p_hs_la = 0.5; % probability of high tone given sad face and low tone given angry face
-    params.p_high_intensity = 0.75; % probability of correct response given the correct association
-    params.p_low_intensity = 0.98; % probability of staying in the same state
+    params.p_high_intensity = 0.7; % probability of correct response given the correct association
+    params.p_low_intensity = 0.3; % probability of staying in the same state
     % implement the field part later
     field = {'p_hs_la','p_high_intensity','p_low_intensity'};
     [fit_results, DCM] = emotional_face_fit_prolific(FIT_SUBJECT, INPUT_DIRECTORY, params, field, plot, MODEL_IDX);
