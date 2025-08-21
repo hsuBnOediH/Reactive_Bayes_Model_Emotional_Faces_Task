@@ -1,0 +1,1506 @@
+trial,trial_type,event_type,absolute_time,response_time,response,result
+NA,NA,2,0,NA,NA,NA
+0,INSTRUCTIONS,8,0.0019999999999988916,NA,NA,NA
+NA,RATE_FACES,8,239.47700000000003,NA,NA,NA
+0,RATE_FACES,4,239.485,,,
+0,RATE_FACES,7,241.106,1.6189999999999714,right,correct
+0,RATE_FACES,9,241.414,NA,NA,NA
+1,RATE_FACES,4,242.416,,,
+1,RATE_FACES,7,243.175,0.7560000000000286,left,correct
+1,RATE_FACES,9,243.47899999999998,NA,NA,NA
+2,RATE_FACES,4,244.483,,,
+2,RATE_FACES,7,246.44600000000003,1.9599999999999795,right,correct
+2,RATE_FACES,9,246.75,NA,NA,NA
+3,RATE_FACES,4,247.75400000000002,,,
+3,RATE_FACES,7,248.577,0.8220000000000027,right,correct
+3,RATE_FACES,9,248.88299999999998,NA,NA,NA
+4,RATE_FACES,4,249.88600000000002,,,
+4,RATE_FACES,7,250.98700000000002,1.0989999999999895,left,correct
+4,RATE_FACES,9,251.29200000000003,NA,NA,NA
+5,RATE_FACES,4,252.298,,,
+5,RATE_FACES,7,252.973,0.6730000000000018,right,correct
+5,RATE_FACES,9,253.27800000000002,NA,NA,NA
+6,RATE_FACES,4,254.28199999999998,,,
+6,RATE_FACES,7,255.11200000000002,0.8290000000000077,left,correct
+6,RATE_FACES,9,255.41700000000003,NA,NA,NA
+7,RATE_FACES,4,256.421,,,
+7,RATE_FACES,7,257.361,0.9390000000000214,right,correct
+7,RATE_FACES,9,257.66700000000003,NA,NA,NA
+8,RATE_FACES,4,258.67,,,
+8,RATE_FACES,7,259.355,0.6829999999999927,left,correct
+8,RATE_FACES,9,259.66,NA,NA,NA
+9,RATE_FACES,4,260.663,,,
+9,RATE_FACES,7,261.486,0.8220000000000027,left,correct
+9,RATE_FACES,9,261.79200000000003,NA,NA,NA
+10,RATE_FACES,4,262.796,,,
+10,RATE_FACES,7,263.431,0.6330000000000382,left,correct
+10,RATE_FACES,9,263.736,NA,NA,NA
+11,RATE_FACES,4,264.73900000000003,,,
+11,RATE_FACES,7,265.806,1.0649999999999977,right,correct
+11,RATE_FACES,9,266.111,NA,NA,NA
+12,RATE_FACES,4,267.115,,,
+12,RATE_FACES,7,268.75,1.6340000000000146,left,correct
+12,RATE_FACES,9,269.057,NA,NA,NA
+13,RATE_FACES,4,270.06600000000003,,,
+13,RATE_FACES,7,270.758,0.6889999999999645,right,correct
+13,RATE_FACES,9,271.062,NA,NA,NA
+14,RATE_FACES,4,272.06600000000003,,,
+14,RATE_FACES,7,273.535,1.467999999999961,right,correct
+14,RATE_FACES,9,273.84000000000003,NA,NA,NA
+15,RATE_FACES,4,274.844,,,
+15,RATE_FACES,7,275.869,1.0230000000000246,right,correct
+15,RATE_FACES,9,276.173,NA,NA,NA
+16,RATE_FACES,4,277.177,,,
+16,RATE_FACES,7,277.967,0.7869999999999777,left,correct
+16,RATE_FACES,9,278.271,NA,NA,NA
+17,RATE_FACES,4,279.274,,,
+17,RATE_FACES,7,279.937,0.6610000000000014,right,correct
+17,RATE_FACES,9,280.242,NA,NA,NA
+18,RATE_FACES,4,281.247,,,
+18,RATE_FACES,7,282.285,1.0360000000000014,left,correct
+18,RATE_FACES,9,282.59000000000003,NA,NA,NA
+19,RATE_FACES,4,283.601,,,
+19,RATE_FACES,7,284.25,0.6469999999999914,right,correct
+19,RATE_FACES,9,284.556,NA,NA,NA
+20,RATE_FACES,4,285.558,,,
+20,RATE_FACES,7,286.396,0.8350000000000364,left,correct
+20,RATE_FACES,9,286.701,NA,NA,NA
+21,RATE_FACES,4,287.71500000000003,,,
+21,RATE_FACES,7,288.494,0.7769999999999868,left,correct
+21,RATE_FACES,9,288.798,NA,NA,NA
+22,RATE_FACES,4,289.802,,,
+22,RATE_FACES,7,290.46500000000003,0.6610000000000014,left,correct
+22,RATE_FACES,9,290.771,NA,NA,NA
+23,RATE_FACES,4,291.781,,,
+23,RATE_FACES,7,292.688,0.9050000000000296,right,correct
+23,RATE_FACES,9,292.994,NA,NA,NA
+0,PRACTICE,8,294.004,NA,NA,NA
+0,PRACTICE2,8,309.314,NA,NA,NA
+NA,PRACTICE,8,333.12100000000004,NA,NA,NA
+NA,PRACTICE,3,333.125,NA,NA,NA
+0,angry_high,5,336.127,NA,NA,high
+0,angry_high,11,337.332,NA,NA,NA
+0,angry_high,12,339.34700000000004,2.0089999999999577,right,incorrect
+0,angry_high,6,340.358,NA,NA,NA
+0,angry_high,9,341.265,NA,-200,too slow angry
+NA,angry_high,3,342.764,NA,NA,NA
+1,sad_high,5,344.766,NA,NA,high
+1,sad_high,11,345.97,NA,NA,NA
+1,sad_high,12,346.624,0.6510000000000105,right,correct
+1,sad_high,6,347.633,NA,NA,NA
+1,sad_high,9,348.543,NA,-200,too slow sad
+NA,sad_high,3,350.034,NA,NA,NA
+2,angry_low,5,353.035,NA,NA,low
+2,angry_low,11,354.23400000000004,NA,NA,NA
+2,angry_low,12,355.057,0.8179999999999836,right,incorrect
+2,angry_low,6,356.06600000000003,NA,NA,NA
+2,angry_low,9,356.975,NA,-200,too slow angry
+NA,angry_low,3,358.471,NA,NA,NA
+3,sad_low,5,360.475,NA,NA,low
+3,sad_low,11,361.67900000000003,NA,NA,NA
+3,sad_low,12,362.083,0.39999999999997726,left,incorrect
+3,sad_low,6,363.091,NA,NA,NA
+3,sad_low,9,363.99600000000004,NA,-200,too slow sad
+NA,sad_low,3,365.492,NA,NA,NA
+0,MAIN,8,368.494,NA,NA,NA
+NA,MAIN,8,391.7,NA,NA,NA
+NA,MAIN,3,391.704,NA,NA,NA
+0,angry_low,5,394.70300000000003,NA,NA,low
+0,angry_low,11,395.901,NA,NA,NA
+0,angry_low,12,396.332,0.42500000000001137,right,incorrect
+0,angry_low,6,397.342,NA,NA,NA
+0,angry_low,9,398.152,NA,-200,too slow angry
+NA,angry_low,3,399.651,NA,NA,NA
+1,sad_high,5,401.653,NA,NA,high
+1,sad_high,11,402.858,NA,NA,NA
+1,sad_high,12,403.171,0.3089999999999691,right,correct
+1,sad_high,6,404.181,NA,NA,NA
+1,sad_high,7,404.887,0.7050000000000409,right,correct
+1,sad_high,9,404.988,NA,-14,correct sad
+1,sad_high,3,406.491,NA,NA,NA
+2,angry_low,5,409.493,NA,NA,low
+2,angry_low,11,410.69100000000003,NA,NA,NA
+2,angry_low,12,410.85900000000004,0.16300000000001091,left,correct
+2,angry_low,6,411.865,NA,NA,NA
+2,angry_low,7,412.124,0.25799999999998136,left,correct
+2,angry_low,9,412.672,NA,43,correct angry
+2,angry_low,3,414.171,NA,NA,NA
+3,sad_high,5,417.18,NA,NA,high
+3,sad_high,11,418.379,NA,NA,NA
+3,sad_high,12,418.805,0.4189999999999827,right,correct
+3,sad_high,6,419.81100000000004,NA,NA,NA
+3,sad_high,7,420.192,0.37999999999999545,right,correct
+3,sad_high,9,420.617,NA,27,correct sad
+3,sad_high,3,422.117,NA,NA,NA
+4,sad_high,5,424.127,NA,NA,high
+4,sad_high,11,425.32300000000004,NA,NA,NA
+4,sad_high,12,425.747,0.4210000000000491,right,correct
+4,sad_high,6,426.754,NA,NA,NA
+4,sad_high,7,426.89,0.13599999999996726,right,correct
+4,sad_high,9,427.56,NA,58,correct sad
+4,sad_high,3,429.059,NA,NA,NA
+5,angry_low,5,432.062,NA,NA,low
+5,angry_low,11,433.26,NA,NA,NA
+5,angry_low,12,433.57300000000004,0.3090000000000259,left,correct
+5,angry_low,6,434.57300000000004,NA,NA,NA
+5,angry_low,7,434.865,0.2909999999999968,left,correct
+5,angry_low,9,435.38100000000003,NA,39,correct angry
+5,angry_low,3,436.879,NA,NA,NA
+6,sad_high,5,439.382,NA,NA,high
+6,sad_high,11,440.587,NA,NA,NA
+6,sad_high,12,440.86400000000003,0.27600000000001046,left,incorrect
+6,sad_high,6,441.865,NA,NA,NA
+6,sad_high,7,442.128,0.2629999999999768,left,incorrect
+6,sad_high,9,442.671,NA,-50,wrong sad
+6,sad_high,3,444.17,NA,NA,NA
+7,angry_low,5,447.17400000000004,NA,NA,low
+7,angry_low,11,448.372,NA,NA,NA
+7,angry_low,12,448.615,0.24099999999998545,right,incorrect
+7,angry_low,6,449.624,NA,NA,NA
+7,angry_low,7,450.064,0.43899999999996453,right,incorrect
+7,angry_low,9,450.427,NA,-50,wrong angry
+7,angry_low,3,451.927,NA,NA,NA
+8,sad_high,5,453.939,NA,NA,high
+8,sad_high,11,455.142,NA,NA,NA
+8,sad_high,12,455.261,0.1139999999999759,right,correct
+8,sad_high,6,456.26800000000003,NA,NA,NA
+8,sad_high,7,456.529,0.2599999999999909,right,correct
+8,sad_high,9,457.074,NA,42,correct sad
+8,sad_high,3,458.579,NA,NA,NA
+9,sad_high,5,461.083,NA,NA,high
+9,sad_high,11,462.281,NA,NA,NA
+9,sad_high,12,462.399,0.1139999999999759,right,correct
+9,sad_high,6,463.399,NA,NA,NA
+9,sad_high,7,463.612,0.21300000000002228,right,correct
+9,sad_high,9,464.206,NA,48,correct sad
+9,sad_high,3,465.707,NA,NA,NA
+10,angry_low,5,468.221,NA,NA,low
+10,angry_low,11,469.419,NA,NA,NA
+10,angry_low,12,469.707,0.2839999999999918,left,correct
+10,angry_low,6,470.712,NA,NA,NA
+10,angry_low,7,470.801,0.08899999999999864,left,correct
+10,angry_low,9,471.51800000000003,NA,64,correct angry
+10,angry_low,3,473.01800000000003,NA,NA,NA
+11,angry_low,5,476.02,NA,NA,low
+11,angry_low,11,477.218,NA,NA,NA
+11,angry_low,12,477.447,0.2270000000000323,left,correct
+11,angry_low,6,478.44800000000004,NA,NA,NA
+11,angry_low,7,478.729,0.2799999999999727,left,correct
+11,angry_low,9,479.254,NA,40,correct angry
+11,angry_low,3,480.753,NA,NA,NA
+12,angry_low,5,483.25600000000003,NA,NA,low
+12,angry_low,11,484.461,NA,NA,NA
+12,angry_low,12,484.693,0.2270000000000323,left,correct
+12,angry_low,6,485.7,NA,NA,NA
+12,angry_low,7,486.087,0.3860000000000241,left,correct
+12,angry_low,9,486.505,NA,26,correct angry
+12,angry_low,3,488.003,NA,NA,NA
+13,sad_high,5,490.014,NA,NA,high
+13,sad_high,11,491.211,NA,NA,NA
+13,sad_high,12,491.482,0.26900000000000546,right,correct
+13,sad_high,6,492.48900000000003,NA,NA,NA
+13,sad_high,7,492.813,0.32399999999995543,right,correct
+13,sad_high,9,493.296,NA,34,correct sad
+13,sad_high,3,494.79400000000004,NA,NA,NA
+14,sad_low,5,497.805,NA,NA,low
+14,sad_low,11,499.00899999999996,NA,NA,NA
+14,sad_low,12,499.15500000000003,0.14199999999993906,right,correct
+14,sad_low,6,500.156,NA,NA,NA
+14,sad_low,7,500.348,0.19100000000003092,right,correct
+14,sad_low,9,500.96200000000005,NA,51,correct sad
+14,sad_low,3,502.469,NA,NA,NA
+15,angry_low,5,504.97100000000006,NA,NA,low
+15,angry_low,11,506.175,NA,NA,NA
+15,angry_low,12,506.44700000000006,0.2680000000000291,right,incorrect
+15,angry_low,6,507.454,NA,NA,NA
+15,angry_low,7,507.77000000000004,0.31500000000005457,right,incorrect
+15,angry_low,9,508.25899999999996,NA,-50,wrong angry
+15,angry_low,3,509.75899999999996,NA,NA,NA
+16,angry_low,5,511.76900000000006,NA,NA,low
+16,angry_low,11,512.968,NA,NA,NA
+16,angry_low,12,513.2589999999999,0.29099999999994,right,incorrect
+16,angry_low,6,514.26,NA,NA,NA
+16,angry_low,7,514.4459999999999,0.18499999999994543,right,incorrect
+16,angry_low,9,515.0659999999999,NA,-50,wrong angry
+16,angry_low,3,516.5709999999999,NA,NA,NA
+17,sad_high,5,519.0759999999999,NA,NA,high
+17,sad_high,11,520.28,NA,NA,NA
+17,sad_high,12,520.5859999999999,0.2999999999999545,right,correct
+17,sad_high,6,521.587,NA,NA,NA
+17,sad_high,7,521.8309999999999,0.2439999999999145,right,correct
+17,sad_high,9,522.3929999999999,NA,44,correct sad
+17,sad_high,3,523.8979999999999,NA,NA,NA
+18,angry_high,5,525.894,NA,NA,high
+18,angry_high,11,527.0989999999999,NA,NA,NA
+18,angry_high,12,527.3839999999999,0.2799999999999727,right,incorrect
+18,angry_high,6,528.3839999999999,NA,NA,NA
+18,angry_high,7,528.7379999999999,0.3530000000000655,right,incorrect
+18,angry_high,9,529.189,NA,-50,wrong angry
+18,angry_high,3,530.689,NA,NA,NA
+19,sad_high,5,533.192,NA,NA,high
+19,sad_high,11,534.3979999999999,NA,NA,NA
+19,sad_high,12,534.683,0.28099999999994907,left,incorrect
+19,sad_high,6,535.6899999999999,NA,NA,NA
+19,sad_high,7,535.9559999999999,0.26499999999998636,left,incorrect
+19,sad_high,9,536.4939999999999,NA,-50,wrong sad
+19,sad_high,3,537.995,NA,NA,NA
+20,angry_low,5,541.002,NA,NA,low
+20,angry_low,11,542.203,NA,NA,NA
+20,angry_low,12,542.252,0.047000000000025466,right,incorrect
+20,angry_low,6,543.2589999999999,NA,NA,NA
+20,angry_low,7,543.6569999999999,0.3970000000000482,right,incorrect
+20,angry_low,9,544.064,NA,-50,wrong angry
+20,angry_low,3,545.564,NA,NA,NA
+21,sad_high,5,547.5699999999999,NA,NA,high
+21,sad_high,11,548.7719999999999,NA,NA,NA
+21,sad_high,12,549.127,0.34699999999998,left,incorrect
+21,sad_high,6,550.135,NA,NA,NA
+21,sad_high,7,550.3549999999999,0.2199999999999136,left,incorrect
+21,sad_high,9,550.939,NA,-50,wrong sad
+21,sad_high,3,552.439,NA,NA,NA
+22,angry_high,5,555.442,NA,NA,high
+22,angry_high,11,556.64,NA,NA,NA
+22,angry_high,12,557.2239999999999,0.5810000000000173,left,correct
+22,angry_high,6,558.231,NA,NA,NA
+22,angry_high,7,558.555,0.3229999999999791,right,incorrect
+22,angry_high,9,559.036,NA,-50,wrong angry
+22,angry_high,3,560.536,NA,NA,NA
+23,sad_high,5,563.039,NA,NA,high
+23,sad_high,11,564.237,NA,NA,NA
+23,sad_high,12,564.627,0.3870000000000573,right,correct
+23,sad_high,6,565.6329999999999,NA,NA,NA
+23,sad_high,7,565.8389999999999,0.20600000000001728,right,correct
+23,sad_high,9,566.4399999999999,NA,49,correct sad
+23,sad_high,3,567.9459999999999,NA,NA,NA
+24,angry_low,5,569.949,NA,NA,low
+24,angry_low,11,571.1529999999999,NA,NA,NA
+24,angry_low,12,571.418,0.25900000000001455,left,correct
+24,angry_low,6,572.425,NA,NA,NA
+24,angry_low,7,572.5559999999999,0.1309999999999718,left,correct
+24,angry_low,9,573.232,NA,59,correct angry
+24,angry_low,3,574.732,NA,NA,NA
+25,sad_high,5,577.2389999999999,NA,NA,high
+25,sad_high,11,578.4449999999999,NA,NA,NA
+25,sad_high,12,578.5379999999999,0.08299999999996999,right,correct
+25,sad_high,6,579.544,NA,NA,NA
+25,sad_high,7,579.6769999999999,0.1329999999999245,right,correct
+25,sad_high,9,580.3499999999999,NA,58,correct sad
+25,sad_high,3,581.8549999999999,NA,NA,NA
+26,angry_low,5,584.8589999999999,NA,NA,low
+26,angry_low,11,586.0559999999999,NA,NA,NA
+26,angry_low,12,586.154,0.09299999999996089,right,incorrect
+26,angry_low,6,587.161,NA,NA,NA
+26,angry_low,7,587.707,0.5460000000000491,right,incorrect
+26,angry_low,9,587.967,NA,-50,wrong angry
+26,angry_low,3,589.473,NA,NA,NA
+27,angry_low,5,591.4699999999999,NA,NA,low
+27,angry_low,11,592.6669999999999,NA,NA,NA
+27,angry_low,12,592.848,0.17799999999999727,left,correct
+27,angry_low,6,593.856,NA,NA,NA
+27,angry_low,7,594.246,0.38900000000001,left,correct
+27,angry_low,9,594.6619999999999,NA,26,correct angry
+27,angry_low,3,596.164,NA,NA,NA
+28,sad_high,5,599.164,NA,NA,high
+28,sad_high,11,600.361,NA,NA,NA
+28,sad_high,12,600.5419999999999,0.17799999999999727,right,correct
+28,sad_high,6,601.5419999999999,NA,NA,NA
+28,sad_high,7,601.564,0.02100000000007185,right,correct
+28,sad_high,9,602.3489999999999,NA,72,correct sad
+28,sad_high,3,603.8489999999999,NA,NA,NA
+29,angry_low,5,605.8499999999999,NA,NA,low
+29,angry_low,11,607.049,NA,NA,NA
+29,angry_low,12,607.458,0.40599999999994907,left,correct
+29,angry_low,6,608.4609999999999,NA,NA,NA
+29,angry_low,7,608.707,0.24500000000000455,left,correct
+29,angry_low,9,609.2669999999999,NA,44,correct angry
+29,angry_low,3,610.7639999999999,NA,NA,NA
+30,sad_low,5,613.774,NA,NA,low
+30,sad_low,11,614.973,NA,NA,NA
+30,sad_low,12,615.1529999999999,0.17700000000002092,left,incorrect
+30,sad_low,6,616.1529999999999,NA,NA,NA
+30,sad_low,7,616.491,0.3370000000001028,left,incorrect
+30,sad_low,9,616.958,NA,-50,wrong sad
+30,sad_low,3,618.459,NA,NA,NA
+31,sad_low,5,620.962,NA,NA,low
+31,sad_low,11,622.159,NA,NA,NA
+31,sad_low,12,622.271,0.10800000000006094,left,incorrect
+31,sad_low,6,623.2719999999999,NA,NA,NA
+31,sad_low,7,623.699,0.4270000000000209,left,incorrect
+31,sad_low,9,624.0759999999999,NA,-50,wrong sad
+31,sad_low,3,625.5759999999999,NA,NA,NA
+32,angry_high,5,628.579,NA,NA,high
+32,angry_high,11,629.7779999999999,NA,NA,NA
+32,angry_high,12,629.9169999999999,0.13599999999996726,left,correct
+32,angry_high,6,630.923,NA,NA,NA
+32,angry_high,7,631.367,0.44399999999996,left,correct
+32,angry_high,9,631.731,NA,20,correct angry
+32,angry_high,3,633.2299999999999,NA,NA,NA
+33,sad_low,5,636.2389999999999,NA,NA,low
+33,sad_low,11,637.4369999999999,NA,NA,NA
+33,sad_low,12,637.625,0.18599999999992178,right,correct
+33,sad_low,6,638.625,NA,NA,NA
+33,sad_low,7,638.685,0.05899999999996908,right,correct
+33,sad_low,9,639.4319999999999,NA,68,correct sad
+33,sad_low,3,640.9319999999999,NA,NA,NA
+34,angry_high,5,643.435,NA,NA,high
+34,angry_high,11,644.6479999999999,NA,NA,NA
+34,angry_high,12,645.083,0.43400000000008276,left,correct
+34,angry_high,6,646.084,NA,NA,NA
+34,angry_high,7,646.4839999999999,0.39999999999997726,left,correct
+34,angry_high,9,646.8889999999999,NA,25,correct angry
+34,angry_high,3,648.39,NA,NA,NA
+35,sad_low,5,650.3979999999999,NA,NA,low
+35,sad_low,11,651.596,NA,NA,NA
+35,sad_low,12,651.736,0.1349999999999909,right,correct
+35,sad_low,6,652.7429999999999,NA,NA,NA
+35,sad_low,7,652.9,0.15600000000006276,right,correct
+35,sad_low,9,653.55,NA,55,correct sad
+35,sad_low,3,655.048,NA,NA,NA
+36,angry_high,5,658.0509999999999,NA,NA,high
+36,angry_high,11,659.2489999999999,NA,NA,NA
+36,angry_high,12,659.444,0.19099999999991724,left,correct
+36,angry_high,6,660.4509999999999,NA,NA,NA
+36,angry_high,7,660.558,0.10599999999999454,left,correct
+36,angry_high,9,661.257,NA,61,correct angry
+36,angry_high,3,662.757,NA,NA,NA
+37,sad_low,5,664.7589999999999,NA,NA,low
+37,sad_low,11,665.9649999999999,NA,NA,NA
+37,sad_low,12,666.0899999999999,0.12199999999995725,left,incorrect
+37,sad_low,6,667.0899999999999,NA,NA,NA
+37,sad_low,7,667.549,0.45900000000006,left,incorrect
+37,sad_low,9,667.895,NA,-50,wrong sad
+37,sad_low,3,669.395,NA,NA,NA
+38,angry_high,5,671.9019999999999,NA,NA,high
+38,angry_high,11,673.103,NA,NA,NA
+38,angry_high,12,673.1669999999999,0.057999999999992724,right,incorrect
+38,angry_high,6,674.174,NA,NA,NA
+38,angry_high,7,674.6569999999999,0.48299999999994725,right,incorrect
+38,angry_high,9,674.9789999999999,NA,-50,wrong angry
+38,angry_high,3,676.4849999999999,NA,NA,NA
+39,sad_low,5,678.4889999999999,NA,NA,low
+39,sad_low,11,679.693,NA,NA,NA
+39,sad_low,12,679.887,0.19100000000003092,right,correct
+39,sad_low,6,680.8889999999999,NA,NA,NA
+39,sad_low,7,681.149,0.2600000000001046,right,correct
+39,sad_low,9,681.6949999999999,NA,42,correct sad
+39,sad_low,3,683.193,NA,NA,NA
+40,sad_low,5,686.2009999999999,NA,NA,low
+40,sad_low,11,687.401,NA,NA,NA
+40,sad_low,12,687.41,0.005999999999971806,right,correct
+40,sad_low,6,688.4159999999999,NA,NA,NA
+40,sad_low,7,688.593,0.17700000000002092,right,correct
+40,sad_low,9,689.222,NA,53,correct sad
+40,sad_low,3,690.7199999999999,NA,NA,NA
+41,angry_high,5,692.7249999999999,NA,NA,high
+41,angry_high,11,693.9219999999999,NA,NA,NA
+41,angry_high,12,693.9639999999999,0.03899999999998727,left,correct
+41,angry_high,6,694.9649999999999,NA,NA,NA
+41,angry_high,7,695.0619999999999,0.09600000000000364,left,correct
+41,angry_high,9,695.771,NA,63,correct angry
+41,angry_high,3,697.269,NA,NA,NA
+42,sad_high,5,699.771,NA,NA,high
+42,sad_high,11,700.9699999999999,NA,NA,NA
+42,sad_high,12,701.0749999999999,0.10099999999999909,left,incorrect
+42,sad_high,6,702.0749999999999,NA,NA,NA
+42,sad_high,7,702.0949999999999,0.01999999999998181,left,incorrect
+42,sad_high,9,702.881,NA,-50,wrong sad
+42,sad_high,3,704.381,NA,NA,NA
+43,angry_high,5,706.39,NA,NA,high
+43,angry_high,11,707.596,NA,NA,NA
+43,angry_high,12,707.861,0.2580000000000382,right,incorrect
+43,angry_high,6,708.8679999999999,NA,NA,NA
+43,angry_high,7,709.058,0.19000000000005457,right,incorrect
+43,angry_high,9,709.6719999999999,NA,-50,wrong angry
+43,angry_high,3,711.1719999999999,NA,NA,NA
+44,sad_high,5,713.684,NA,NA,high
+44,sad_high,11,714.887,NA,NA,NA
+44,sad_high,12,715.117,0.22700000000008913,right,correct
+44,sad_high,6,716.1239999999999,NA,NA,NA
+44,sad_high,7,716.5509999999999,0.4270000000000209,left,incorrect
+44,sad_high,9,716.929,NA,-50,wrong sad
+44,sad_high,3,718.429,NA,NA,NA
+45,sad_low,5,720.438,NA,NA,low
+45,sad_low,11,721.636,NA,NA,NA
+45,sad_low,12,721.9499999999999,0.3100000000000591,left,incorrect
+45,sad_low,6,722.957,NA,NA,NA
+45,sad_low,7,723.001,0.04399999999998272,left,incorrect
+45,sad_low,9,723.762,NA,-50,wrong sad
+45,sad_low,3,725.262,NA,NA,NA
+46,angry_high,5,728.2719999999999,NA,NA,high
+46,angry_high,11,729.477,NA,NA,NA
+46,angry_high,12,729.914,0.4339999999999691,left,correct
+46,angry_high,6,730.915,NA,NA,NA
+46,angry_high,7,731.3879999999999,0.47299999999995634,left,correct
+46,angry_high,9,731.721,NA,16,correct angry
+46,angry_high,3,733.227,NA,NA,NA
+47,sad_low,5,735.7299999999999,NA,NA,low
+47,sad_low,11,736.928,NA,NA,NA
+47,sad_low,12,737.043,0.10799999999994725,right,correct
+47,sad_low,6,738.048,NA,NA,NA
+47,sad_low,7,738.679,0.6299999999999955,right,correct
+47,sad_low,9,738.8539999999999,NA,-4,correct sad
+47,sad_low,3,740.352,NA,NA,NA
+48,angry_high,5,743.356,NA,NA,high
+48,angry_high,11,744.56,NA,NA,NA
+48,angry_high,12,744.699,0.1370000000000573,right,incorrect
+48,angry_high,6,745.6999999999999,NA,NA,NA
+48,angry_high,7,746.0709999999999,0.3709999999999809,right,incorrect
+48,angry_high,9,746.505,NA,-50,wrong angry
+48,angry_high,3,748.012,NA,NA,NA
+49,sad_low,5,750.515,NA,NA,low
+49,sad_low,11,751.713,NA,NA,NA
+49,sad_low,12,751.7539999999999,0.03999999999996362,left,incorrect
+49,sad_low,6,752.7539999999999,NA,NA,NA
+49,sad_low,7,753.083,0.3269999999999982,right,correct
+49,sad_low,9,753.5619999999999,NA,34,correct sad
+49,sad_low,3,755.06,NA,NA,NA
+50,angry_high,5,758.074,NA,NA,high
+50,angry_high,11,759.275,NA,NA,NA
+50,angry_high,12,759.664,0.3869999999999436,right,incorrect
+50,angry_high,6,760.664,NA,NA,NA
+50,angry_high,7,761.025,0.36099999999999,right,incorrect
+50,angry_high,9,761.4699999999999,NA,-50,wrong angry
+50,angry_high,3,762.976,NA,NA,NA
+51,sad_low,5,764.9789999999999,NA,NA,low
+51,sad_low,11,766.178,NA,NA,NA
+51,sad_low,12,766.324,0.1430000000000291,right,correct
+51,sad_low,6,767.3309999999999,NA,NA,NA
+51,sad_low,7,767.731,0.40000000000009095,right,correct
+51,sad_low,9,768.1379999999999,NA,25,correct sad
+51,sad_low,3,769.637,NA,NA,NA
+52,sad_low,5,772.1469999999999,NA,NA,low
+52,sad_low,11,773.3439999999999,NA,NA,NA
+52,sad_low,12,773.477,0.12999999999999545,right,correct
+52,sad_low,6,774.483,NA,NA,NA
+52,sad_low,7,774.919,0.43600000000003547,right,correct
+52,sad_low,9,775.29,NA,20,correct sad
+52,sad_low,3,776.789,NA,NA,NA
+53,angry_high,5,778.793,NA,NA,high
+53,angry_high,11,779.99,NA,NA,NA
+53,angry_high,12,780.42,0.4289999999999736,left,correct
+53,angry_high,6,781.4209999999999,NA,NA,NA
+53,angry_high,7,781.794,0.37200000000007094,left,correct
+53,angry_high,9,782.227,NA,28,correct angry
+53,angry_high,3,783.731,NA,NA,NA
+54,sad_low,5,786.7299999999999,NA,NA,low
+54,sad_low,11,787.9269999999999,NA,NA,NA
+54,sad_low,12,788.178,0.2479999999999336,right,correct
+54,sad_low,6,789.179,NA,NA,NA
+54,sad_low,7,789.544,0.36400000000003274,left,incorrect
+54,sad_low,9,789.982,NA,-50,wrong sad
+54,sad_low,3,791.483,NA,NA,NA
+55,sad_low,5,793.986,NA,NA,low
+55,sad_low,11,795.184,NA,NA,NA
+55,sad_low,12,795.351,0.16399999999998727,right,correct
+55,sad_low,6,796.358,NA,NA,NA
+55,sad_low,7,796.7529999999999,0.3949999999999818,right,correct
+55,sad_low,9,797.165,NA,26,correct sad
+55,sad_low,3,798.67,NA,NA,NA
+56,angry_low,5,801.675,NA,NA,low
+56,angry_low,11,802.8779999999999,NA,NA,NA
+56,angry_low,12,803.122,0.2380000000000564,right,incorrect
+56,angry_low,6,804.1289999999999,NA,NA,NA
+56,angry_low,7,804.3589999999999,0.22900000000004184,right,incorrect
+56,angry_low,9,804.934,NA,-50,wrong angry
+56,angry_low,3,806.434,NA,NA,NA
+57,sad_low,5,808.4359999999999,NA,NA,low
+57,sad_low,11,809.6429999999999,NA,NA,NA
+57,sad_low,12,809.9549999999999,0.3079999999999927,right,correct
+57,sad_low,6,810.9559999999999,NA,NA,NA
+57,sad_low,7,811.4079999999999,0.45100000000002183,left,incorrect
+57,sad_low,9,811.76,NA,-50,wrong sad
+57,sad_low,3,813.26,NA,NA,NA
+58,angry_high,5,815.2639999999999,NA,NA,high
+58,angry_high,11,816.4609999999999,NA,NA,NA
+58,angry_high,12,816.9749999999999,0.5109999999999673,left,correct
+58,angry_high,6,817.976,NA,NA,NA
+58,angry_high,7,818.434,0.45699999999999363,left,correct
+58,angry_high,9,818.7829999999999,NA,18,correct angry
+58,angry_high,3,820.2819999999999,NA,NA,NA
+59,sad_low,5,822.79,NA,NA,low
+59,sad_low,11,823.9889999999999,NA,NA,NA
+59,sad_low,12,824.0999999999999,0.10799999999994725,right,correct
+59,sad_low,6,825.102,NA,NA,NA
+59,sad_low,7,825.5079999999999,0.40599999999994907,right,correct
+59,sad_low,9,825.9069999999999,NA,24,correct sad
+59,sad_low,3,827.406,NA,NA,NA
+60,angry_low,5,829.424,NA,NA,low
+60,angry_low,11,830.621,NA,NA,NA
+60,angry_low,12,830.886,0.25699999999994816,right,incorrect
+60,angry_low,6,831.8929999999999,NA,NA,NA
+60,angry_low,7,831.9129999999999,0.01999999999998181,right,incorrect
+60,angry_low,9,832.697,NA,-50,wrong angry
+60,angry_low,3,834.204,NA,NA,NA
+61,sad_high,5,836.7009999999999,NA,NA,high
+61,sad_high,11,837.899,NA,NA,NA
+61,sad_high,12,838.593,0.6900000000000546,left,incorrect
+61,sad_high,6,839.5939999999999,NA,NA,NA
+61,sad_high,7,840.043,0.4479999999999791,right,correct
+61,sad_high,9,840.4,NA,19,correct sad
+61,sad_high,3,841.899,NA,NA,NA
+62,angry_low,5,844.4079999999999,NA,NA,low
+62,angry_low,11,845.606,NA,NA,NA
+62,angry_low,12,846.1899999999999,0.5800000000000409,right,incorrect
+62,angry_low,6,847.1909999999999,NA,NA,NA
+62,angry_low,7,847.559,0.3670000000000755,right,incorrect
+62,angry_low,9,847.995,NA,-50,wrong angry
+62,angry_low,3,849.495,NA,NA,NA
+63,angry_low,5,851.4979999999999,NA,NA,low
+63,angry_low,11,852.704,NA,NA,NA
+63,angry_low,12,852.905,0.19900000000006912,right,incorrect
+63,angry_low,6,853.906,NA,NA,NA
+63,angry_low,7,854.3779999999999,0.47100000000000364,right,incorrect
+63,angry_low,9,854.7109999999999,NA,-50,wrong angry
+63,angry_low,3,856.218,NA,NA,NA
+64,sad_high,5,859.2199999999999,NA,NA,high
+64,sad_high,11,860.419,NA,NA,NA
+64,sad_high,12,860.6759999999999,0.25499999999999545,left,incorrect
+64,sad_high,6,861.6859999999999,NA,NA,NA
+64,sad_high,7,862.103,0.41600000000005366,right,correct
+64,sad_high,9,862.49,NA,23,correct sad
+64,sad_high,3,863.991,NA,NA,NA
+65,angry_low,5,866.9929999999999,NA,NA,low
+65,angry_low,11,868.1959999999999,NA,NA,NA
+65,angry_low,12,868.621,0.4209999999999354,left,correct
+65,angry_low,6,869.6279999999999,NA,NA,NA
+65,angry_low,7,869.954,0.3250000000000455,right,incorrect
+65,angry_low,9,870.433,NA,-50,wrong angry
+65,angry_low,3,871.939,NA,NA,NA
+66,sad_high,5,874.943,NA,NA,high
+66,sad_high,11,876.1469999999999,NA,NA,NA
+66,sad_high,12,876.4739999999999,0.32399999999995543,right,correct
+66,sad_high,6,877.4739999999999,NA,NA,NA
+66,sad_high,7,877.9159999999999,0.4410000000000309,right,correct
+66,sad_high,9,878.281,NA,20,correct sad
+66,sad_high,3,879.786,NA,NA,NA
+67,sad_high,5,882.79,NA,NA,high
+67,sad_high,11,883.9939999999999,NA,NA,NA
+67,sad_high,12,884.0849999999999,0.08799999999996544,right,correct
+67,sad_high,6,885.0859999999999,NA,NA,NA
+67,sad_high,7,885.4159999999999,0.3300000000000409,right,correct
+67,sad_high,9,885.8919999999999,NA,34,correct sad
+67,sad_high,3,887.39,NA,NA,NA
+68,angry_low,5,889.3929999999999,NA,NA,low
+68,angry_low,11,890.591,NA,NA,NA
+68,angry_low,12,890.8629999999999,0.2680000000000291,left,correct
+68,angry_low,6,891.8629999999999,NA,NA,NA
+68,angry_low,7,892.3499999999999,0.48599999999999,left,correct
+68,angry_low,9,892.67,NA,14,correct angry
+68,angry_low,3,894.169,NA,NA,NA
+69,sad_high,5,896.173,NA,NA,high
+69,sad_high,11,897.377,NA,NA,NA
+69,sad_high,12,897.62,0.2420000000000755,right,correct
+69,sad_high,6,898.62,NA,NA,NA
+69,sad_high,7,899.019,0.39800000000002456,right,correct
+69,sad_high,9,899.4259999999999,NA,25,correct sad
+69,sad_high,3,900.9259999999999,NA,NA,NA
+70,sad_high,5,903.4409999999999,NA,NA,high
+70,sad_high,11,904.64,NA,NA,NA
+70,sad_high,12,904.841,0.19899999999995543,right,correct
+70,sad_high,6,905.842,NA,NA,NA
+70,sad_high,7,906.175,0.33199999999999363,right,correct
+70,sad_high,9,906.6479999999999,NA,33,correct sad
+70,sad_high,3,908.154,NA,NA,NA
+71,angry_high,5,910.6579999999999,NA,NA,high
+71,angry_high,11,911.8549999999999,NA,NA,NA
+71,angry_high,12,911.959,0.10199999999997544,right,incorrect
+71,angry_high,6,912.9599999999999,NA,NA,NA
+71,angry_high,7,913.2529999999999,0.29200000000003,right,incorrect
+71,angry_high,9,913.766,NA,-50,wrong angry
+71,angry_high,3,915.2719999999999,NA,NA,NA
+72,sad_high,5,918.275,NA,NA,high
+72,sad_high,11,919.4799999999999,NA,NA,NA
+72,sad_high,12,919.674,0.19099999999991724,right,correct
+72,sad_high,6,920.675,NA,NA,NA
+72,sad_high,7,921.087,0.4109999999999445,right,correct
+72,sad_high,9,921.482,NA,23,correct sad
+72,sad_high,3,922.987,NA,NA,NA
+73,angry_low,5,924.99,NA,NA,low
+73,angry_low,11,926.188,NA,NA,NA
+73,angry_low,12,926.39,0.19799999999997908,left,correct
+73,angry_low,6,927.3929999999999,NA,NA,NA
+73,angry_low,7,927.904,0.5099999999999909,left,correct
+73,angry_low,9,928.197,NA,11,correct angry
+73,angry_low,3,929.6949999999999,NA,NA,NA
+74,angry_low,5,932.2059999999999,NA,NA,low
+74,angry_low,11,933.411,NA,NA,NA
+74,angry_low,12,933.4739999999999,0.06100000000003547,left,correct
+74,angry_low,6,934.481,NA,NA,NA
+74,angry_low,7,934.896,0.4149999999999636,left,correct
+74,angry_low,9,935.286,NA,23,correct angry
+74,angry_low,3,936.7869999999999,NA,NA,NA
+75,sad_low,5,938.7879999999999,NA,NA,low
+75,sad_low,11,939.9929999999999,NA,NA,NA
+75,sad_low,12,940.5219999999999,0.5259999999999536,left,incorrect
+75,sad_low,6,941.529,NA,NA,NA
+75,sad_low,7,941.9319999999999,0.40199999999992997,left,incorrect
+75,sad_low,9,942.334,NA,-50,wrong sad
+75,sad_low,3,943.834,NA,NA,NA
+76,angry_low,5,946.8439999999999,NA,NA,low
+76,angry_low,11,948.049,NA,NA,NA
+76,angry_low,12,948.194,0.1430000000000291,left,correct
+76,angry_low,6,949.1949999999999,NA,NA,NA
+76,angry_low,7,949.745,0.5500000000000682,left,correct
+76,angry_low,9,950.001,NA,6,correct angry
+76,angry_low,3,951.502,NA,NA,NA
+77,sad_high,5,954.0029999999999,NA,NA,high
+77,sad_high,11,955.209,NA,NA,NA
+77,sad_high,12,955.41,0.19799999999997908,right,correct
+77,sad_high,6,956.41,NA,NA,NA
+77,sad_high,7,956.8929999999999,0.48299999999994725,right,correct
+77,sad_high,9,957.217,NA,15,correct sad
+77,sad_high,3,958.716,NA,NA,NA
+78,angry_low,5,960.721,NA,NA,low
+78,angry_low,11,961.924,NA,NA,NA
+78,angry_low,12,962.043,0.11099999999999,left,correct
+78,angry_low,6,963.05,NA,NA,NA
+78,angry_low,7,963.4319999999999,0.3809999999999718,left,correct
+78,angry_low,9,963.856,NA,27,correct angry
+78,angry_low,3,965.3549999999999,NA,NA,NA
+79,sad_high,5,967.858,NA,NA,high
+79,sad_high,11,969.0559999999999,NA,NA,NA
+79,sad_high,12,969.896,0.8380000000000791,left,incorrect
+79,sad_high,6,970.9029999999999,NA,NA,NA
+79,sad_high,7,971.394,0.4900000000000091,left,incorrect
+79,sad_high,9,971.708,NA,-50,wrong sad
+79,sad_high,3,973.208,NA,NA,NA
+80,angry_low,5,976.2239999999999,NA,NA,low
+80,angry_low,11,977.423,NA,NA,NA
+80,angry_low,12,977.563,0.13800000000003365,left,correct
+80,angry_low,6,978.5699999999999,NA,NA,NA
+80,angry_low,7,979.074,0.5030000000000427,left,correct
+80,angry_low,9,979.377,NA,12,correct angry
+80,angry_low,3,980.875,NA,NA,NA
+81,angry_high,5,982.8839999999999,NA,NA,high
+81,angry_high,11,984.082,NA,NA,NA
+81,angry_high,12,984.257,0.1710000000000491,right,incorrect
+81,angry_high,6,985.2639999999999,NA,NA,NA
+81,angry_high,7,985.674,0.4090000000001055,right,incorrect
+81,angry_high,9,986.0699999999999,NA,-50,wrong angry
+81,angry_high,3,987.5759999999999,NA,NA,NA
+82,sad_high,5,990.079,NA,NA,high
+82,sad_high,11,991.284,NA,NA,NA
+82,sad_high,12,991.4499999999999,0.16300000000001091,right,correct
+82,sad_high,6,992.4509999999999,NA,NA,NA
+82,sad_high,7,992.949,0.4980000000000473,right,correct
+82,sad_high,9,993.257,NA,13,correct sad
+82,sad_high,3,994.7579999999999,NA,NA,NA
+83,angry_low,5,996.761,NA,NA,low
+83,angry_low,11,997.9649999999999,NA,NA,NA
+83,angry_low,12,998.055,0.08699999999998909,left,correct
+83,angry_low,6,999.063,NA,NA,NA
+83,angry_low,7,999.438,0.37399999999990996,left,correct
+83,angry_low,9,999.8689999999999,NA,28,correct angry
+83,angry_low,3,1001.367,NA,NA,NA
+84,angry_low,5,1004.37,NA,NA,low
+84,angry_low,11,1005.576,NA,NA,NA
+84,angry_low,12,1005.604,0.026000000000067303,left,correct
+84,angry_low,6,1006.6109999999999,NA,NA,NA
+84,angry_low,7,1007.0239999999998,0.4119999999999209,left,correct
+84,angry_low,9,1007.4169999999998,NA,23,correct angry
+84,angry_low,3,1008.9169999999998,NA,NA,NA
+85,angry_low,5,1011.4259999999998,NA,NA,low
+85,angry_low,11,1012.6239999999999,NA,NA,NA
+85,angry_low,12,1013.0749999999999,0.4500000000000455,left,correct
+85,angry_low,6,1014.0759999999999,NA,NA,NA
+85,angry_low,7,1014.5249999999997,0.4479999999998654,right,incorrect
+85,angry_low,9,1014.882,NA,-50,wrong angry
+85,angry_low,3,1016.3809999999997,NA,NA,NA
+86,sad_high,5,1019.3909999999997,NA,NA,high
+86,sad_high,11,1020.5959999999999,NA,NA,NA
+86,sad_high,12,1020.6309999999997,0.03199999999992542,right,correct
+86,sad_high,6,1021.6379999999998,NA,NA,NA
+86,sad_high,7,1022.0009999999999,0.36200000000008004,right,correct
+86,sad_high,9,1022.4439999999998,NA,30,correct sad
+86,sad_high,3,1023.9499999999999,NA,NA,NA
+87,angry_low,5,1025.9479999999999,NA,NA,low
+87,angry_low,11,1027.1589999999999,NA,NA,NA
+87,angry_low,12,1027.43,0.265999999999849,right,incorrect
+87,angry_low,6,1028.4379999999999,NA,NA,NA
+87,angry_low,7,1028.962,0.5240000000001146,left,correct
+87,angry_low,9,1029.244,NA,9,correct angry
+87,angry_low,3,1030.742,NA,NA,NA
+88,sad_high,5,1033.245,NA,NA,high
+88,sad_high,11,1034.45,NA,NA,NA
+88,sad_high,12,1034.7839999999999,0.32799999999997453,left,incorrect
+88,sad_high,6,1035.791,NA,NA,NA
+88,sad_high,7,1036.321,0.5299999999999727,right,correct
+88,sad_high,9,1036.597,NA,9,correct sad
+88,sad_high,3,1038.096,NA,NA,NA
+89,sad_high,5,1040.099,NA,NA,high
+89,sad_high,11,1041.3039999999999,NA,NA,NA
+89,sad_high,12,1041.492,0.18599999999992178,right,correct
+89,sad_high,6,1042.499,NA,NA,NA
+89,sad_high,7,1042.9389999999999,0.43899999999985084,right,correct
+89,sad_high,9,1043.305,NA,20,correct sad
+89,sad_high,3,1044.808,NA,NA,NA
+90,sad_high,5,1047.816,NA,NA,high
+90,sad_high,11,1049.019,NA,NA,NA
+90,sad_high,12,1049.1789999999999,0.15699999999992542,right,correct
+90,sad_high,6,1050.187,NA,NA,NA
+90,sad_high,7,1050.7069999999999,0.5190000000000055,left,incorrect
+90,sad_high,9,1050.991,NA,-50,wrong sad
+90,sad_high,3,1052.491,NA,NA,NA
+91,sad_low,5,1054.998,NA,NA,low
+91,sad_low,11,1056.1989999999998,NA,NA,NA
+91,sad_low,12,1056.396,0.18800000000010186,left,incorrect
+91,sad_low,6,1057.403,NA,NA,NA
+91,sad_low,7,1057.927,0.5239999999998872,left,incorrect
+91,sad_low,9,1058.2069999999999,NA,-50,wrong sad
+91,sad_low,3,1059.7069999999999,NA,NA,NA
+92,angry_high,5,1061.7179999999998,NA,NA,high
+92,angry_high,11,1062.914,NA,NA,NA
+92,angry_high,12,1063.436,0.5160000000000764,left,correct
+92,angry_high,6,1064.437,NA,NA,NA
+92,angry_high,7,1064.837,0.3990000000001146,left,correct
+92,angry_high,9,1065.242,NA,25,correct angry
+92,angry_high,3,1066.741,NA,NA,NA
+93,sad_high,5,1069.244,NA,NA,high
+93,sad_high,11,1070.442,NA,NA,NA
+93,sad_high,12,1070.575,0.12799999999992906,left,incorrect
+93,sad_high,6,1071.5819999999999,NA,NA,NA
+93,sad_high,7,1071.989,0.40600000000017644,right,correct
+93,sad_high,9,1072.388,NA,24,correct sad
+93,sad_high,3,1073.887,NA,NA,NA
+94,angry_high,5,1076.8899999999999,NA,NA,high
+94,angry_high,11,1078.094,NA,NA,NA
+94,angry_high,12,1078.248,0.15199999999981628,left,correct
+94,angry_high,6,1079.248,NA,NA,NA
+94,angry_high,7,1079.6219999999998,0.3729999999998199,left,correct
+94,angry_high,9,1080.0539999999999,NA,28,correct angry
+94,angry_high,3,1081.5529999999999,NA,NA,NA
+95,sad_low,5,1083.557,NA,NA,low
+95,sad_low,11,1084.754,NA,NA,NA
+95,sad_low,12,1084.998,0.2400000000000091,right,correct
+95,sad_low,6,1086.008,NA,NA,NA
+95,sad_low,7,1086.365,0.35599999999999454,right,correct
+95,sad_low,9,1086.812,NA,30,correct sad
+95,sad_low,3,1088.312,NA,NA,NA
+96,angry_low,5,1090.815,NA,NA,low
+96,angry_low,11,1092.019,NA,NA,NA
+96,angry_low,12,1092.095,0.07199999999988904,right,incorrect
+96,angry_low,6,1093.1019999999999,NA,NA,NA
+96,angry_low,7,1093.56,0.4580000000000837,right,incorrect
+96,angry_low,9,1093.908,NA,-50,wrong angry
+96,angry_low,3,1095.414,NA,NA,NA
+97,angry_high,5,1098.411,NA,NA,high
+97,angry_high,11,1099.615,NA,NA,NA
+97,angry_high,12,1099.811,0.19100000000003092,left,correct
+97,angry_high,6,1100.818,NA,NA,NA
+97,angry_high,7,1101.2659999999998,0.44699999999988904,left,correct
+97,angry_high,9,1101.623,NA,19,correct angry
+97,angry_high,3,1103.123,NA,NA,NA
+98,angry_low,5,1105.625,NA,NA,low
+98,angry_low,11,1106.831,NA,NA,NA
+98,angry_low,12,1107.137,0.30300000000011096,right,incorrect
+98,angry_low,6,1108.143,NA,NA,NA
+98,angry_low,7,1108.5249999999999,0.3809999999998581,right,incorrect
+98,angry_low,9,1108.9489999999998,NA,-50,wrong angry
+98,angry_low,3,1110.456,NA,NA,NA
+99,sad_low,5,1112.459,NA,NA,low
+99,sad_low,11,1113.663,NA,NA,NA
+99,sad_low,12,1113.9279999999999,0.2619999999999436,right,correct
+99,sad_low,6,1114.935,NA,NA,NA
+99,sad_low,7,1115.394,0.4580000000000837,right,correct
+99,sad_low,9,1115.741,NA,18,correct sad
+99,sad_low,3,1117.2459999999999,NA,NA,NA
+100,sad_high,5,1119.253,NA,NA,high
+100,sad_high,11,1120.456,NA,NA,NA
+100,sad_high,12,1120.491,0.03000000000020009,left,incorrect
+100,sad_high,6,1121.4969999999998,NA,NA,NA
+100,sad_high,7,1122.043,0.5450000000000728,right,correct
+100,sad_high,9,1122.3029999999999,NA,7,correct sad
+100,sad_high,3,1123.802,NA,NA,NA
+101,angry_low,5,1126.305,NA,NA,low
+101,angry_low,11,1127.51,NA,NA,NA
+101,angry_low,12,1127.81,0.29700000000002547,right,incorrect
+101,angry_low,6,1128.818,NA,NA,NA
+101,angry_low,7,1129.405,0.5860000000000127,left,correct
+101,angry_low,9,1129.623,NA,2,correct angry
+101,angry_low,3,1131.123,NA,NA,NA
+102,sad_high,5,1134.132,NA,NA,high
+102,sad_high,11,1135.337,NA,NA,NA
+102,sad_high,12,1135.4479999999999,0.1089999999999236,left,incorrect
+102,sad_high,6,1136.4479999999999,NA,NA,NA
+102,sad_high,7,1136.912,0.4630000000001928,right,correct
+102,sad_high,9,1137.2549999999999,NA,17,correct sad
+102,sad_high,3,1138.754,NA,NA,NA
+103,sad_high,5,1141.263,NA,NA,high
+103,sad_high,11,1142.4679999999998,NA,NA,NA
+103,sad_high,12,1142.906,0.4339999999999691,left,incorrect
+103,sad_high,6,1143.907,NA,NA,NA
+103,sad_high,7,1144.3419999999999,0.4339999999999691,right,correct
+103,sad_high,9,1144.713,NA,21,correct sad
+103,sad_high,3,1146.2169999999999,NA,NA,NA
+104,angry_low,5,1149.224,NA,NA,low
+104,angry_low,11,1150.427,NA,NA,NA
+104,angry_low,12,1150.783,0.3489999999999327,right,incorrect
+104,angry_low,6,1151.79,NA,NA,NA
+104,angry_low,7,1152.291,0.5,right,incorrect
+104,angry_low,9,1152.594,NA,-50,wrong angry
+104,angry_low,3,1154.0929999999998,NA,NA,NA
+105,sad_high,5,1156.596,NA,NA,high
+105,sad_high,11,1157.7949999999998,NA,NA,NA
+105,sad_high,12,1158.039,0.2419999999999618,left,incorrect
+105,sad_high,6,1159.046,NA,NA,NA
+105,sad_high,7,1159.635,0.5879999999999654,right,correct
+105,sad_high,9,1159.853,NA,1,correct sad
+105,sad_high,3,1161.35,NA,NA,NA
+106,angry_low,5,1164.354,NA,NA,low
+106,angry_low,11,1165.559,NA,NA,NA
+106,angry_low,12,1165.662,0.10100000000011278,right,incorrect
+106,angry_low,6,1166.663,NA,NA,NA
+106,angry_low,7,1166.906,0.2419999999999618,right,incorrect
+106,angry_low,9,1167.4679999999998,NA,-50,wrong angry
+106,angry_low,3,1168.9679999999998,NA,NA,NA
+107,sad_high,5,1171.472,NA,NA,high
+107,sad_high,11,1172.6689999999999,NA,NA,NA
+107,sad_high,12,1172.934,0.26099999999996726,left,incorrect
+107,sad_high,6,1173.941,NA,NA,NA
+107,sad_high,7,1174.339,0.39799999999991087,right,correct
+107,sad_high,9,1174.7469999999998,NA,25,correct sad
+107,sad_high,3,1176.2459999999999,NA,NA,NA
+108,angry_low,5,1178.2549999999999,NA,NA,low
+108,angry_low,11,1179.461,NA,NA,NA
+108,angry_low,12,1180.088,0.6190000000001419,right,incorrect
+108,angry_low,6,1181.095,NA,NA,NA
+108,angry_low,7,1181.54,0.44399999999996,left,correct
+108,angry_low,9,1181.9009999999998,NA,19,correct angry
+108,angry_low,3,1183.399,NA,NA,NA
+109,angry_low,5,1186.4099999999999,NA,NA,low
+109,angry_low,11,1187.614,NA,NA,NA
+109,angry_low,12,1187.69,0.0729999999998654,right,incorrect
+109,angry_low,6,1188.691,NA,NA,NA
+109,angry_low,7,1189.119,0.42699999999990723,right,incorrect
+109,angry_low,9,1189.4959999999999,NA,-50,wrong angry
+109,angry_low,3,1191.002,NA,NA,NA
+110,sad_high,5,1193.0059999999999,NA,NA,high
+110,sad_high,11,1194.204,NA,NA,NA
+110,sad_high,12,1194.301,0.09600000000000364,left,incorrect
+110,sad_high,6,1195.308,NA,NA,NA
+110,sad_high,7,1195.787,0.47699999999986176,right,correct
+110,sad_high,9,1196.115,NA,15,correct sad
+110,sad_high,3,1197.62,NA,NA,NA
+111,angry_high,5,1200.624,NA,NA,high
+111,angry_high,11,1201.822,NA,NA,NA
+111,angry_high,12,1201.906,0.08100000000013097,left,correct
+111,angry_high,6,1202.912,NA,NA,NA
+111,angry_high,7,1203.337,0.4230000000000018,right,incorrect
+111,angry_high,9,1203.7179999999998,NA,-50,wrong angry
+111,angry_high,3,1205.2179999999998,NA,NA,NA
+112,sad_high,5,1207.7269999999999,NA,NA,high
+112,sad_high,11,1208.933,NA,NA,NA
+112,sad_high,12,1209.03,0.09500000000002728,left,incorrect
+112,sad_high,6,1210.037,NA,NA,NA
+112,sad_high,7,1210.482,0.44399999999996,left,incorrect
+112,sad_high,9,1210.844,NA,-50,wrong sad
+112,sad_high,3,1212.349,NA,NA,NA
+113,angry_low,5,1214.356,NA,NA,low
+113,angry_low,11,1215.558,NA,NA,NA
+113,angry_low,12,1215.8509999999999,0.2860000000000582,right,incorrect
+113,angry_low,6,1216.857,NA,NA,NA
+113,angry_low,7,1217.171,0.3129999999998745,right,incorrect
+113,angry_low,9,1217.662,NA,-50,wrong angry
+113,angry_low,3,1219.1689999999999,NA,NA,NA
+114,sad_low,5,1221.172,NA,NA,low
+114,sad_low,11,1222.369,NA,NA,NA
+114,sad_low,12,1222.446,0.07500000000004547,right,correct
+114,sad_low,6,1223.447,NA,NA,NA
+114,sad_low,7,1223.921,0.47400000000016007,right,correct
+114,sad_low,9,1224.254,NA,16,correct sad
+114,sad_low,3,1225.752,NA,NA,NA
+115,sad_high,5,1228.762,NA,NA,high
+115,sad_high,11,1229.96,NA,NA,NA
+115,sad_high,12,1230.0439999999999,0.0809999999999036,left,incorrect
+115,sad_high,6,1231.05,NA,NA,NA
+115,sad_high,7,1231.1789999999999,0.1269999999999527,left,incorrect
+115,sad_high,9,1231.856,NA,-50,wrong sad
+115,sad_high,3,1233.356,NA,NA,NA
+116,angry_low,5,1235.866,NA,NA,low
+116,angry_low,11,1237.0639999999999,NA,NA,NA
+116,angry_low,12,1237.738,0.6709999999998217,right,incorrect
+116,angry_low,6,1238.738,NA,NA,NA
+116,angry_low,7,1239.117,0.3789999999999054,right,incorrect
+116,angry_low,9,1239.543,NA,-50,wrong angry
+116,angry_low,3,1241.043,NA,NA,NA
+117,sad_low,5,1244.046,NA,NA,low
+117,sad_low,11,1245.251,NA,NA,NA
+117,sad_low,12,1245.435,0.17800000000011096,right,correct
+117,sad_low,6,1246.441,NA,NA,NA
+117,sad_low,7,1246.9379999999999,0.4959999999998672,right,correct
+117,sad_low,9,1247.2469999999998,NA,13,correct sad
+117,sad_low,3,1248.752,NA,NA,NA
+118,angry_low,5,1251.257,NA,NA,low
+118,angry_low,11,1252.459,NA,NA,NA
+118,angry_low,12,1252.557,0.0929999999998472,right,incorrect
+118,angry_low,6,1253.558,NA,NA,NA
+118,angry_low,7,1254.1109999999999,0.5519999999999072,right,incorrect
+118,angry_low,9,1254.3619999999999,NA,-50,wrong angry
+118,angry_low,3,1255.863,NA,NA,NA
+119,sad_high,5,1257.865,NA,NA,high
+119,sad_high,11,1259.071,NA,NA,NA
+119,sad_high,12,1260.036,0.9640000000001692,left,incorrect
+119,sad_high,6,1261.037,NA,NA,NA
+119,sad_high,7,1261.451,0.4130000000000109,right,correct
+119,sad_high,9,1261.8429999999998,NA,23,correct sad
+119,sad_high,3,1263.341,NA,NA,NA
+120,angry_low,5,1265.8509999999999,NA,NA,low
+120,angry_low,11,1267.056,NA,NA,NA
+120,angry_low,12,1268.0639999999999,1.0049999999998818,left,correct
+120,angry_low,6,1269.0639999999999,NA,NA,NA
+120,angry_low,7,1269.49,0.4250000000001819,right,incorrect
+120,angry_low,9,1269.869,NA,-50,wrong angry
+120,angry_low,3,1271.368,NA,NA,NA
+121,sad_low,5,1274.3719999999998,NA,NA,low
+121,sad_low,11,1275.57,NA,NA,NA
+121,sad_low,12,1275.8619999999999,0.2880000000000109,right,correct
+121,sad_low,6,1276.866,NA,NA,NA
+121,sad_low,7,1277.271,0.40399999999999636,right,correct
+121,sad_low,9,1277.6689999999999,NA,24,correct sad
+121,sad_low,3,1279.1689999999999,NA,NA,NA
+122,angry_high,5,1281.1789999999999,NA,NA,high
+122,angry_high,11,1282.376,NA,NA,NA
+122,angry_high,12,1282.606,0.22700000000008913,left,correct
+122,angry_high,6,1283.6119999999999,NA,NA,NA
+122,angry_high,7,1284.033,0.42000000000007276,left,correct
+122,angry_high,9,1284.4189999999999,NA,22,correct angry
+122,angry_high,3,1285.918,NA,NA,NA
+123,angry_low,5,1288.9279999999999,NA,NA,low
+123,angry_low,11,1290.126,NA,NA,NA
+123,angry_low,12,1290.136,0.009000000000014552,right,incorrect
+123,angry_low,6,1291.1399999999999,NA,NA,NA
+123,angry_low,7,1291.5,0.359000000000151,right,incorrect
+123,angry_low,9,1291.945,NA,-50,wrong angry
+123,angry_low,3,1293.445,NA,NA,NA
+124,sad_high,5,1295.9479999999999,NA,NA,high
+124,sad_high,11,1297.146,NA,NA,NA
+124,sad_high,12,1297.195,0.04600000000004911,left,incorrect
+124,sad_high,6,1298.196,NA,NA,NA
+124,sad_high,7,1298.663,0.4670000000000982,right,correct
+124,sad_high,9,1299.002,NA,16,correct sad
+124,sad_high,3,1300.5,NA,NA,NA
+125,angry_low,5,1303.503,NA,NA,low
+125,angry_low,11,1304.709,NA,NA,NA
+125,angry_low,12,1304.855,0.14199999999982538,right,incorrect
+125,angry_low,6,1305.8619999999999,NA,NA,NA
+125,angry_low,7,1306.483,0.6210000000000946,left,correct
+125,angry_low,9,1306.668,NA,-3,correct angry
+125,angry_low,3,1308.174,NA,NA,NA
+126,sad_high,5,1310.673,NA,NA,high
+126,sad_high,11,1311.876,NA,NA,NA
+126,sad_high,12,1311.918,0.03600000000005821,left,incorrect
+126,sad_high,6,1312.925,NA,NA,NA
+126,sad_high,7,1313.378,0.45299999999997453,right,correct
+126,sad_high,9,1313.731,NA,18,correct sad
+126,sad_high,3,1315.231,NA,NA,NA
+127,sad_high,5,1318.232,NA,NA,high
+127,sad_high,11,1319.43,NA,NA,NA
+127,sad_high,12,1319.722,0.2880000000000109,left,incorrect
+127,sad_high,6,1320.723,NA,NA,NA
+127,sad_high,7,1321.206,0.48299999999994725,right,correct
+127,sad_high,9,1321.529,NA,15,correct sad
+127,sad_high,3,1323.029,NA,NA,NA
+128,angry_low,5,1325.038,NA,NA,low
+128,angry_low,11,1326.243,NA,NA,NA
+128,angry_low,12,1326.52,0.2760000000000673,right,incorrect
+128,angry_low,6,1327.521,NA,NA,NA
+128,angry_low,7,1328.193,0.6720000000000255,left,correct
+128,angry_low,9,1328.327,NA,-9,correct angry
+128,angry_low,3,1329.827,NA,NA,NA
+129,angry_high,5,1332.829,NA,NA,high
+129,angry_high,11,1334.028,NA,NA,NA
+129,angry_high,12,1334.479,0.4479999999998654,left,correct
+129,angry_high,6,1335.479,NA,NA,NA
+129,angry_high,7,1336.124,0.6440000000000055,left,correct
+129,angry_high,9,1336.286,NA,-6,correct angry
+129,angry_high,3,1337.787,NA,NA,NA
+130,angry_low,5,1340.305,NA,NA,low
+130,angry_low,11,1341.507,NA,NA,NA
+130,angry_low,12,1341.591,0.07699999999999818,right,incorrect
+130,angry_low,6,1342.599,NA,NA,NA
+130,angry_low,7,1343.1499999999999,0.5509999999999309,right,incorrect
+130,angry_low,9,1343.403,NA,-50,wrong angry
+130,angry_low,3,1344.9089999999999,NA,NA,NA
+131,sad_high,5,1346.913,NA,NA,high
+131,sad_high,11,1348.118,NA,NA,NA
+131,sad_high,12,1348.18,0.057999999999992724,left,incorrect
+131,sad_high,6,1349.181,NA,NA,NA
+131,sad_high,7,1349.702,0.5199999999999818,right,correct
+131,sad_high,9,1349.9869999999999,NA,10,correct sad
+131,sad_high,3,1351.485,NA,NA,NA
+132,sad_high,5,1353.989,NA,NA,high
+132,sad_high,11,1355.194,NA,NA,NA
+132,sad_high,12,1355.228,0.03199999999992542,left,incorrect
+132,sad_high,6,1356.229,NA,NA,NA
+132,sad_high,7,1356.6889999999999,0.459999999999809,right,correct
+132,sad_high,9,1357.0349999999999,NA,17,correct sad
+132,sad_high,3,1358.5349999999999,NA,NA,NA
+133,angry_low,5,1361.5439999999999,NA,NA,low
+133,angry_low,11,1362.742,NA,NA,NA
+133,angry_low,12,1363.069,0.3250000000000455,right,incorrect
+133,angry_low,6,1364.076,NA,NA,NA
+133,angry_low,7,1364.665,0.5889999999999418,left,correct
+133,angry_low,9,1364.882,NA,1,correct angry
+133,angry_low,3,1366.3809999999999,NA,NA,NA
+134,sad_high,5,1369.384,NA,NA,high
+134,sad_high,11,1370.5819999999999,NA,NA,NA
+134,sad_high,12,1370.695,0.10599999999999454,left,incorrect
+134,sad_high,6,1371.702,NA,NA,NA
+134,sad_high,7,1372.177,0.4739999999999327,right,correct
+134,sad_high,9,1372.508,NA,16,correct sad
+134,sad_high,3,1374.012,NA,NA,NA
+135,angry_low,5,1376.518,NA,NA,low
+135,angry_low,11,1377.721,NA,NA,NA
+135,angry_low,12,1377.825,0.09999999999990905,left,correct
+135,angry_low,6,1378.8329999999999,NA,NA,NA
+135,angry_low,7,1379.433,0.6000000000001364,left,correct
+135,angry_low,9,1379.639,NA,0,correct angry
+135,angry_low,3,1381.138,NA,NA,NA
+136,sad_low,5,1383.147,NA,NA,low
+136,sad_low,11,1384.353,NA,NA,NA
+136,sad_low,12,1385.269,0.9130000000000109,left,incorrect
+136,sad_low,6,1386.27,NA,NA,NA
+136,sad_low,7,1386.867,0.5960000000000036,left,incorrect
+136,sad_low,9,1387.075,NA,-50,wrong sad
+136,sad_low,3,1388.575,NA,NA,NA
+137,angry_low,5,1391.579,NA,NA,low
+137,angry_low,11,1392.7839999999999,NA,NA,NA
+137,angry_low,12,1393.068,0.2820000000001528,left,correct
+137,angry_low,6,1394.068,NA,NA,NA
+137,angry_low,7,1394.781,0.7129999999999654,left,correct
+137,angry_low,9,1394.874,NA,-14,correct angry
+137,angry_low,3,1396.373,NA,NA,NA
+138,sad_high,5,1398.877,NA,NA,high
+138,sad_high,11,1400.075,NA,NA,NA
+138,sad_high,12,1400.1509999999998,0.0749999999998181,left,incorrect
+138,sad_high,6,1401.152,NA,NA,NA
+138,sad_high,7,1401.658,0.5039999999999054,right,correct
+138,sad_high,9,1401.9579999999999,NA,12,correct sad
+138,sad_high,3,1403.462,NA,NA,NA
+139,sad_high,5,1405.462,NA,NA,high
+139,sad_high,11,1406.665,NA,NA,NA
+139,sad_high,12,1406.714,0.04600000000004911,left,incorrect
+139,sad_high,6,1407.715,NA,NA,NA
+139,sad_high,7,1408.1499999999999,0.4339999999999691,right,correct
+139,sad_high,9,1408.521,NA,21,correct sad
+139,sad_high,3,1410.02,NA,NA,NA
+140,angry_high,5,1412.53,NA,NA,high
+140,angry_high,11,1413.734,NA,NA,NA
+140,angry_high,12,1413.915,0.1770000000001346,left,correct
+140,angry_high,6,1414.923,NA,NA,NA
+140,angry_high,7,1415.681,0.7570000000000618,right,incorrect
+140,angry_high,9,1415.7269999999999,NA,-50,wrong angry
+140,angry_high,3,1417.2269999999999,NA,NA,NA
+141,angry_low,5,1420.231,NA,NA,low
+141,angry_low,11,1421.4289999999999,NA,NA,NA
+141,angry_low,12,1421.6019999999999,0.17099999999982174,right,incorrect
+141,angry_low,6,1422.603,NA,NA,NA
+141,angry_low,7,1423.1,0.49699999999984357,right,incorrect
+141,angry_low,9,1423.408,NA,-50,wrong angry
+141,angry_low,3,1424.915,NA,NA,NA
+142,angry_low,5,1426.918,NA,NA,low
+142,angry_low,11,1428.123,NA,NA,NA
+142,angry_low,12,1428.366,0.2400000000000091,right,incorrect
+142,angry_low,6,1429.373,NA,NA,NA
+142,angry_low,7,1429.822,0.44899999999984175,right,incorrect
+142,angry_low,9,1430.1779999999999,NA,-50,wrong angry
+142,angry_low,3,1431.6779999999999,NA,NA,NA
+143,sad_high,5,1434.681,NA,NA,high
+143,sad_high,11,1435.879,NA,NA,NA
+143,sad_high,12,1436.805,0.9169999999999163,left,incorrect
+143,sad_high,6,1437.811,NA,NA,NA
+143,sad_high,7,1438.269,0.45600000000013097,right,correct
+143,sad_high,9,1438.618,NA,18,correct sad
+143,sad_high,3,1440.117,NA,NA,NA
+144,angry_high,5,1442.626,NA,NA,high
+144,angry_high,11,1443.831,NA,NA,NA
+144,angry_high,12,1443.99,0.1550000000002001,left,correct
+144,angry_high,6,1444.991,NA,NA,NA
+144,angry_high,7,1445.499,0.5070000000000618,left,correct
+144,angry_high,9,1445.798,NA,11,correct angry
+144,angry_high,3,1447.296,NA,NA,NA
+145,angry_low,5,1449.799,NA,NA,low
+145,angry_low,11,1450.9969999999998,NA,NA,NA
+145,angry_low,12,1451.373,0.3729999999998199,right,incorrect
+145,angry_low,6,1452.3799999999999,NA,NA,NA
+145,angry_low,7,1453.114,0.734000000000151,left,correct
+145,angry_low,9,1453.186,NA,-17,correct angry
+145,angry_low,3,1454.685,NA,NA,NA
+146,sad_high,5,1456.695,NA,NA,high
+146,sad_high,11,1457.893,NA,NA,NA
+146,sad_high,12,1458.06,0.16300000000001091,left,incorrect
+146,sad_high,6,1459.067,NA,NA,NA
+146,sad_high,7,1459.531,0.46299999999996544,right,correct
+146,sad_high,9,1459.873,NA,17,correct sad
+146,sad_high,3,1461.3719999999998,NA,NA,NA
+147,sad_high,5,1463.884,NA,NA,high
+147,sad_high,11,1465.08,NA,NA,NA
+147,sad_high,12,1465.1219999999998,0.038000000000010914,left,incorrect
+147,sad_high,6,1466.133,NA,NA,NA
+147,sad_high,7,1466.692,0.5579999999999927,right,correct
+147,sad_high,9,1466.936,NA,5,correct sad
+147,sad_high,3,1468.436,NA,NA,NA
+148,sad_low,5,1471.4389999999999,NA,NA,low
+148,sad_low,11,1472.643,NA,NA,NA
+148,sad_low,12,1472.7259999999999,0.07899999999995089,right,correct
+148,sad_low,6,1473.728,NA,NA,NA
+148,sad_low,7,1474.2179999999998,0.4899999999997817,right,correct
+148,sad_low,9,1474.533,NA,14,correct sad
+148,sad_low,3,1476.032,NA,NA,NA
+149,sad_high,5,1478.0349999999999,NA,NA,high
+149,sad_high,11,1479.24,NA,NA,NA
+149,sad_high,12,1479.309,0.06799999999998363,left,incorrect
+149,sad_high,6,1480.31,NA,NA,NA
+149,sad_high,7,1480.8239999999998,0.51299999999992,right,correct
+149,sad_high,9,1481.116,NA,11,correct sad
+149,sad_high,3,1482.62,NA,NA,NA
+150,angry_high,5,1485.633,NA,NA,high
+150,angry_high,11,1486.837,NA,NA,NA
+150,angry_high,12,1486.955,0.1150000000000091,left,correct
+150,angry_high,6,1487.962,NA,NA,NA
+150,angry_high,7,1488.485,0.5229999999999109,right,incorrect
+150,angry_high,9,1488.767,NA,-50,wrong angry
+150,angry_high,3,1490.267,NA,NA,NA
+151,sad_low,5,1492.771,NA,NA,low
+151,sad_low,11,1493.9759999999999,NA,NA,NA
+151,sad_low,12,1494.129,0.14899999999988722,right,correct
+151,sad_low,6,1495.135,NA,NA,NA
+151,sad_low,7,1495.603,0.46699999999987085,right,correct
+151,sad_low,9,1495.942,NA,17,correct sad
+151,sad_low,3,1497.442,NA,NA,NA
+152,angry_high,5,1499.452,NA,NA,high
+152,angry_high,11,1500.656,NA,NA,NA
+152,angry_high,12,1500.753,0.09200000000009823,left,correct
+152,angry_high,6,1501.754,NA,NA,NA
+152,angry_high,7,1502.279,0.5240000000001146,right,incorrect
+152,angry_high,9,1502.559,NA,-50,wrong angry
+152,angry_high,3,1504.059,NA,NA,NA
+153,sad_low,5,1507.07,NA,NA,low
+153,sad_low,11,1508.273,NA,NA,NA
+153,sad_low,12,1508.302,0.024000000000114596,right,correct
+153,sad_low,6,1509.3029999999999,NA,NA,NA
+153,sad_low,7,1509.37,0.06700000000000728,right,correct
+153,sad_low,9,1510.108,NA,67,correct sad
+153,sad_low,3,1511.61,NA,NA,NA
+154,angry_high,5,1514.11,NA,NA,high
+154,angry_high,11,1515.309,NA,NA,NA
+154,angry_high,12,1515.711,0.40000000000009095,left,correct
+154,angry_high,6,1516.712,NA,NA,NA
+154,angry_high,7,1516.847,0.13400000000001455,left,correct
+154,angry_high,9,1517.518,NA,58,correct angry
+154,angry_high,3,1519.021,NA,NA,NA
+155,sad_low,5,1522.021,NA,NA,low
+155,sad_low,11,1523.2179999999998,NA,NA,NA
+155,sad_low,12,1523.44,0.21899999999982356,right,correct
+155,sad_low,6,1524.44,NA,NA,NA
+155,sad_low,7,1524.524,0.08399999999983265,right,correct
+155,sad_low,9,1525.2469999999998,NA,65,correct sad
+155,sad_low,3,1526.7469999999998,NA,NA,NA
+156,angry_high,5,1528.759,NA,NA,high
+156,angry_high,11,1529.961,NA,NA,NA
+156,angry_high,12,1529.985,0.016000000000076398,left,correct
+156,angry_high,6,1530.99,NA,NA,NA
+156,angry_high,7,1531.445,0.45499999999992724,left,correct
+156,angry_high,9,1531.796,NA,18,correct angry
+156,angry_high,3,1533.301,NA,NA,NA
+157,angry_high,5,1535.3039999999999,NA,NA,high
+157,angry_high,11,1536.502,NA,NA,NA
+157,angry_high,12,1536.586,0.08000000000015461,left,correct
+157,angry_high,6,1537.588,NA,NA,NA
+157,angry_high,7,1537.6889999999999,0.09999999999990905,left,correct
+157,angry_high,9,1538.393,NA,63,correct angry
+157,angry_high,3,1539.892,NA,NA,NA
+158,sad_low,5,1542.4009999999998,NA,NA,low
+158,sad_low,11,1543.606,NA,NA,NA
+158,sad_low,12,1543.753,0.14200000000005275,right,correct
+158,sad_low,6,1544.76,NA,NA,NA
+158,sad_low,7,1544.951,0.19100000000003092,right,correct
+158,sad_low,9,1545.567,NA,51,correct sad
+158,sad_low,3,1547.07,NA,NA,NA
+159,angry_high,5,1549.068,NA,NA,high
+159,angry_high,11,1550.274,NA,NA,NA
+159,angry_high,12,1550.2939999999999,0.01999999999998181,left,correct
+159,angry_high,6,1551.301,NA,NA,NA
+159,angry_high,7,1551.347,0.04500000000007276,left,correct
+159,angry_high,9,1552.108,NA,69,correct angry
+159,angry_high,3,1553.607,NA,NA,NA
+160,angry_low,5,1555.627,NA,NA,low
+160,angry_low,11,1556.828,NA,NA,NA
+160,angry_low,12,1556.844,0.011999999999943611,right,incorrect
+160,angry_low,6,1557.85,NA,NA,NA
+160,angry_low,7,1557.857,0.005000000000109139,right,incorrect
+160,angry_low,9,1558.656,NA,-50,wrong angry
+160,angry_low,3,1560.162,NA,NA,NA
+161,sad_low,5,1563.167,NA,NA,low
+161,sad_low,11,1564.3709999999999,NA,NA,NA
+161,sad_low,12,1564.4679999999998,0.09199999999987085,right,correct
+161,sad_low,6,1565.475,NA,NA,NA
+161,sad_low,7,1565.482,0.0060000000000854925,right,correct
+161,sad_low,9,1566.282,NA,74,correct sad
+161,sad_low,3,1567.78,NA,NA,NA
+162,angry_high,5,1570.283,NA,NA,high
+162,angry_high,11,1571.481,NA,NA,NA
+162,angry_high,12,1571.599,0.11599999999998545,left,correct
+162,angry_high,6,1572.6,NA,NA,NA
+162,angry_high,7,1572.668,0.06700000000000728,left,correct
+162,angry_high,9,1573.406,NA,66,correct angry
+162,angry_high,3,1574.904,NA,NA,NA
+163,sad_low,5,1576.908,NA,NA,low
+163,sad_low,11,1578.1119999999999,NA,NA,NA
+163,sad_low,12,1578.244,0.12799999999992906,right,correct
+163,sad_low,6,1579.2459999999999,NA,NA,NA
+163,sad_low,7,1579.261,0.014000000000123691,right,correct
+163,sad_low,9,1580.052,NA,73,correct sad
+163,sad_low,3,1581.552,NA,NA,NA
+164,sad_high,5,1584.068,NA,NA,high
+164,sad_high,11,1585.272,NA,NA,NA
+164,sad_high,12,1585.335,0.05899999999996908,left,incorrect
+164,sad_high,6,1586.335,NA,NA,NA
+164,sad_high,7,1586.43,0.09500000000002728,left,incorrect
+164,sad_high,9,1587.1409999999998,NA,-50,wrong sad
+164,sad_high,3,1588.6409999999998,NA,NA,NA
+165,sad_low,5,1591.653,NA,NA,low
+165,sad_low,11,1592.856,NA,NA,NA
+165,sad_low,12,1592.9959999999999,0.1349999999999909,right,correct
+165,sad_low,6,1594.003,NA,NA,NA
+165,sad_low,7,1594.4569999999999,0.4539999999999509,right,correct
+165,sad_low,9,1594.809,NA,18,correct sad
+165,sad_low,3,1596.3139999999999,NA,NA,NA
+166,angry_high,5,1598.816,NA,NA,high
+166,angry_high,11,1600.0149999999999,NA,NA,NA
+166,angry_high,12,1600.0639999999999,0.044999999999845386,left,correct
+166,angry_high,6,1601.072,NA,NA,NA
+166,angry_high,7,1601.291,0.21800000000007458,left,correct
+166,angry_high,9,1601.878,NA,48,correct angry
+166,angry_high,3,1603.376,NA,NA,NA
+167,angry_low,5,1606.3799999999999,NA,NA,low
+167,angry_low,11,1607.578,NA,NA,NA
+167,angry_low,12,1607.745,0.16499999999996362,right,incorrect
+167,angry_low,6,1608.752,NA,NA,NA
+167,angry_low,7,1608.801,0.04899999999997817,right,incorrect
+167,angry_low,9,1609.557,NA,-50,wrong angry
+167,angry_low,3,1611.0629999999999,NA,NA,NA
+168,sad_low,5,1613.066,NA,NA,low
+168,sad_low,11,1614.272,NA,NA,NA
+168,sad_low,12,1614.281,0.008000000000038199,right,correct
+168,sad_low,6,1615.286,NA,NA,NA
+168,sad_low,7,1615.687,0.3999999999998636,right,correct
+168,sad_low,9,1616.0929999999998,NA,25,correct sad
+168,sad_low,3,1617.591,NA,NA,NA
+169,sad_low,5,1619.5929999999998,NA,NA,low
+169,sad_low,11,1620.792,NA,NA,NA
+169,sad_low,12,1620.865,0.06399999999985084,right,correct
+169,sad_low,6,1621.8709999999999,NA,NA,NA
+169,sad_low,7,1621.916,0.044000000000096406,right,correct
+169,sad_low,9,1622.676,NA,69,correct sad
+169,sad_low,3,1624.182,NA,NA,NA
+170,angry_low,5,1626.694,NA,NA,low
+170,angry_low,11,1627.896,NA,NA,NA
+170,angry_low,12,1628.1119999999999,0.21199999999998909,right,incorrect
+170,angry_low,6,1629.113,NA,NA,NA
+170,angry_low,7,1629.125,0.009999999999990905,right,incorrect
+170,angry_low,9,1629.918,NA,-50,wrong angry
+170,angry_low,3,1631.424,NA,NA,NA
+171,angry_high,5,1633.427,NA,NA,high
+171,angry_high,11,1634.633,NA,NA,NA
+171,angry_high,12,1634.723,0.08799999999996544,left,correct
+171,angry_high,6,1635.723,NA,NA,NA
+171,angry_high,7,1635.879,0.15599999999994907,left,correct
+171,angry_high,9,1636.53,NA,56,correct angry
+171,angry_high,3,1638.0349999999999,NA,NA,NA
+172,sad_high,5,1641.038,NA,NA,high
+172,sad_high,11,1642.244,NA,NA,NA
+172,sad_high,12,1642.259,0.010999999999967258,left,incorrect
+172,sad_high,6,1643.2649999999999,NA,NA,NA
+172,sad_high,7,1643.375,0.10900000000015098,left,incorrect
+172,sad_high,9,1644.07,NA,-50,wrong sad
+172,sad_high,3,1645.577,NA,NA,NA
+173,sad_low,5,1648.079,NA,NA,low
+173,sad_low,11,1649.278,NA,NA,NA
+173,sad_low,12,1649.383,0.10300000000006548,right,correct
+173,sad_low,6,1650.389,NA,NA,NA
+173,sad_low,7,1650.4099999999999,0.01999999999998181,right,correct
+173,sad_low,9,1651.196,NA,72,correct sad
+173,sad_low,3,1652.696,NA,NA,NA
+174,angry_high,5,1654.706,NA,NA,high
+174,angry_high,11,1655.917,NA,NA,NA
+174,angry_high,12,1655.966,0.047000000000025466,left,correct
+174,angry_high,6,1656.973,NA,NA,NA
+174,angry_high,7,1657.061,0.08699999999998909,left,correct
+174,angry_high,9,1657.78,NA,64,correct angry
+174,angry_high,3,1659.2839999999999,NA,NA,NA
+175,angry_low,5,1661.788,NA,NA,low
+175,angry_low,11,1662.9859999999999,NA,NA,NA
+175,angry_low,12,1663.002,0.011999999999943611,right,incorrect
+175,angry_low,6,1664.008,NA,NA,NA
+175,angry_low,7,1664.061,0.052999999999883585,right,incorrect
+175,angry_low,9,1664.8129999999999,NA,-50,wrong angry
+175,angry_low,3,1666.3129999999999,NA,NA,NA
+176,sad_low,5,1669.316,NA,NA,low
+176,sad_low,11,1670.521,NA,NA,NA
+176,sad_low,12,1670.576,0.05300000000011096,right,correct
+176,sad_low,6,1671.577,NA,NA,NA
+176,sad_low,7,1671.6209999999999,0.04299999999989268,right,correct
+176,sad_low,9,1672.384,NA,70,correct sad
+176,sad_low,3,1673.882,NA,NA,NA
+177,angry_high,5,1676.385,NA,NA,high
+177,angry_high,11,1677.59,NA,NA,NA
+177,angry_high,12,1677.627,0.035000000000081855,left,correct
+177,angry_high,6,1678.633,NA,NA,NA
+177,angry_high,7,1678.761,0.12799999999992906,left,correct
+177,angry_high,9,1679.4379999999999,NA,59,correct angry
+177,angry_high,3,1680.937,NA,NA,NA
+178,sad_low,5,1682.94,NA,NA,low
+178,sad_low,11,1684.139,NA,NA,NA
+178,sad_low,12,1684.154,0.006999999999834472,right,correct
+178,sad_low,6,1685.161,NA,NA,NA
+178,sad_low,7,1685.248,0.08599999999978536,right,correct
+178,sad_low,9,1685.9669999999999,NA,64,correct sad
+178,sad_low,3,1687.47,NA,NA,NA
+179,sad_low,5,1690.4759999999999,NA,NA,low
+179,sad_low,11,1691.68,NA,NA,NA
+179,sad_low,12,1691.7079999999999,0.023999999999887223,right,correct
+179,sad_low,6,1692.715,NA,NA,NA
+179,sad_low,7,1693.146,0.43000000000006366,right,correct
+179,sad_low,9,1693.521,NA,21,correct sad
+179,sad_low,3,1695.02,NA,NA,NA
+180,sad_high,5,1697.033,NA,NA,high
+180,sad_high,11,1698.235,NA,NA,NA
+180,sad_high,12,1698.368,0.12800000000015643,left,incorrect
+180,sad_high,6,1699.375,NA,NA,NA
+180,sad_high,7,1699.392,0.01499999999987267,left,incorrect
+180,sad_high,9,1700.18,NA,-50,wrong sad
+180,sad_high,3,1701.687,NA,NA,NA
+181,angry_high,5,1704.19,NA,NA,high
+181,angry_high,11,1705.395,NA,NA,NA
+181,angry_high,12,1705.416,0.01700000000005275,left,correct
+181,angry_high,6,1706.416,NA,NA,NA
+181,angry_high,7,1706.584,0.16699999999991633,left,correct
+181,angry_high,9,1707.223,NA,54,correct angry
+181,angry_high,3,1708.73,NA,NA,NA
+182,sad_low,5,1710.731,NA,NA,low
+182,sad_low,11,1711.936,NA,NA,NA
+182,sad_low,12,1712.172,0.23400000000015098,right,correct
+182,sad_low,6,1713.173,NA,NA,NA
+182,sad_low,7,1713.204,0.03099999999994907,right,correct
+182,sad_low,9,1713.98,NA,71,correct sad
+182,sad_low,3,1715.485,NA,NA,NA
+183,angry_high,5,1718.49,NA,NA,high
+183,angry_high,11,1719.693,NA,NA,NA
+183,angry_high,12,1719.777,0.07999999999992724,left,correct
+183,angry_high,6,1720.7849999999999,NA,NA,NA
+183,angry_high,7,1720.893,0.10700000000019827,left,correct
+183,angry_high,9,1721.591,NA,61,correct angry
+183,angry_high,3,1723.09,NA,NA,NA
+184,angry_high,5,1725.5929999999998,NA,NA,high
+184,angry_high,11,1726.79,NA,NA,NA
+184,angry_high,12,1726.8809999999999,0.08699999999998909,left,correct
+184,angry_high,6,1727.888,NA,NA,NA
+184,angry_high,7,1728.379,0.49099999999998545,left,correct
+184,angry_high,9,1728.694,NA,14,correct angry
+184,angry_high,3,1730.194,NA,NA,NA
+185,sad_high,5,1732.196,NA,NA,high
+185,sad_high,11,1733.394,NA,NA,NA
+185,sad_high,12,1733.561,0.16300000000001091,left,incorrect
+185,sad_high,6,1734.562,NA,NA,NA
+185,sad_high,7,1735.031,0.46900000000005093,left,incorrect
+185,sad_high,9,1735.367,NA,-50,wrong sad
+185,sad_high,3,1736.867,NA,NA,NA
+186,angry_high,5,1739.376,NA,NA,high
+186,angry_high,11,1740.5819999999999,NA,NA,NA
+186,angry_high,12,1740.672,0.08800000000019281,left,correct
+186,angry_high,6,1741.672,NA,NA,NA
+186,angry_high,7,1741.741,0.06899999999995998,left,correct
+186,angry_high,9,1742.478,NA,66,correct angry
+186,angry_high,3,1743.978,NA,NA,NA
+187,angry_high,5,1746.988,NA,NA,high
+187,angry_high,11,1748.193,NA,NA,NA
+187,angry_high,12,1748.269,0.07400000000006912,left,correct
+187,angry_high,6,1749.27,NA,NA,NA
+187,angry_high,7,1749.3,0.029999999999972715,left,correct
+187,angry_high,9,1750.081,NA,71,correct angry
+187,angry_high,3,1751.576,NA,NA,NA
+188,sad_low,5,1754.587,NA,NA,low
+188,sad_low,11,1755.79,NA,NA,NA
+188,sad_low,12,1755.908,0.11400000000003274,right,correct
+188,sad_low,6,1756.9089999999999,NA,NA,NA
+188,sad_low,7,1757.057,0.1470000000001619,right,correct
+188,sad_low,9,1757.715,NA,56,correct sad
+188,sad_low,3,1759.215,NA,NA,NA
+189,angry_high,5,1761.7169999999999,NA,NA,high
+189,angry_high,11,1762.922,NA,NA,NA
+189,angry_high,12,1763.019,0.09500000000002728,left,correct
+189,angry_high,6,1764.027,NA,NA,NA
+189,angry_high,7,1764.04,0.011999999999943611,left,correct
+189,angry_high,9,1764.8329999999999,NA,73,correct angry
+189,angry_high,3,1766.338,NA,NA,NA
+190,sad_low,5,1768.35,NA,NA,low
+190,sad_low,11,1769.5539999999999,NA,NA,NA
+190,sad_low,12,1769.575,0.015999999999849024,right,correct
+190,sad_low,6,1770.5829999999999,NA,NA,NA
+190,sad_low,7,1770.6979999999999,0.11400000000003274,right,correct
+190,sad_low,9,1771.389,NA,61,correct sad
+190,sad_low,3,1772.894,NA,NA,NA
+191,sad_low,5,1775.397,NA,NA,low
+191,sad_low,11,1776.595,NA,NA,NA
+191,sad_low,12,1776.769,0.17000000000007276,right,correct
+191,sad_low,6,1777.7759999999998,NA,NA,NA
+191,sad_low,7,1777.915,0.13800000000014734,right,correct
+191,sad_low,9,1778.5819999999999,NA,58,correct sad
+191,sad_low,3,1780.081,NA,NA,NA
+192,angry_low,5,1783.087,NA,NA,low
+192,angry_low,11,1784.29,NA,NA,NA
+192,angry_low,12,1784.4289999999999,0.13200000000006185,right,incorrect
+192,angry_low,6,1785.437,NA,NA,NA
+192,angry_low,7,1785.579,0.14200000000005275,right,incorrect
+192,angry_low,9,1786.241,NA,-50,wrong angry
+192,angry_low,3,1787.741,NA,NA,NA
+193,angry_high,5,1790.75,NA,NA,high
+193,angry_high,11,1791.95,NA,NA,NA
+193,angry_high,12,1792.046,0.0929999999998472,left,correct
+193,angry_high,6,1793.047,NA,NA,NA
+193,angry_high,7,1793.086,0.03899999999998727,left,correct
+193,angry_high,9,1793.854,NA,70,correct angry
+193,angry_high,3,1795.3509999999999,NA,NA,NA
+194,angry_low,5,1797.355,NA,NA,low
+194,angry_low,11,1798.56,NA,NA,NA
+194,angry_low,12,1798.609,0.044000000000096406,right,incorrect
+194,angry_low,6,1799.616,NA,NA,NA
+194,angry_low,7,1799.758,0.1410000000000764,right,incorrect
+194,angry_low,9,1800.421,NA,-50,wrong angry
+194,angry_low,3,1801.921,NA,NA,NA
+195,sad_low,5,1804.931,NA,NA,low
+195,sad_low,11,1806.136,NA,NA,NA
+195,sad_low,12,1806.261,0.12200000000007094,right,correct
+195,sad_low,6,1807.262,NA,NA,NA
+195,sad_low,7,1807.377,0.1150000000000091,right,correct
+195,sad_low,9,1808.069,NA,61,correct sad
+195,sad_low,3,1809.568,NA,NA,NA
+196,angry_high,5,1812.069,NA,NA,high
+196,angry_high,11,1813.282,NA,NA,NA
+196,angry_high,12,1813.3809999999999,0.08799999999996544,left,correct
+196,angry_high,6,1814.388,NA,NA,NA
+196,angry_high,7,1814.549,0.16000000000008185,left,correct
+196,angry_high,9,1815.194,NA,55,correct angry
+196,angry_high,3,1816.6979999999999,NA,NA,NA
+197,sad_low,5,1818.703,NA,NA,low
+197,sad_low,11,1819.907,NA,NA,NA
+197,sad_low,12,1820.039,0.1290000000001328,right,correct
+197,sad_low,6,1821.04,NA,NA,NA
+197,sad_low,7,1821.224,0.18299999999999272,right,correct
+197,sad_low,9,1821.846,NA,52,correct sad
+197,sad_low,3,1823.344,NA,NA,NA
+198,angry_high,5,1826.347,NA,NA,high
+198,angry_high,11,1827.546,NA,NA,NA
+198,angry_high,12,1827.588,0.038000000000010914,left,correct
+198,angry_high,6,1828.595,NA,NA,NA
+198,angry_high,7,1829.126,0.5309999999999491,left,correct
+198,angry_high,9,1829.3999999999999,NA,9,correct angry
+198,angry_high,3,1830.905,NA,NA,NA
+199,sad_low,5,1833.4099999999999,NA,NA,low
+199,sad_low,11,1834.607,NA,NA,NA
+199,sad_low,12,1834.628,0.009999999999990905,right,correct
+199,sad_low,6,1835.629,NA,NA,NA
+199,sad_low,7,1835.8139999999999,0.18499999999994543,right,correct
+199,sad_low,9,1836.435,NA,52,correct sad
+199,sad_low,3,1837.942,NA,NA,NA

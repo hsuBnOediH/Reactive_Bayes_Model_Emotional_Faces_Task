@@ -132,9 +132,9 @@ if strcmp(env_sys, 'pc')
     tutorialPath = 'L:/rsmith/lab-members/cgoldman/Active-Inference-Tutorial-Scripts-main';
    
 elseif strcmp(env_sys, 'mac')
-    spmPath =  [ROOT '/../../spm/'];
-    spmDemPath = [ROOT '/../../spm/toolbox/DEM/'];
-    tutorialPath = [ROOT '/../../Active-Inference-Model-for-Advise-Task/Active-Inference-Tutorial-Scripts-main'];
+    spmPath =  [ROOT '/../../../spm/'];
+    spmDemPath = [ROOT '/../../../spm/toolbox/DEM/'];
+    tutorialPath = [ROOT '/../../../Active-Inference-Model-for-Advise-Task/Active-Inference-Tutorial-Scripts-main'];
 
     INPUT_DIRECTORY = [ROOT '/' INPUT_PATH];
 
