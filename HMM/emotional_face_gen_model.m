@@ -29,49 +29,57 @@ function mdp = emotional_face_gen_model(trialinfo, priors)
         % Only hidden state factor: Context (2 states)
         Ns(1) = 2;                 
         
-        % Outcome modality 1: Tone Modality (low/high tone)
-        % Outcome modality 2: Face Modality (sad/angry face)
-        No(1) = 2;
-        No(2) = 2;
+        % Outcome modality 1: Tone Modality (low/high tone and null states)
+        % Outcome modality 2: Face Modality (sad/angry face and null states)
+        No(1) = 3;
+        No(2) = 3;
         
         %% Likelihood (A matrices)
         % Initialize A matrices with correct dimensions
-        A{1} = zeros(No(1), Ns(1));  % 2 x 2
+        A{1} = zeros(No(1), Ns(1));  % 3 x 2
         
         % in A{1}, we have:
-        % - Row 1: Low tone (0)
-        % - Row 2: High tone (1)
+        % - Row 1: Null States(NaN)
+        % - Row 2: Low tone (0)
+        % - Row 3: High tone (1)
         % - Column 1: Context state 1 (angry face)
         % - Column 2: Context state 2 (sad face)
         % according to the face_type and tone_type, fill in the corresponding probabilities to 1, leaving the rest as 0.
-        A{1}(1, 1) = p_hs_la;  % Given Low tone, the face is angry
-        A{1}(1, 2) = 1 - p_hs_la;  % Given Low tone, the face is sad
-        A{1}(2, 1) = 1 - p_hs_la;  % Given High tone, the face is angry
-        A{1}(2, 2) = p_hs_la;  % Given High tone, the face is sad
+        A{1}(1, 1) = 0.5;
+        A{1}(1, 2) = 0.5;
+        A{1}(2, 1) = p_hs_la;  % Given Low tone, the face is angry
+        A{1}(2, 2) = 1 - p_hs_la;  % Given Low tone, the face is sad
+        A{1}(3, 1) = 1 - p_hs_la;  % Given High tone, the face is angry
+        A{1}(3, 2) = p_hs_la;  % Given High tone, the face is sad
       
 
         % prepare two sets of A{2} for Face outcome modality
         % One for High Instensity, one for Low Intensity, both follow the same structure:
-        % - Row 1: Angry face (0)
-        % - Row 2: Sad face (1)
+        % - Row 1: Null States(NaN)
+        % - Row 2: Angry face (0)
+        % - Row 3: Sad face (1)
         % - Column 1: Context state 1 (Angry face)
         % - Column 2: Context state 2 (Sad face)
-        A{2} = zeros(No(2), Ns(1));  % 2 x 2
+        A{2} = zeros(No(2), Ns(1));  % 3 x 2
 
-        low_intensity_a_2 = zeros(No(2), Ns(1));  % 2 x 2 for low intensity
-        high_intensity_a_2 = zeros(No(2), Ns(1));  % 2 x 2 for high intensity
+        low_intensity_a_2 = zeros(No(2), Ns(1));  % 3 x 2 for low intensity
+        high_intensity_a_2 = zeros(No(2), Ns(1));  % 3 x 2 for high intensity
         
         if intensity == 0.5  % Low intensity
-            low_intensity_a_2(1, 1) = p_low_intensity;  % Angry face in context1 (Angry)
-            low_intensity_a_2(1, 2) = 1 - p_low_intensity;  % Sad face in context1 (Sad)
-            low_intensity_a_2(2, 1) = 1 - p_low_intensity;  % Angry face in context2 (Angry)
-            low_intensity_a_2(2, 2) = p_low_intensity;  % Sad face in context2 (Sad)
+            low_intensity_a_2(1, 1) = 0.5;
+            low_intensity_a_2(1, 2) = 0.5;
+            low_intensity_a_2(2, 1) = p_low_intensity;  % Angry face in context1 (Angry)
+            low_intensity_a_2(2, 2) = 1 - p_low_intensity;  % Sad face in context1 (Sad)
+            low_intensity_a_2(3, 1) = 1 - p_low_intensity;  % Angry face in context2 (Angry)
+            low_intensity_a_2(3, 2) = p_low_intensity;  % Sad face in context2 (Sad)
             A{2} = low_intensity_a_2;  % Use low intensity A{2}
         else  % High intensity
-            high_intensity_a_2(1, 1) = p_high_intensity;  % Angry face in context1 (Angry)
-            high_intensity_a_2(1, 2) = 1 - p_high_intensity;  % Sad face in context1 (Sad)
-            high_intensity_a_2(2, 2) = p_high_intensity;  % Sad face in context2 (Sad)
-            high_intensity_a_2(2, 1) = 1 - p_high_intensity;  % Angry face in context2 (Angry)
+            high_intensity_a_2(1, 1) = 0.5;
+            high_intensity_a_2(1, 2) = 0.5;
+            high_intensity_a_2(2, 1) = p_high_intensity;  % Angry face in context1 (Angry)
+            high_intensity_a_2(2, 2) = 1 - p_high_intensity;  % Sad face in context1 (Sad)
+            high_intensity_a_2(3, 2) = p_high_intensity;  % Sad face in context2 (Sad)
+            high_intensity_a_2(3, 1) = 1 - p_high_intensity;  % Angry face in context2 (Angry)
             A{2} = high_intensity_a_2;  % Use high intensity A{2}
         end
         
@@ -104,40 +112,42 @@ function mdp = emotional_face_gen_model(trialinfo, priors)
         for g = 1:Ng
             O{g} = zeros(No(g), T);
         end
-        % At time step 1, nothing is observed yet, so all zero
-        O{1}(:, 1) = 0;  % Tone modality (no tone observed yet)
-        O{2}(:, 1) = 0;  % Face modality (no face observed yet)
+        % At time step 1, nothing is observed yet, so as null state
+        O{1}(1, 1) = 1;  
+        O{2}(1, 1) = 1;  
         % At time step 2, the tone is observed, init according to the
         % tone_type
         if tone_type == 0
             % if low tone observed 
-            O{1}(1, 2) = 1;
+            O{1}(2, 2) = 1;
         else
             % if high tone observed 
-            O{1}(2, 2) = 1;
+            O{1}(3, 2) = 1;
         end
+        % face type is still nan state at time 2
+        O{2}(1, 2) = 1;
 
         % At time step 3, the the tone is observed, init according to the
         % tone_type
         % face type is observed also, sampling posteriors over states
         if tone_type == 0
             % if low tone observed 
-            O{1}(1, 3) = 1;
+            O{1}(2, 3) = 1;
         else
             % if high tone observed 
-            O{1}(2, 3) = 1;
+            O{1}(3, 3) = 1;
         end
 
         % Sample the observed face type from prob
         
         % compute the prob of face
         p_hidden = D{1};          % 1×2 vector of hidden-state probabilities
-        likelihood_matrix = A{2};          % 2×2 likelihood matrix
+        likelihood_matrix = A{2};          % 3×2 likelihood matrix
 
-        % 1) sample hidden state index h ∈ {1,2}
+        % 1) sample hidden state index h ∈ {2,3}
         r = rand();
         hidden_state_index = find(r <= cumsum(p_hidden), 1);
-        ob_face_given_hidden_state = likelihood_matrix(hidden_state_index,:);
+        ob_face_given_hidden_state = likelihood_matrix(2:3, hidden_state_index);
 
         % 2) sample observed face index o ∈ {1,2} given hidden = h
         r = rand();
@@ -146,10 +156,10 @@ function mdp = emotional_face_gen_model(trialinfo, priors)
         
         if ob_face_type_index == 1
             % angry face
-            O{2}(1, 3) = 1;
+            O{2}(2, 3) = 1;
         else
             % sad face
-            O{2}(2, 3) = 1;
+            O{2}(3, 3) = 1;
         end
 
         %% Populate mdp structure for this trial
